@@ -223,6 +223,7 @@
       <th>Early Help</th>
       <th>Sprint Back</th>
       <th>Charge Taken</th>
+      <th>Dive on Loose Ball</th>
     </tr>
   </thead>
   <tbody id="summaryBody"></tbody>
@@ -237,7 +238,7 @@
 <div class="key-box">
   <div><b>Stat Key</b></div>
   <div class="key-row">
-    <div class="key-item">Blow-By = –3</div>
+    <div class="key-item">Blow-By = –2</div>
     <div class="key-item">Late Rotation = –2</div>
     <div class="key-item">Late/Weak Closeout = –1</div>
     <div class="key-item">No Box Out = –1</div>
@@ -253,12 +254,13 @@
     <div class="key-item">Early Help = +1</div>
     <div class="key-item">Sprint Back = +1</div>
     <div class="key-item">Charge Taken = +2</div>
+    <div class="key-item">Dive on Loose Ball = +2</div>
   </div>
 </div>
 
 <script>
 const eventDefs = [
-  { key: 'BB',    label: 'Blow-By –2',                     weight: -2 },   // UPDATED
+  { key: 'BB',    label: 'Blow-By –2',                     weight: -2 },
   { key: 'LR',    label: 'Late Rotation –2',               weight: -2 },
   { key: 'LWC',   label: 'Late/Weak Closeout –1',          weight: -1 },
   { key: 'NB',    label: 'No Box Out –1',                  weight: -1 },
@@ -274,8 +276,7 @@ const eventDefs = [
   { key: 'EH',    label: 'Early Help +1',                  weight:  1 },
   { key: 'SB',    label: 'Sprint Back +1',                 weight:  1 },
   { key: 'CH',    label: 'Charge Taken +2',                weight:  2 },
-
-  { key: 'DLB',   label: 'Dive on Loose Ball +2',          weight:  2 },   // NEW
+  { key: 'DLB',   label: 'Dive on Loose Ball +2',          weight:  2 },
 ];
 
 let players = [
@@ -436,7 +437,7 @@ function renderSummary() {
       <td>${st.defPoss || ''}</td>
       <td class="${raw < 0 ? 'neg-score' : 'pos-score'}">${raw || ''}</td>
       <td class="${per10 < 0 ? 'neg-score' : 'pos-score'}">${per10 ? per10.toFixed(2) : ''}</td>
-      ${['BB','LR','LWC','NB','SCA','JB','NT','BXO','BXTR','BXOR','DEF','EH','SB','CH']
+      ${['BB','LR','LWC','NB','SCA','JB','NT','BXO','BXTR','BXOR','DEF','EH','SB','CH','DLB']
         .map(k => `<td>${st.events[k] || ''}</td>`).join('')}
     `;
     summaryBody.appendChild(tr);
@@ -450,7 +451,7 @@ csvBtn.onclick = () => {
 
   let csv = "Player,#,DefPoss,Raw,Per10," +
             "Blow-By,LateRotation,LateWeakCloseout,NoBoxOut,SecondChance,JogBack,NoTalk," +
-            "BoxOut,BoxOutTeamReb,BoxOutOwnReb,Deflection,EarlyHelp,SprintBack,ChargeTaken,OnCourt\n";
+            "BoxOut,BoxOutTeamReb,BoxOutOwnReb,Deflection,EarlyHelp,SprintBack,ChargeTaken,DiveOnLooseBall,OnCourt\n";
 
   players.forEach(p => {
     const st = state[p.id];
@@ -458,7 +459,7 @@ csvBtn.onclick = () => {
     const onFlag = state[p.id].onCourt ? "ON" : "";
     csv += `${p.name},${p.number},${st.defPoss},${raw},${per10 || ""},` +
            `${st.events['BB']||0},${st.events['LR']||0},${st.events['LWC']||0},${st.events['NB']||0},${st.events['SCA']||0},${st.events['JB']||0},${st.events['NT']||0},` +
-           `${st.events['BXO']||0},${st.events['BXTR']||0},${st.events['BXOR']||0},${st.events['DEF']||0},${st.events['EH']||0},${st.events['SB']||0},${st.events['CH']||0},${onFlag}\n`;
+           `${st.events['BXO']||0},${st.events['BXTR']||0},${st.events['BXOR']||0},${st.events['DEF']||0},${st.events['EH']||0},${st.events['SB']||0},${st.events['CH']||0},${st.events['DLB']||0},${onFlag}\n`;
   });
 
   let blob = new Blob([csv], { type: "text/csv" });
@@ -480,4 +481,3 @@ renderSummary();
 
 </body>
 </html>
-
