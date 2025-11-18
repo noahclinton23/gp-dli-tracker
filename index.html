@@ -258,20 +258,24 @@
 
 <script>
 const eventDefs = [
-  { key: 'BB',    label: 'Blow-By –3',                     weight: -3 },
+  { key: 'BB',    label: 'Blow-By –2',                     weight: -2 },   // UPDATED
   { key: 'LR',    label: 'Late Rotation –2',               weight: -2 },
   { key: 'LWC',   label: 'Late/Weak Closeout –1',          weight: -1 },
   { key: 'NB',    label: 'No Box Out –1',                  weight: -1 },
   { key: 'SCA',   label: 'Second-Chance Allowed –2',       weight: -2 },
   { key: 'JB',    label: 'Jog Back –1',                    weight: -1 },
   { key: 'NT',    label: 'No Talk –1',                     weight: -1 },
+
   { key: 'BXO',   label: 'Box Out +1',                     weight:  1 },
   { key: 'BXTR',  label: 'Box Out + Team Rebound +2',      weight:  2 },
   { key: 'BXOR',  label: 'Box Out + Own Rebound +3',       weight:  3 },
+
   { key: 'DEF',   label: 'Deflection +1',                  weight:  1 },
   { key: 'EH',    label: 'Early Help +1',                  weight:  1 },
   { key: 'SB',    label: 'Sprint Back +1',                 weight:  1 },
   { key: 'CH',    label: 'Charge Taken +2',                weight:  2 },
+
+  { key: 'DLB',   label: 'Dive on Loose Ball +2',          weight:  2 },   // NEW
 ];
 
 let players = [
@@ -476,3 +480,4 @@ renderSummary();
 
 </body>
 </html>
+
