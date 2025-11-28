@@ -1,179 +1,271 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>DLI Live Tracker</title>
 
-<title>DLI Live Tracker</title>
+  <style>
+    html, body {
+      touch-action: manipulation;
+      overscroll-behavior-y: contain;
+    }
+    html {
+      overscroll-behavior: none;
+    }
 
-<!-- PWA manifest -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+      background-color: #000;
+      color: #f5f5f5;
+    }
 
-<style>
-  body {
-    background: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    overscroll-behavior-y: contain;
-  }
+    h1 { font-size: 20px; margin-bottom: 4px; }
+    h3 { margin-top: 14px; }
 
-  html {
-    overscroll-behavior: none;
-  }
+    .mode-toggle {
+      display: flex;
+      gap: 6px;
+      margin: 8px 0 10px 0;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #4b5563;
+      background-color: #0b1120;
+      color: #e5e7eb;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .mode-btn.active {
+      background-color: #f97316;
+      color: #111827;
+      border-color: #fed7aa;
+      font-weight: bold;
+    }
 
-  h1, h2, h3 {
-    margin: 10px;
-    text-align: center;
-  }
+    .game-meta {
+      font-size: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .game-meta label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .game-input {
+      background-color: #020617;
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 3px 5px;
+      color: #f5f5f5;
+      font-size: 12px;
+    }
 
-  .tabs {
-    display: flex;
-    margin-top: 10px;
-  }
-  .tab {
-    flex: 1;
-    padding: 10px;
-    background: #222;
-    text-align: center;
-    cursor: pointer;
-    border-bottom: 3px solid #333;
-  }
-  .tab.active {
-    background: #444;
-    border-bottom: 3px solid #0f0;
-  }
+    .players-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .player-chip {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #666;
+      font-size: 12px;
+      cursor: pointer;
+      background-color: #111;
+      color: #f5f5f5;
+    }
+    .on-court {
+      background-color: #14532d;
+      border-color: #22c55e;
+    }
+    .selected {
+      box-shadow: 0 0 0 2px #38bdf8;
+    }
 
-  .container {
-    padding: 10px;
-  }
+    .buttons-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .primary-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #e5e5e5;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #f97316;
+      color: #111;
+    }
+    .small-btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #888;
+      cursor: pointer;
+      font-size: 11px;
+      background-color: #222;
+      color: #f5f5f5;
+    }
 
-  .player-row {
-    display: flex;
-    align-items: center;
-    padding: 6px;
-    background: #111;
-    margin-bottom: 4px;
-    border-radius: 6px;
-    border: 1px solid #333;
-  }
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .event-btn {
+      font-size: 11px;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      cursor: pointer;
+      background-color: #1f2933;
+      color: #f5f5f5;
+      text-align: center;
+    }
+    .event-btn.neg { background-color: #7f1d1d; }
+    .event-btn.pos { background-color: #14532d; }
 
-  .player-name {
-    flex: 1;
-    font-size: 16px;
-  }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 4px;
+      text-align: center;
+    }
+    th {
+      background-color: #111827;
+      color: #e5e7eb;
+    }
 
-  .on-btn {
-    padding: 6px 10px;
-    background: #333;
-    border: 1px solid #555;
-    color: #fff;
-    border-radius: 6px;
-    margin-left: 10px;
-    cursor: pointer;
-  }
-  .on-btn.on {
-    background: #0f0;
-    color: #000;
-  }
+    .neg-score { color: #f87171; }
+    .pos-score { color: #4ade80; }
 
-  .stat-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-    margin-top: 12px;
-  }
+    .key-box {
+      margin-top: 14px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background-color: #020617;
+      font-size: 11px;
+    }
 
-  .stat-btn {
-    padding: 12px;
-    background: #222;
-    border: 1px solid #555;
-    color: #fff;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    text-align: center;
-  }
-  .stat-btn.good {
-    background: #003300;
-    border-color: #008800;
-  }
-  .stat-btn.bad {
-    background: #330000;
-    border-color: #880000;
-  }
+    .save-box {
+      margin-top: 14px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background-color: #111827;
+      font-size: 11px;
+    }
+    .save-btn {
+      padding: 8px 12px;
+      margin: 4px 2px;
+      background-color: #2563eb;
+      border-radius: 6px;
+      border: none;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .save-btn.pdf {
+      background-color: #d97706;
+    }
 
-  .save-box {
-    margin-top: 15px;
-    text-align: center;
-  }
-  .save-btn {
-    padding: 10px 16px;
-    background: #333;
-    color: #fff;
-    border-radius: 6px;
-    margin: 5px;
-    cursor: pointer;
-    border: 1px solid #666;
-  }
-  .save-btn.pdf {
-    background: #0066cc;
-  }
-
-  .key-box {
-    margin-top: 18px;
-    background: #111;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #444;
-    font-size: 14px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    margin-top: 10px;
-  }
-  th, td {
-    border: 1px solid #444;
-    padding: 4px;
-    text-align: center;
-  }
-
-  .grade-A, .grade-Aplus { color:#00ff00; }
-  .grade-B { color:#aaff00; }
-  .grade-C { color:#ffff00; }
-  .grade-D { color:#ff8800; }
-  .grade-F { color:#ff0000; }
-</style>
+    .grade-A, .grade-Aplus { color:#4ade80; font-weight:bold; }
+    .grade-B { color:#bef264; font-weight:bold; }
+    .grade-C { color:#fde047; font-weight:bold; }
+    .grade-D { color:#fdba74; font-weight:bold; }
+    .grade-F { color:#f97373; font-weight:bold; }
+  </style>
 </head>
-
 <body>
 
-<h1>GP Defensive Live Tracker</h1>
+<h1>DLI Live Tracker</h1>
 
-<div class="tabs">
-  <div class="tab active" id="tabLive">Live Tracker</div>
-  <div class="tab" id="tabReport">Post-Game Report</div>
+<div class="mode-toggle">
+  <button id="modeLive" class="mode-btn active">Live Tracker</button>
+  <button id="modeReport" class="mode-btn">Post-Game Report</button>
 </div>
 
-<div id="liveView" class="container">
+<div class="game-meta">
+  <label>Opponent:
+    <input id="opponentInput" class="game-input" type="text" placeholder="Team name">
+  </label>
+  <label>Location:
+    <input id="locationInput" class="game-input" type="text" placeholder="Home/Away/Gym">
+  </label>
+</div>
 
-  <h3>On-Court Players (Double Tap to Sub)</h3>
-  <div id="playerList"></div>
-
-  <h3 style="margin-top:20px;">Log Stat for: <span id="selectedPlayerName"></span></h3>
-
-  <div class="stat-buttons" id="statButtons">
-    <!-- buttons added by JS -->
+<div id="liveView">
+  <div style="font-size: 12px; margin-bottom: 6px;">
+    Single tap = <b>select</b>. Double tap = <b>sub in/out</b>. Max 5 on floor.
   </div>
 
+  <div class="players-row" id="playersRow"></div>
+
+  <div class="buttons-row">
+    <button id="possBtn" class="primary-btn">+1 Defensive Possession</button>
+    <button id="undoBtn" class="small-btn">Undo Last</button>
+    <button id="newGameBtn" class="small-btn">New Game</button>
+    <button id="resetBtn" class="small-btn" style="border-color:#f87171;color:#fecaca;">Reset All</button>
+  </div>
+
+  <div class="buttons-grid" id="eventsGrid"></div>
+
+  <h3>Player Summary (Live)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>DefPoss</th>
+        <th>Raw</th>
+        <th>Per10</th>
+        <th>BB</th>
+        <th>LR</th>
+        <th>LWC</th>
+        <th>NB</th>
+        <th>SCA</th>
+        <th>JB</th>
+        <th>NT</th>
+        <th>F</th>
+        <th>GAM</th>
+        <th>GAMS</th>
+        <th>BXO</th>
+        <th>TR</th>
+        <th>BXOR</th>
+        <th>WU</th>
+        <th>DEF</th>
+        <th>STL</th>
+        <th>STLS</th>
+        <th>EH</th>
+        <th>SB</th>
+        <th>CH</th>
+        <th>DLB</th>
+      </tr>
+    </thead>
+    <tbody id="summaryBody"></tbody>
+  </table>
+
   <div class="save-box">
-    <button class="save-btn" id="undoBtn">Undo Last</button>
-    <button class="save-btn" id="resetBtn">Reset All</button>
+    <h3>Save / Export</h3>
+    <button class="save-btn" id="csvBtn">Export CSV</button>
+    <button class="save-btn pdf" id="pdfBtn">Print / PDF</button>
   </div>
 
   <div class="key-box">
@@ -185,425 +277,494 @@
     <div>Wall Up +1, Deflection +1, Steal +2, Steal→Score +3</div>
     <div>Early Help +1, Sprint Back +1, Charge +2, Dive +2</div>
   </div>
-
 </div>
+
+<div id="reportView" style="display:none;margin-top:10px;">
+  <h3>Post-Game Report</h3>
+
+  <h4>Overall Impact</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>DefPoss</th>
+        <th>Raw</th>
+        <th>Per10</th>
+        <th>Grade</th>
+        <th>Strengths</th>
+        <th>Needs</th>
+      </tr>
+    </thead>
+    <tbody id="reportSummaryBody"></tbody>
+  </table>
+
+  <h4 style="margin-top:12px;">Category Breakdown</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>BB</th><th>F</th><th>GAM</th><th>GAMS</th>
+        <th>STL</th><th>STLS</th>
+        <th>BXO</th><th>TR</th><th>BXOR</th>
+        <th>WU</th><th>DEF</th><th>EH</th><th>SB</th><th>CH</th><th>DLB</th>
+      </tr>
+    </thead>
+    <tbody id="reportCategoryBody"></tbody>
+  </table>
+
+  <div class="save-box">
+    <h3>Share Report</h3>
+    <button class="save-btn" id="emailReportBtn">Email Post-Game Report</button>
+  </div>
+</div>
+
 <script>
-// =========================
-// PREVENT ACCIDENTAL LEAVE
-// =========================
-window.addEventListener("beforeunload", function (e) {
-  e.preventDefault();
-  e.returnValue = "";
-});
+  // Prevent double-tap zoom
+  document.addEventListener('dblclick', function (e) {
+    e.preventDefault();
+  }, { passive: false });
 
-// =========================
-// REGISTER SERVICE WORKER (PWA)
-// =========================
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch(err => console.log("SW fail", err));
-}
+  const eventDefs = [
+    { key:'BB',    label:'Blow-By –2',          weight:-2 },
+    { key:'LR',    label:'Late Rotation –2',    weight:-2 },
+    { key:'LWC',   label:'Weak Closeout –1',    weight:-1 },
+    { key:'NB',    label:'No Box Out –1',       weight:-1 },
+    { key:'SCA',   label:'Second Chance –2',    weight:-2 },
+    { key:'JB',    label:'Jog Back –1',         weight:-1 },
+    { key:'NT',    label:'No Talk –1',          weight:-1 },
+    { key:'F',     label:'Foul –1',             weight:-1 },
 
-// =========================
-// EVENT DEFINITIONS
-// =========================
-const eventDefs = [
-  { key:'BB',    label:'Blow-By –2', weight:-2 },
-  { key:'LR',    label:'Late Rotation –2', weight:-2 },
-  { key:'LWC',   label:'Weak Closeout –1', weight:-1 },
-  { key:'NB',    label:'No Box Out –1', weight:-1 },
-  { key:'SCA',   label:'Second Chance –2', weight:-2 },
-  { key:'JB',    label:'Jog Back –1', weight:-1 },
-  { key:'NT',    label:'No Talk –1', weight:-1 },
-  { key:'F',     label:'Foul –1', weight:-1 },
+    { key:'GAM',   label:'Gamble –1',           weight:-1 },
+    { key:'GAMS',  label:'Gamble→Score –2',     weight:-2 },
 
-  { key:'GAM',   label:'Gamble –1', weight:-1 },
-  { key:'GAMS',  label:'Gamble→Score –2', weight:-2 },
+    { key:'BXO',   label:'Box Out +1',          weight:1 },
+    { key:'BXTR',  label:'Team Rebound +2',     weight:2 },
+    { key:'BXOR',  label:'Own Rebound +3',      weight:3 },
+    { key:'DRB',   label:'Rebound +1',          weight:1 }, // folded into TR
 
-  { key:'BXO',   label:'Box Out +1', weight:1 },
-  { key:'BXTR',  label:'Team Rebound +2', weight:2 },
-  { key:'BXOR',  label:'Own Rebound +3', weight:3 },
-  { key:'DRB',   label:'Rebound +1', weight:1 },  // goes to Team Rebounds
+    { key:'WU',    label:'Wall Up +1',          weight:1 },
+    { key:'DEF',   label:'Deflection +1',       weight:1 },
+    { key:'STL',   label:'Steal +2',            weight:2 },
+    { key:'STLS',  label:'Steal→Score +3',      weight:3 },
 
-  { key:'WU',    label:'Wall Up +1', weight:1 },
-  { key:'DEF',   label:'Deflection +1', weight:1 },
-  { key:'STL',   label:'Steal +2', weight:2 },
-  { key:'STLS',  label:'Steal→Score +3', weight:3 },
+    { key:'EH',    label:'Early Help +1',       weight:1 },
+    { key:'SB',    label:'Sprint Back +1',      weight:1 },
+    { key:'CH',    label:'Charge +2',           weight:2 },
+    { key:'DLB',   label:'Dive +2',             weight:2 },
+  ];
 
-  { key:'EH',    label:'Early Help +1', weight:1 },
-  { key:'SB',    label:'Sprint Back +1', weight:1 },
-  { key:'CH',    label:'Charge +2', weight:2 },
-  { key:'DLB',   label:'Dive +2', weight:2 },
-];
+  const weightMap = {};
+  eventDefs.forEach(ev => weightMap[ev.key] = ev.weight);
 
-// Map for quick lookup
-const weightMap = {};
-eventDefs.forEach(e => weightMap[e.key] = e.weight);
+  const players = [
+    { id: 1, number:'0',  name:'Roger M' },
+    { id: 2, number:'1',  name:'Devon W' },
+    { id: 3, number:'2',  name:'Inaki P' },
+    { id: 4, number:'3',  name:'John K' },
+    { id: 5, number:'4',  name:'Evan M' },
+    { id: 6, number:'5',  name:'Madden F' },
+    { id: 7, number:'11', name:'Ethan S' },
+    { id: 8, number:'12', name:'Conner G' },
+    { id: 9, number:'14', name:'Nathan A' },
+    { id:10, number:'15', name:'Oliver W' },
+    { id:11, number:'20', name:'Malachi P' },
+    { id:12, number:'22', name:'Jayden B' },
+    { id:13, number:'23', name:'Anjrew G' },
+    { id:14, number:'24', name:'Quinn C' },
+    { id:15, number:'33', name:'Craig H' },
+  ];
 
-// =========================
-// ROSTER (15 PLAYERS)
-// =========================
-const players = [
-  { id: 1, number:'0',  name:'Roger M' },
-  { id: 2, number:'1',  name:'Devon W' },
-  { id: 3, number:'2',  name:'Inaki P' },
-  { id: 4, number:'3',  name:'John K' },
-  { id: 5, number:'4',  name:'Evan M' },
-  { id: 6, number:'5',  name:'Madden F' },
-  { id: 7, number:'11', name:'Ethan S' },
-  { id: 8, number:'12', name:'Conner G' },
-  { id: 9, number:'14', name:'Nathan A' },
-  { id:10, number:'15', name:'Oliver W' },
-  { id:11, number:'20', name:'Malachi P' },
-  { id:12, number:'22', name:'Jayden B' },
-  { id:13, number:'23', name:'Anjrew G' },
-  { id:14, number:'24', name:'Quinn C' },
-  { id:15, number:'33', name:'Craig H' },
-];
-
-// =========================
-// STATE
-// =========================
-const state = {};
-players.forEach(p => {
-  state[p.id] = {
-    defPoss: 0,
-    events: {},
-    onCourt: false
-  };
-});
-
-let selectedPlayerId = 1;
-let history = [];
-
-const STORAGE_KEY = "gp-dli-tracker-v5";
-
-// =========================
-// SAVE / LOAD
-// =========================
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function loadState() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) return;
-  const data = JSON.parse(saved);
-  for (let id in data) {
-    state[id] = data[id];
-  }
-}
-
-loadState();
-
-// =========================
-// UI BUILD — PLAYER LIST
-// =========================
-function buildPlayerList() {
-  const container = document.getElementById("playerList");
-  container.innerHTML = "";
-
-  players.forEach(p => {
-    const row = document.createElement("div");
-    row.className = "player-row";
-
-    // Single tap selects player
-    row.addEventListener("click", () => {
-      selectedPlayerId = p.id;
-      updateSelectedPlayerName();
-    });
-
-    // Double tap toggles sub
-    row.addEventListener("dblclick", () => {
-      state[p.id].onCourt = !state[p.id].onCourt;
-      updatePlayerListStyles();
-      saveState();
-    });
-
-    const name = document.createElement("div");
-    name.className = "player-name";
-    name.textContent = `#${p.number} ${p.name}`;
-    row.appendChild(name);
-
-    const btn = document.createElement("div");
-    btn.className = "on-btn";
-    btn.textContent = state[p.id].onCourt ? "ON" : "OFF";
-    row.appendChild(btn);
-
-    row._button = btn;
-    container.appendChild(row);
-  });
-
-  updatePlayerListStyles();
-}
-
-function updatePlayerListStyles() {
-  const rows = document.querySelectorAll("#playerList .player-row");
-  rows.forEach((r, i) => {
-    const p = players[i];
-    if (state[p.id].onCourt) r._button.classList.add("on");
-    else r._button.classList.remove("on");
-    r._button.textContent = state[p.id].onCourt ? "ON" : "OFF";
-  });
-}
-
-function updateSelectedPlayerName() {
-  const p = players.find(x => x.id === selectedPlayerId);
-  document.getElementById("selectedPlayerName").textContent =
-    `#${p.number} ${p.name}`;
-}
-
-buildPlayerList();
-updateSelectedPlayerName();
-
-// =========================
-// BUILD STAT BUTTONS
-// =========================
-function buildStatButtons() {
-  const box = document.getElementById("statButtons");
-  box.innerHTML = "";
-
-  eventDefs.forEach(ev => {
-    const btn = document.createElement("div");
-    btn.className = "stat-btn " + (ev.weight > 0 ? "good" : "bad");
-    btn.textContent = ev.label;
-
-    btn.addEventListener("click", () => {
-      logEvent(selectedPlayerId, ev.key);
-    });
-
-    box.appendChild(btn);
-  });
-}
-
-buildStatButtons();
-
-// =========================
-// LOG EVENT
-// =========================
-function logEvent(pid, key) {
-  history.push(JSON.stringify(state));
-
-  const st = state[pid];
-  st.events[key] = (st.events[key] || 0) + 1;
-
-  // Count defensive possession
-  st.defPoss++;
-
-  saveState();
-}
-
-// =========================
-// UNDO
-// =========================
-document.getElementById("undoBtn").addEventListener("click", () => {
-  if (history.length === 0) return;
-  const prev = history.pop();
-  const restored = JSON.parse(prev);
-  for (let id in restored) state[id] = restored[id];
-  saveState();
-  buildPlayerList();
-  updateSelectedPlayerName();
-});
-
-// =========================
-// RESET ALL
-// =========================
-document.getElementById("resetBtn").addEventListener("click", () => {
-  if (!confirm("Reset all stats?")) return;
+  const state = {};
   players.forEach(p => {
     state[p.id] = { defPoss:0, events:{}, onCourt:false };
   });
-  saveState();
-  buildPlayerList();
-  updateSelectedPlayerName();
-});
-</script>
-// =========================
-// REPORT HELPERS
-// =========================
-function getEv(ev, key) {
-  return ev[key] || 0;
-}
 
-function gradeFromPer10(per10, defPoss, hasEvents) {
-  if (!defPoss && !hasEvents) return 'N/A';
-  if (per10 >= 3.0) return 'A+';
-  if (per10 >= 2.5) return 'A';
-  if (per10 >= 2.0) return 'A-';
-  if (per10 >= 1.5) return 'B+';
-  if (per10 >= 1.0) return 'B';
-  if (per10 >= 0.5) return 'B-';
-  if (per10 >= 0.0) return 'C+';
-  if (per10 >= -0.5) return 'C';
-  if (per10 >= -1.0) return 'C-';
-  if (per10 >= -1.5) return 'D+';
-  if (per10 >= -2.0) return 'D';
-  return 'F';
-}
+  let selectedPlayerId = 1;
+  let history = [];
+  const STORAGE_KEY = "gp-dli-tracker-v-simple";
 
-function gradeClass(letter) {
-  if (letter === 'N/A') return '';
-  const base = letter[0]; // A,B,C,D,F
-  if (base === 'A') return 'grade-A';
-  if (base === 'B') return 'grade-B';
-  if (base === 'C') return 'grade-C';
-  if (base === 'D') return 'grade-D';
-  return 'grade-F';
-}
+  const opponentInput = document.getElementById("opponentInput");
+  const locationInput = document.getElementById("locationInput");
 
-// Build report view container in DOM
-function initReportView() {
-  const reportDiv = document.createElement("div");
-  reportDiv.id = "reportView";
-  reportDiv.className = "container";
-  reportDiv.style.display = "none";
-
-  reportDiv.innerHTML = `
-    <h3>Post-Game Report</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Player</th>
-          <th>DefPoss</th>
-          <th>Raw</th>
-          <th>Per10</th>
-          <th>Grade</th>
-          <th>Strengths</th>
-          <th>Needs</th>
-        </tr>
-      </thead>
-      <tbody id="reportSummaryBody"></tbody>
-    </table>
-  `;
-
-  document.body.appendChild(reportDiv);
-}
-
-initReportView();
-
-// Compute metrics for a player
-function computeMetrics(p) {
-  const st = state[p.id];
-  const ev = st.events || {};
-
-  let raw = 0;
-  for (const k in ev) {
-    raw += (ev[k] || 0) * (weightMap[k] || 0);
+  function getEv(ev, key) {
+    return ev[key] || 0;
   }
 
-  const defPoss = st.defPoss || 0;
-  const hasEvents = Object.keys(ev).length > 0;
-  const per10 = defPoss > 0 ? (raw / defPoss * 10) : 0;
-  const grade = gradeFromPer10(per10, defPoss, hasEvents);
+  function gradeFromPer10(per10, defPoss, hasEvents) {
+    if (!defPoss && !hasEvents) return 'N/A';
+    if (per10 >= 3.0) return 'A+';
+    if (per10 >= 2.5) return 'A';
+    if (per10 >= 2.0) return 'A-';
+    if (per10 >= 1.5) return 'B+';
+    if (per10 >= 1.0) return 'B';
+    if (per10 >= 0.5) return 'B-';
+    if (per10 >= 0.0) return 'C+';
+    if (per10 >= -0.5) return 'C';
+    if (per10 >= -1.0) return 'C-';
+    if (per10 >= -1.5) return 'D+';
+    if (per10 >= -2.0) return 'D';
+    return 'F';
+  }
 
-  // pulled-out categories for strengths / needs
-  const bb   = getEv(ev,'BB');
-  const foul = getEv(ev,'F');
-  const gam  = getEv(ev,'GAM');
-  const gams = getEv(ev,'GAMS');
+  function gradeClass(letter) {
+    if (letter === "N/A") return "";
+    const c = letter[0];
+    if (c === 'A') return 'grade-A';
+    if (c === 'B') return 'grade-B';
+    if (c === 'C') return 'grade-C';
+    if (c === 'D') return 'grade-D';
+    return 'grade-F';
+  }
 
-  const bxo  = getEv(ev,'BXO');
-  const bxtr = getEv(ev,'BXTR');
-  const drb  = getEv(ev,'DRB');
-  const bxor = getEv(ev,'BXOR');
-  const tr   = bxtr + drb;
-
-  const stl  = getEv(ev,'STL');
-  const stls = getEv(ev,'STLS');
-  const defl = getEv(ev,'DEF');
-  const eh   = getEv(ev,'EH');
-  const sb   = getEv(ev,'SB');
-  const ch   = getEv(ev,'CH');
-  const dlb  = getEv(ev,'DLB');
-  const wu   = getEv(ev,'WU');
-
-  const strengths = [];
-  if (stl >= 2) strengths.push("Steals");
-  if (stls >= 1) strengths.push("Steal→Score");
-  if (defl >= 2) strengths.push("Deflections");
-  if (bxo >= 2) strengths.push("Box Outs");
-  if (tr >= 3)  strengths.push("Team Rebounds");
-  if (bxor >= 1) strengths.push("Own Rebounds");
-  if (wu >= 1)  strengths.push("Wall Ups");
-  if (sb >= 2)  strengths.push("Sprint Back");
-  if (ch >= 1)  strengths.push("Charges");
-  if (dlb >= 1) strengths.push("Loose Balls");
-  if (eh >= 2)  strengths.push("Early Help");
-
-  const needs = [];
-  if (bb >= 1)   needs.push("Blow-Bys");
-  if (foul >= 2) needs.push("Fouls");
-  if (gam >= 1)  needs.push("Gambles");
-  if (gams >= 1) needs.push("Gambles→Score");
-
-  return {
-    defPoss,
-    raw,
-    per10,
-    grade,
-    strengths: strengths.length ? strengths.join(", ") : (hasEvents ? "No major strengths" : "N/A"),
-    needs: needs.length ? needs.join(", ") : (hasEvents ? "No major issues" : "N/A")
-  };
-}
-
-// Render the post-game report table
-function renderReport() {
-  const tbody = document.getElementById("reportSummaryBody");
-  tbody.innerHTML = "";
-
-  players.forEach(p => {
+  function computeMetrics(p) {
     const st = state[p.id];
-    const hasAny = st.defPoss > 0 || (st.events && Object.keys(st.events).length > 0);
+    const ev = st.events || {};
+    let raw = 0;
+    for (const k in ev) raw += ev[k] * (weightMap[k] || 0);
+    const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : 0;
+    const hasEvents = Object.keys(ev).length > 0;
+    const grade = gradeFromPer10(per10, st.defPoss, hasEvents);
 
-    // If truly no data, still list them but N/A everything
-    const m = computeMetrics(p);
+    const bb   = getEv(ev,'BB');
+    const foul = getEv(ev,'F');
+    const gam  = getEv(ev,'GAM');
+    const gams = getEv(ev,'GAMS');
 
-    const tr = document.createElement("tr");
+    const bxo  = getEv(ev,'BXO');
+    const bxtr = getEv(ev,'BXTR');
+    const bxor = getEv(ev,'BXOR');
+    const drb  = getEv(ev,'DRB');
+    const tr   = bxtr + drb;
 
-    function td(txt, cls) {
-      const c = document.createElement("td");
-      c.textContent = txt;
-      if (cls) c.className = cls;
-      return c;
+    const stl  = getEv(ev,'STL');
+    const stls = getEv(ev,'STLS');
+    const defl = getEv(ev,'DEF');
+    const eh   = getEv(ev,'EH');
+    const sb   = getEv(ev,'SB');
+    const ch   = getEv(ev,'CH');
+    const dlb  = getEv(ev,'DLB');
+    const wu   = getEv(ev,'WU');
+
+    const strengths = [];
+    if (stl >= 2) strengths.push("Steals");
+    if (stls >= 1) strengths.push("Steal→Score");
+    if (defl >= 2) strengths.push("Deflections");
+    if (bxo >= 2) strengths.push("Box Outs");
+    if (tr  >= 3) strengths.push("Team Rebounds");
+    if (bxor>= 1) strengths.push("Own Rebounds");
+    if (wu  >= 1) strengths.push("Wall Ups");
+    if (sb  >= 2) strengths.push("Sprint Back");
+    if (ch  >= 1) strengths.push("Charges");
+    if (dlb >= 1) strengths.push("Loose Balls");
+    if (eh  >= 2) strengths.push("Early Help");
+
+    const needs = [];
+    if (bb   >= 1) needs.push("Blow-Bys");
+    if (foul >= 2) needs.push("Fouls");
+    if (gam  >= 1) needs.push("Gambles");
+    if (gams >= 1) needs.push("Gambles→Score");
+
+    return {
+      st, ev, raw, per10, grade,
+      bb, foul, gam, gams,
+      bxo, tr, bxor, wu, defl, stl, stls, eh, sb, ch, dlb,
+      strengths: strengths.length ? strengths.join(", ") : (hasEvents ? "No major strengths" : "N/A"),
+      needs: needs.length ? needs.join(", ") : (hasEvents ? "No major issues" : "N/A")
+    };
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      state,
+      selectedPlayerId,
+      opponent: opponentInput.value,
+      location: locationInput.value
+    }));
+  }
+
+  function loadState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.state) {
+      Object.keys(d.state).forEach(id => {
+        if (state[id]) state[id] = d.state[id];
+      });
     }
+    if (d.selectedPlayerId) selectedPlayerId = d.selectedPlayerId;
+    if (d.opponent) opponentInput.value = d.opponent;
+    if (d.location) locationInput.value = d.location;
+  }
 
-    tr.appendChild(td(`#${p.number} ${p.name}`));
-    tr.appendChild(td(m.defPoss || (hasAny ? 0 : "")));
-    tr.appendChild(td(hasAny ? m.raw : ""));
-    tr.appendChild(td(hasAny && m.defPoss > 0 ? m.per10.toFixed(2) : ""));
+  function renderPlayersRow() {
+    const row = document.getElementById("playersRow");
+    row.innerHTML = "";
+    players.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "player-chip";
+      if (p.id === selectedPlayerId) div.classList.add("selected");
+      if (state[p.id].onCourt) div.classList.add("on-court");
+      div.textContent = `#${p.number} ${p.name}`;
 
-    const gClass = gradeClass(m.grade);
-    tr.appendChild(td(hasAny ? m.grade : "N/A", gClass));
+      div.addEventListener("click", () => {
+        selectedPlayerId = p.id;
+        renderPlayersRow();
+      });
 
-    tr.appendChild(td(hasAny ? m.strengths : "N/A"));
-    tr.appendChild(td(hasAny ? m.needs : "N/A"));
+      div.addEventListener("dblclick", () => {
+        const onCount = players.filter(pl => state[pl.id].onCourt).length;
+        if (state[p.id].onCourt) {
+          state[p.id].onCourt = false;
+        } else if (onCount < 5) {
+          state[p.id].onCourt = true;
+        }
+        renderPlayersRow();
+        renderSummary();
+        saveState();
+      });
 
-    tbody.appendChild(tr);
-  });
-}
+      row.appendChild(div);
+    });
+  }
 
-// =========================
-// TAB SWITCHING
-// =========================
-const tabLive   = document.getElementById("tabLive");
-const tabReport = document.getElementById("tabReport");
-const liveView  = document.getElementById("liveView");
-const reportView = document.getElementById("reportView");
+  function renderEventsGrid() {
+    const grid = document.getElementById("eventsGrid");
+    grid.innerHTML = "";
+    eventDefs.forEach(ev => {
+      const btn = document.createElement("button");
+      btn.className = "event-btn " + (ev.weight < 0 ? "neg" : "pos");
+      btn.textContent = ev.label;
+      btn.onclick = () => {
+        history.push(JSON.stringify(state));
+        const st = state[selectedPlayerId];
+        st.events[ev.key] = (st.events[ev.key] || 0) + 1;
+        st.defPoss++; // count a possession when you log a stat
+        renderSummary();
+        saveState();
+      };
+      grid.appendChild(btn);
+    });
+  }
 
-tabLive.addEventListener("click", () => {
-  tabLive.classList.add("active");
-  tabReport.classList.remove("active");
-  liveView.style.display = "block";
-  reportView.style.display = "none";
-});
+  function renderSummary() {
+    const body = document.getElementById("summaryBody");
+    body.innerHTML = "";
 
-tabReport.addEventListener("click", () => {
-  tabReport.classList.add("active");
-  tabLive.classList.remove("active");
-  liveView.style.display = "none";
-  renderReport();
-  reportView.style.display = "block";
-});
+    players.forEach(p => {
+      const st = state[p.id];
+      const ev = st.events || {};
+      let raw = 0;
+      for (const k in ev) raw += ev[k] * (weightMap[k] || 0);
+      const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : 0;
+      const tr = getEv(ev,'BXTR') + getEv(ev,'DRB');
+
+      const row = document.createElement("tr");
+      function td(v){ const c=document.createElement("td"); c.textContent=v; return c; }
+
+      row.appendChild(td(`#${p.number} ${p.name}`));
+      row.appendChild(td(st.defPoss));
+      const r = td(raw);
+      if (raw>0) r.classList.add("pos-score");
+      if (raw<0) r.classList.add("neg-score");
+      row.appendChild(r);
+      row.appendChild(td(st.defPoss>0?per10.toFixed(2):""));
+
+      row.appendChild(td(getEv(ev,'BB')));
+      row.appendChild(td(getEv(ev,'LR')));
+      row.appendChild(td(getEv(ev,'LWC')));
+      row.appendChild(td(getEv(ev,'NB')));
+      row.appendChild(td(getEv(ev,'SCA')));
+      row.appendChild(td(getEv(ev,'JB')));
+      row.appendChild(td(getEv(ev,'NT')));
+      row.appendChild(td(getEv(ev,'F')));
+      row.appendChild(td(getEv(ev,'GAM')));
+      row.appendChild(td(getEv(ev,'GAMS')));
+
+      row.appendChild(td(getEv(ev,'BXO')));
+      row.appendChild(td(tr));
+      row.appendChild(td(getEv(ev,'BXOR')));
+      row.appendChild(td(getEv(ev,'WU')));
+      row.appendChild(td(getEv(ev,'DEF')));
+      row.appendChild(td(getEv(ev,'STL')));
+      row.appendChild(td(getEv(ev,'STLS')));
+      row.appendChild(td(getEv(ev,'EH')));
+      row.appendChild(td(getEv(ev,'SB')));
+      row.appendChild(td(getEv(ev,'CH')));
+      row.appendChild(td(getEv(ev,'DLB')));
+
+      body.appendChild(row);
+    });
+  }
+
+  // Undo: restore last snapshot
+  document.getElementById("undoBtn").onclick = () => {
+    if (!history.length) return;
+    const prev = JSON.parse(history.pop());
+    Object.keys(prev).forEach(id => state[id] = prev[id]);
+    renderPlayersRow();
+    renderSummary();
+    saveState();
+  };
+
+  // New Game: clear stats but keep opponent/location
+  document.getElementById("newGameBtn").onclick = () => {
+    if (!confirm("Start a NEW game (keep opponent/location)?")) return;
+    players.forEach(p => {
+      state[p.id] = { defPoss:0, events:{}, onCourt:false };
+    });
+    selectedPlayerId = players[0].id;
+    history = [];
+    renderPlayersRow();
+    renderSummary();
+    saveState();
+  };
+
+  // Reset All: wipe everything
+  document.getElementById("resetBtn").onclick = () => {
+    if (!confirm("RESET ALL data (including opponent/location)?")) return;
+    players.forEach(p => {
+      state[p.id] = { defPoss:0, events:{}, onCourt:false };
+    });
+    opponentInput.value = "";
+    locationInput.value = "";
+    selectedPlayerId = players[0].id;
+    history = [];
+    renderPlayersRow();
+    renderSummary();
+    saveState();
+  };
+
+  // CSV export
+  document.getElementById("csvBtn").onclick = () => {
+    let rows = [];
+    rows.push("Player,#,DefPoss,Raw,Per10,BB,F,GAM,GAMS,STL,STLS,BXO,TR,BXOR,WU,DEF,EH,SB,CH,DLB");
+
+    players.forEach(p => {
+      const st = state[p.id];
+      const ev = st.events || {};
+      let raw = 0;
+      for (const k in ev) raw += ev[k] * (weightMap[k] || 0);
+      const per10 = st.defPoss>0 ? (raw/st.defPoss*10) : "";
+      const tr = getEv(ev,'BXTR') + getEv(ev,'DRB');
+
+      rows.push([
+        `"${p.name}"`,
+        p.number,
+        st.defPoss,
+        raw,
+        per10,
+        getEv(ev,'BB'),
+        getEv(ev,'F'),
+        getEv(ev,'GAM'),
+        getEv(ev,'GAMS'),
+        getEv(ev,'STL'),
+        getEv(ev,'STLS'),
+        getEv(ev,'BXO'),
+        tr,
+        getEv(ev,'BXOR'),
+        getEv(ev,'WU'),
+        getEv(ev,'DEF'),
+        getEv(ev,'EH'),
+        getEv(ev,'SB'),
+        getEv(ev,'CH'),
+        getEv(ev,'DLB')
+      ].join(","));
+    });
+
+    const blob = new Blob([rows.join("\n")], { type:"text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "dli_report.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Print/PDF
+  document.getElementById("pdfBtn").onclick = () => window.print();
+
+  function renderReport() {
+    const sumBody = document.getElementById("reportSummaryBody");
+    const catBody = document.getElementById("reportCategoryBody");
+    sumBody.innerHTML = "";
+    catBody.innerHTML = "";
+
+    players.forEach(p => {
+      const m = computeMetrics(p);
+      const st = m.st;
+
+      const sr = document.createElement("tr");
+      function td(v, cls){ const c=document.createElement("td"); c.textContent=v; if(cls)c.className=cls; return c; }
+
+      sr.appendChild(td(`#${p.number} ${p.name}`));
+      sr.appendChild(td(st.defPoss));
+      sr.appendChild(td(m.raw));
+      sr.appendChild(td(st.defPoss>0?m.per10.toFixed(2):""));
+      sr.appendChild(td(m.grade, gradeClass(m.grade)));
+      sr.appendChild(td(m.strengths));
+      sr.appendChild(td(m.needs));
+      sumBody.appendChild(sr);
+
+      const cr = document.createElement("tr");
+      cr.appendChild(td(`#${p.number} ${p.name}`));
+      cr.appendChild(td(m.bb));
+      cr.appendChild(td(m.foul));
+      cr.appendChild(td(m.gam));
+      cr.appendChild(td(m.gams));
+      cr.appendChild(td(m.stl));
+      cr.appendChild(td(m.stls));
+      cr.appendChild(td(m.bxo));
+      cr.appendChild(td(m.tr));
+      cr.appendChild(td(m.bxor));
+      cr.appendChild(td(m.wu));
+      cr.appendChild(td(m.defl));
+      cr.appendChild(td(m.eh));
+      cr.appendChild(td(m.sb));
+      cr.appendChild(td(m.ch));
+      cr.appendChild(td(m.dlb));
+      catBody.appendChild(cr);
+    });
+  }
+
+  document.getElementById("emailReportBtn").onclick = () => {
+    let body = "DLI Defensive Report\n\n";
+    players.forEach(p => {
+      const m = computeMetrics(p);
+      const st = m.st;
+      body += `#${p.number} ${p.name}\n`;
+      body += `DefPoss: ${st.defPoss}, Raw: ${m.raw}, Per10: ${st.defPoss>0?m.per10.toFixed(2):"N/A"}, Grade: ${m.grade}\n`;
+      body += `Strengths: ${m.strengths}\n`;
+      body += `Needs: ${m.needs}\n\n`;
+    });
+    const mailto = `mailto:?subject=DLI Defensive Report&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+  };
+
+  // Mode switching
+  document.getElementById("modeLive").onclick = () => {
+    document.getElementById("modeLive").classList.add("active");
+    document.getElementById("modeReport").classList.remove("active");
+    document.getElementById("liveView").style.display = "";
+    document.getElementById("reportView").style.display = "none";
+  };
+
+  document.getElementById("modeReport").onclick = () => {
+    document.getElementById("modeReport").classList.add("active");
+    document.getElementById("modeLive").classList.remove("active");
+    document.getElementById("liveView").style.display = "none";
+    document.getElementById("reportView").style.display = "";
+    renderReport();
+  };
+
+  // Opp/location auto save
+  opponentInput.addEventListener("change", saveState);
+  locationInput.addEventListener("change", saveState);
+
+  // Init
+  loadState();
+  renderPlayersRow();
+  renderEventsGrid();
+  renderSummary();
 </script>
 
 </body>
