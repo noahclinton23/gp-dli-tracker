@@ -352,6 +352,11 @@
     </thead>
     <tbody id="reportCategoryBody"></tbody>
   </table>
+
+  <div class="save-box">
+    <h3>Share Report</h3>
+    <button class="save-btn" id="emailReportBtn">✉️ Email Post-Game Report</button>
+  </div>
 </div>
 
 <script>
@@ -431,6 +436,7 @@ const modeLiveBtn    = document.getElementById('modeLive');
 const modeReportBtn  = document.getElementById('modeReport');
 const reportSummaryBody  = document.getElementById('reportSummaryBody');
 const reportCategoryBody = document.getElementById('reportCategoryBody');
+const emailReportBtn = document.getElementById('emailReportBtn');
 
 function saveState() {
   const data = {
@@ -496,6 +502,92 @@ function gradeClass(letter) {
   if (letter === 'N/A') return '';
   const base = letter[0]; // A,B,C,D,F
   return 'grade-' + base;
+}
+
+// Compute all metrics for a player (used by report + email)
+function computePlayerMetrics(p) {
+  const st = state[p.id];
+  const ev = st.events || {};
+  let raw = 0;
+  for (const key in ev) {
+    raw += (ev[key] || 0) * (weightMap[key] || 0);
+  }
+  const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : 0;
+  const hasEvents = Object.keys(ev).length > 0;
+  const grade = gradeFromPer10Plus(per10, st.defPoss, hasEvents);
+
+  const bb    = getEv(ev,'BB');
+  const foul  = getEv(ev,'F');
+  const gam   = getEv(ev,'GAM');
+  const gams  = getEv(ev,'GAMS');
+  const nb    = getEv(ev,'NB');
+  const sca   = getEv(ev,'SCA');
+  const jb    = getEv(ev,'JB');
+  const nt    = getEv(ev,'NT');
+
+  const bxo   = getEv(ev,'BXO');
+  const bxtr  = getEv(ev,'BXTR');
+  const bxor  = getEv(ev,'BXOR');
+  const drb   = getEv(ev,'DRB');
+  const tr    = bxtr + drb;
+
+  const wu    = getEv(ev,'WU');
+  const defl  = getEv(ev,'DEF');
+  const stl   = getEv(ev,'STL');
+  const stls  = getEv(ev,'STLS');
+  const eh    = getEv(ev,'EH');
+  const sb    = getEv(ev,'SB');
+  const ch    = getEv(ev,'CH');
+  const dlb   = getEv(ev,'DLB');
+
+  const posMetrics = [
+    { label: 'Steals',                 value: stl },
+    { label: 'Steals → Scores',       value: stls },
+    { label: 'Deflections',           value: defl },
+    { label: 'Box Outs',              value: bxo },
+    { label: 'Team Rebounds',         value: tr },
+    { label: 'Own Rebounds',          value: bxor },
+    { label: 'Wall Ups (No Foul)',    value: wu },
+    { label: 'Early Help',            value: eh },
+    { label: 'Sprint Back',           value: sb },
+    { label: 'Charges Taken',         value: ch },
+    { label: 'Dives on Loose Balls',  value: dlb },
+  ];
+
+  const negMetrics = [
+    { label: 'Blow-Bys',              value: bb },
+    { label: 'Fouls',                 value: foul },
+    { label: 'Gambles',               value: gam },
+    { label: 'Gambles → Scores',      value: gams },
+    { label: 'No Box Outs',           value: nb },
+    { label: 'Second-Chance Allowed', value: sca },
+    { label: 'Jog Back',              value: jb },
+    { label: 'No Talk',               value: nt },
+  ];
+
+  const strengths = posMetrics
+    .filter(m => m.value >= 2)
+    .sort((a,b) => b.value - a.value)
+    .slice(0,3)
+    .map(m => m.label);
+
+  const needs = negMetrics
+    .filter(m => m.value >= 1)
+    .sort((a,b) => b.value - a.value)
+    .slice(0,3)
+    .map(m => m.label);
+
+  const strengthsText = strengths.length ? strengths.join(', ') : (hasEvents ? 'No clear strengths yet' : 'N/A');
+  const needsText     = needs.length ? needs.join(', ')     : (hasEvents ? 'No major issues' : 'N/A');
+
+  return {
+    st, ev,
+    raw, per10, grade, hasEvents,
+    bb, foul, gam, gams, nb, sca, jb, nt,
+    bxo, bxtr, bxor, drb, tr,
+    wu, defl, stl, stls, eh, sb, ch, dlb,
+    strengthsText, needsText
+  };
 }
 
 function renderPlayersRow() {
@@ -694,81 +786,8 @@ function renderReport() {
   reportCategoryBody.innerHTML = '';
 
   players.forEach(p => {
-    const st = state[p.id];
-    const ev = st.events || {};
-    const hasEvents = Object.keys(ev).length > 0;
-
-    let raw = 0;
-    for (const key in ev) {
-      raw += (ev[key] || 0) * (weightMap[key] || 0);
-    }
-    const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : 0;
-    const grade = gradeFromPer10Plus(per10, st.defPoss, hasEvents);
-
-    // Build strengths & needs
-    const bb    = getEv(ev,'BB');
-    const foul  = getEv(ev,'F');
-    const gam   = getEv(ev,'GAM');
-    const gams  = getEv(ev,'GAMS');
-    const nb    = getEv(ev,'NB');
-    const sca   = getEv(ev,'SCA');
-    const jb    = getEv(ev,'JB');
-    const nt    = getEv(ev,'NT');
-
-    const bxo   = getEv(ev,'BXO');
-    const bxtr  = getEv(ev,'BXTR');
-    const bxor  = getEv(ev,'BXOR');
-    const drb   = getEv(ev,'DRB');
-    const tr    = bxtr + drb;
-
-    const wu    = getEv(ev,'WU');
-    const defl  = getEv(ev,'DEF');
-    const stl   = getEv(ev,'STL');
-    const stls  = getEv(ev,'STLS');
-    const eh    = getEv(ev,'EH');
-    const sb    = getEv(ev,'SB');
-    const ch    = getEv(ev,'CH');
-    const dlb   = getEv(ev,'DLB');
-
-    const posMetrics = [
-      { label: 'Steals',                 value: stl },
-      { label: 'Steals → Scores',       value: stls },
-      { label: 'Deflections',           value: defl },
-      { label: 'Box Outs',              value: bxo },
-      { label: 'Team Rebounds',         value: tr },
-      { label: 'Own Rebounds',          value: bxor },
-      { label: 'Wall Ups (No Foul)',    value: wu },
-      { label: 'Early Help',            value: eh },
-      { label: 'Sprint Back',           value: sb },
-      { label: 'Charges Taken',         value: ch },
-      { label: 'Dives on Loose Balls',  value: dlb },
-    ];
-
-    const negMetrics = [
-      { label: 'Blow-Bys',              value: bb },
-      { label: 'Fouls',                 value: foul },
-      { label: 'Gambles',               value: gam },
-      { label: 'Gambles → Scores',      value: gams },
-      { label: 'No Box Outs',           value: nb },
-      { label: 'Second-Chance Allowed', value: sca },
-      { label: 'Jog Back',              value: jb },
-      { label: 'No Talk',               value: nt },
-    ];
-
-    const strengths = posMetrics
-      .filter(m => m.value >= 2)
-      .sort((a,b) => b.value - a.value)
-      .slice(0,3)
-      .map(m => m.label);
-
-    const needs = negMetrics
-      .filter(m => m.value >= 1)
-      .sort((a,b) => b.value - a.value)
-      .slice(0,3)
-      .map(m => m.label);
-
-    const strengthsText = strengths.length ? strengths.join(', ') : (hasEvents ? 'No clear strengths yet' : 'N/A');
-    const needsText     = needs.length ? needs.join(', ')     : (hasEvents ? 'No major issues' : 'N/A');
+    const data = computePlayerMetrics(p);
+    const st   = data.st;
 
     // Summary row
     const sr = document.createElement('tr');
@@ -779,16 +798,16 @@ function renderReport() {
     }
     sr.appendChild(sTd(`#${p.number} ${p.name}`));
     sr.appendChild(sTd(st.defPoss));
-    const sRawTd = sTd(raw);
-    if (raw > 0) sRawTd.classList.add('pos-score');
-    if (raw < 0) sRawTd.classList.add('neg-score');
+    const sRawTd = sTd(data.raw);
+    if (data.raw > 0) sRawTd.classList.add('pos-score');
+    if (data.raw < 0) sRawTd.classList.add('neg-score');
     sr.appendChild(sRawTd);
-    sr.appendChild(sTd(st.defPoss > 0 ? per10.toFixed(2) : ''));
-    const gradeTd = sTd(grade);
-    gradeTd.classList.add(gradeClass(grade));
+    sr.appendChild(sTd(st.defPoss > 0 ? data.per10.toFixed(2) : ''));
+    const gradeTd = sTd(data.grade);
+    gradeTd.classList.add(gradeClass(data.grade));
     sr.appendChild(gradeTd);
-    sr.appendChild(sTd(strengthsText));
-    sr.appendChild(sTd(needsText));
+    sr.appendChild(sTd(data.strengthsText));
+    sr.appendChild(sTd(data.needsText));
     reportSummaryBody.appendChild(sr);
 
     // Category row
@@ -799,24 +818,44 @@ function renderReport() {
       return cell;
     }
     cr.appendChild(cTd(`#${p.number} ${p.name}`));
-    cr.appendChild(cTd(bb));
-    cr.appendChild(cTd(foul));
-    cr.appendChild(cTd(gam));
-    cr.appendChild(cTd(gams));
-    cr.appendChild(cTd(stl));
-    cr.appendChild(cTd(stls));
-    cr.appendChild(cTd(bxo));
-    cr.appendChild(cTd(tr));
-    cr.appendChild(cTd(bxor));
-    cr.appendChild(cTd(wu));
-    cr.appendChild(cTd(defl));
-    cr.appendChild(cTd(eh));
-    cr.appendChild(cTd(sb));
-    cr.appendChild(cTd(ch));
-    cr.appendChild(cTd(dlb));
+    cr.appendChild(cTd(data.bb));
+    cr.appendChild(cTd(data.foul));
+    cr.appendChild(cTd(data.gam));
+    cr.appendChild(cTd(data.gams));
+    cr.appendChild(cTd(data.stl));
+    cr.appendChild(cTd(data.stls));
+    cr.appendChild(cTd(data.bxo));
+    cr.appendChild(cTd(data.tr));
+    cr.appendChild(cTd(data.bxor));
+    cr.appendChild(cTd(data.wu));
+    cr.appendChild(cTd(data.defl));
+    cr.appendChild(cTd(data.eh));
+    cr.appendChild(cTd(data.sb));
+    cr.appendChild(cTd(data.ch));
+    cr.appendChild(cTd(data.dlb));
     reportCategoryBody.appendChild(cr);
   });
 }
+
+// Email report
+emailReportBtn.onclick = () => {
+  const opp = opponentInput.value || 'Opponent';
+  const loc = locationInput.value || '';
+  let body = `DLI Defensive Report\nOpponent: ${opp}\nLocation: ${loc}\n\nOverall Player Grades:\n`;
+
+  players.forEach(p => {
+    const data = computePlayerMetrics(p);
+    const st   = data.st;
+    body += `\n#${p.number} ${p.name}\n`;
+    body += `Def Poss: ${st.defPoss}, Raw: ${data.raw}, Per10: ${st.defPoss > 0 ? data.per10.toFixed(2) : 'N/A'}, Grade: ${data.grade}\n`;
+    body += `Strengths: ${data.strengthsText}\n`;
+    body += `Needs: ${data.needsText}\n`;
+  });
+
+  const subject = `DLI Defensive Report vs ${opp}`;
+  const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+};
 
 // CSV export
 csvBtn.onclick = () => {
