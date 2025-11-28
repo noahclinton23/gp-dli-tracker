@@ -18,6 +18,28 @@
   h1 { font-size: 20px; margin-bottom: 4px; }
   h3 { margin-top: 14px; }
 
+  .mode-toggle {
+    display: flex;
+    gap: 6px;
+    margin: 8px 0 10px 0;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #4b5563;
+    background-color: #0b1120;
+    color: #e5e7eb;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .mode-btn.active {
+    background-color: #f97316;
+    color: #111827;
+    border-color: #fed7aa;
+    font-weight: bold;
+  }
+
   .game-meta {
     font-size: 12px;
     margin-bottom: 8px;
@@ -162,6 +184,12 @@
     width: 100%;
   }
   .save-btn.pdf { background-color: #d97706; }
+
+  .grade-A { color: #4ade80; font-weight: bold; }
+  .grade-B { color: #bef264; font-weight: bold; }
+  .grade-C { color: #fde047; font-weight: bold; }
+  .grade-D { color: #fdba74; font-weight: bold; }
+  .grade-F { color: #f97373; font-weight: bold; }
 </style>
 
 <script>
@@ -177,6 +205,11 @@
 
 <h1>DLI Live Tracker</h1>
 
+<div class="mode-toggle">
+  <button id="modeLive" class="mode-btn active">Live Tracker</button>
+  <button id="modeReport" class="mode-btn">Post-Game Report</button>
+</div>
+
 <div class="game-meta">
   <label>Opponent:
     <input id="opponentInput" class="game-input" type="text" placeholder="Team name">
@@ -186,89 +219,139 @@
   </label>
 </div>
 
-<div style="font-size: 12px; margin-bottom: 6px;">
-  Single tap = <b>select for stats</b>. Double tap = <b>sub in/out (ON COURT)</b>. Max 5 on the floor.
-</div>
-
-<div class="players-row" id="playersRow"></div>
-
-<div class="buttons-row">
-  <button id="possBtn" class="primary-btn">+1 Defensive Possession</button>
-  <button id="undoBtn" class="small-btn">Undo Last Stat</button>
-  <button id="newGameBtn" class="small-btn">New Game</button>
-  <button id="resetBtn" class="small-btn" style="border-color:#f87171;color:#fecaca;">Reset All</button>
-</div>
-
-<div class="buttons-grid" id="eventsGrid"></div>
-
-<h3>Player Summary</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Player</th>
-      <th>Defensive Possessions</th>
-      <th>Raw Score</th>
-      <th>Score per 10</th>
-      <th>Blow-By</th>
-      <th>Late Rotation</th>
-      <th>Late/Weak Closeout</th>
-      <th>No Box Out</th>
-      <th>Second-Chance Allowed</th>
-      <th>Jog Back</th>
-      <th>No Talk</th>
-      <th>Foul</th>
-      <th>Gamble</th>
-      <th>Gamble → Score</th>
-      <th>Box Out</th>
-      <th>Box Out + Team Reb</th>
-      <th>Box Out + Own Reb</th>
-      <th>Wall Up (No Foul)</th>
-      <th>Deflection</th>
-      <th>Steal</th>
-      <th>Steal → Score</th>
-      <th>Early Help</th>
-      <th>Sprint Back</th>
-      <th>Charge Taken</th>
-      <th>Dive on Loose Ball</th>
-    </tr>
-  </thead>
-  <tbody id="summaryBody"></tbody>
-</table>
-
-<div class="save-box">
-  <h3>Save Stats</h3>
-  <button class="save-btn" id="csvBtn">⬇️ Export Stats (CSV)</button>
-  <button class="save-btn pdf" id="pdfBtn">🖨️ Print / PDF (browser print)</button>
-</div>
-
-<div class="key-box">
-  <div><b>Stat Key</b></div>
-  <div class="key-row">
-    <div class="key-item">Blow-By = –2</div>
-    <div class="key-item">Late Rotation = –2</div>
-    <div class="key-item">Late/Weak Closeout = –1</div>
-    <div class="key-item">No Box Out = –1</div>
-    <div class="key-item">Second-Chance Allowed = –2</div>
-    <div class="key-item">Jog Back = –1</div>
-    <div class="key-item">No Talk = –1</div>
-    <div class="key-item">Foul = –1</div>
-    <div class="key-item">Gamble = –1</div>
-    <div class="key-item">Gamble → Score = –2</div>
+<div id="liveView">
+  <div style="font-size: 12px; margin-bottom: 6px;">
+    Single tap = <b>select for stats</b>. Double tap = <b>sub in/out (ON COURT)</b>. Max 5 on the floor.
   </div>
-  <div class="key-row">
-    <div class="key-item">Box Out = +1</div>
-    <div class="key-item">Box Out + Team Rebound = +2 (plus plain defensive rebounds)</div>
-    <div class="key-item">Box Out + Own Rebound = +3</div>
-    <div class="key-item">Rebound +1 (no box-out) → added into Team Rebound</div>
-    <div class="key-item">Wall Up (No Foul) = +1</div>
-    <div class="key-item">Deflection = +1</div>
-    <div class="key-item">Steal = +2</div>
-    <div class="key-item">Steal → Score = +3</div>
-    <div class="key-item">Early Help = +1</div>
-    <div class="key-item">Sprint Back = +1</div>
-    <div class="key-item">Charge Taken = +2</div>
-    <div class="key-item">Dive on Loose Ball = +2</div>
+
+  <div class="players-row" id="playersRow"></div>
+
+  <div class="buttons-row">
+    <button id="possBtn" class="primary-btn">+1 Defensive Possession</button>
+    <button id="undoBtn" class="small-btn">Undo Last Stat</button>
+    <button id="newGameBtn" class="small-btn">New Game</button>
+    <button id="resetBtn" class="small-btn" style="border-color:#f87171;color:#fecaca;">Reset All</button>
   </div>
+
+  <div class="buttons-grid" id="eventsGrid"></div>
+
+  <h3>Player Summary (Live)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Defensive Possessions</th>
+        <th>Raw Score</th>
+        <th>Score per 10</th>
+        <th>Blow-By</th>
+        <th>Late Rotation</th>
+        <th>Late/Weak Closeout</th>
+        <th>No Box Out</th>
+        <th>Second-Chance Allowed</th>
+        <th>Jog Back</th>
+        <th>No Talk</th>
+        <th>Foul</th>
+        <th>Gamble</th>
+        <th>Gamble → Score</th>
+        <th>Box Out</th>
+        <th>Box Out + Team Reb</th>
+        <th>Box Out + Own Reb</th>
+        <th>Wall Up (No Foul)</th>
+        <th>Deflection</th>
+        <th>Steal</th>
+        <th>Steal → Score</th>
+        <th>Early Help</th>
+        <th>Sprint Back</th>
+        <th>Charge Taken</th>
+        <th>Dive on Loose Ball</th>
+      </tr>
+    </thead>
+    <tbody id="summaryBody"></tbody>
+  </table>
+
+  <div class="save-box">
+    <h3>Save Stats</h3>
+    <button class="save-btn" id="csvBtn">⬇️ Export Stats (CSV)</button>
+    <button class="save-btn pdf" id="pdfBtn">🖨️ Print / PDF (browser print)</button>
+  </div>
+
+  <div class="key-box">
+    <div><b>Stat Key</b></div>
+    <div class="key-row">
+      <div class="key-item">Blow-By = –2</div>
+      <div class="key-item">Late Rotation = –2</div>
+      <div class="key-item">Late/Weak Closeout = –1</div>
+      <div class="key-item">No Box Out = –1</div>
+      <div class="key-item">Second-Chance Allowed = –2</div>
+      <div class="key-item">Jog Back = –1</div>
+      <div class="key-item">No Talk = –1</div>
+      <div class="key-item">Foul = –1</div>
+      <div class="key-item">Gamble = –1</div>
+      <div class="key-item">Gamble → Score = –2</div>
+    </div>
+    <div class="key-row">
+      <div class="key-item">Box Out = +1</div>
+      <div class="key-item">Box Out + Team Rebound = +2 (plus plain defensive rebounds)</div>
+      <div class="key-item">Box Out + Own Rebound = +3</div>
+      <div class="key-item">Rebound +1 (no box-out) → added into Team Rebound</div>
+      <div class="key-item">Wall Up (No Foul) = +1</div>
+      <div class="key-item">Deflection = +1</div>
+      <div class="key-item">Steal = +2</div>
+      <div class="key-item">Steal → Score = +3</div>
+      <div class="key-item">Early Help = +1</div>
+      <div class="key-item">Sprint Back = +1</div>
+      <div class="key-item">Charge Taken = +2</div>
+      <div class="key-item">Dive on Loose Ball = +2</div>
+    </div>
+  </div>
+</div>
+
+<div id="reportView" style="display:none; margin-top: 10px;">
+  <h3>Post-Game Report</h3>
+  <p style="font-size:12px;margin-bottom:6px;">
+    Based on current game stats. Use this after the game to review with staff or players.
+  </p>
+
+  <h4 style="margin-top:8px;">Overall Impact</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Defensive Possessions</th>
+        <th>Raw Score</th>
+        <th>Score per 10</th>
+        <th>Grade</th>
+        <th>Strengths (Tonight)</th>
+        <th>Needs (Tonight)</th>
+      </tr>
+    </thead>
+    <tbody id="reportSummaryBody"></tbody>
+  </table>
+
+  <h4 style="margin-top:12px;">Category Breakdown</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Blow-By</th>
+        <th>Foul</th>
+        <th>Gamble</th>
+        <th>Gamble → Score</th>
+        <th>Steal</th>
+        <th>Steal → Score</th>
+        <th>Box Out</th>
+        <th>Team Rebound</th>
+        <th>Own Rebound</th>
+        <th>Wall Up</th>
+        <th>Deflection</th>
+        <th>Early Help</th>
+        <th>Sprint Back</th>
+        <th>Charge Taken</th>
+        <th>Dive on Loose Ball</th>
+      </tr>
+    </thead>
+    <tbody id="reportCategoryBody"></tbody>
+  </table>
 </div>
 
 <script>
@@ -342,6 +425,13 @@ const pdfBtn         = document.getElementById('pdfBtn');
 const opponentInput  = document.getElementById('opponentInput');
 const locationInput  = document.getElementById('locationInput');
 
+const liveView       = document.getElementById('liveView');
+const reportView     = document.getElementById('reportView');
+const modeLiveBtn    = document.getElementById('modeLive');
+const modeReportBtn  = document.getElementById('modeReport');
+const reportSummaryBody  = document.getElementById('reportSummaryBody');
+const reportCategoryBody = document.getElementById('reportCategoryBody');
+
 function saveState() {
   const data = {
     state,
@@ -384,6 +474,30 @@ function getEv(ev, key) {
   return ev && ev[key] ? ev[key] : 0;
 }
 
+// A+ through F scale, 0 = C+, N/A if no stats
+function gradeFromPer10Plus(per10, defPoss, hasEvents) {
+  if (!defPoss && !hasEvents) return 'N/A';
+
+  if (per10 >= 3.0)  return 'A+';
+  if (per10 >= 2.5)  return 'A';
+  if (per10 >= 2.0)  return 'A-';
+  if (per10 >= 1.5)  return 'B+';
+  if (per10 >= 1.0)  return 'B';
+  if (per10 >= 0.5)  return 'B-';
+  if (per10 >= 0.0)  return 'C+';   // 0 = C+
+  if (per10 >= -0.5) return 'C';
+  if (per10 >= -1.0) return 'C-';
+  if (per10 >= -1.5) return 'D+';
+  if (per10 >= -2.0) return 'D';
+  return 'F';
+}
+
+function gradeClass(letter) {
+  if (letter === 'N/A') return '';
+  const base = letter[0]; // A,B,C,D,F
+  return 'grade-' + base;
+}
+
 function renderPlayersRow() {
   playersRow.innerHTML = '';
   players.forEach(p => {
@@ -393,14 +507,12 @@ function renderPlayersRow() {
     if (selectedPlayerId === p.id) div.classList.add('selected');
     div.textContent = `#${p.number} ${p.name}`;
 
-    // Single tap: select
     div.addEventListener('click', () => {
       selectedPlayerId = p.id;
       renderPlayersRow();
       saveState();
     });
 
-    // Double tap: sub in/out
     div.addEventListener('dblclick', () => {
       const onCount = players.filter(pl => state[pl.id].onCourt).length;
       if (state[p.id].onCourt) {
@@ -492,7 +604,7 @@ resetBtn.onclick = () => {
   saveState();
 };
 
-// Summary table
+// Summary table (live)
 function renderSummary() {
   summaryBody.innerHTML = '';
 
@@ -500,7 +612,6 @@ function renderSummary() {
     const st = state[p.id];
     const ev = st.events || {};
 
-    // Calculate raw from weights
     let raw = 0;
     for (const key in ev) {
       raw += (ev[key] || 0) * (weightMap[key] || 0);
@@ -521,7 +632,7 @@ function renderSummary() {
     const bxo   = getEv(ev,'BXO');
     const bxtr  = getEv(ev,'BXTR');
     const bxor  = getEv(ev,'BXOR');
-    const drb   = getEv(ev,'DRB'); // plain reb gets added into team reb
+    const drb   = getEv(ev,'DRB');
 
     const wu    = getEv(ev,'WU');
     const defl  = getEv(ev,'DEF');
@@ -532,7 +643,7 @@ function renderSummary() {
     const ch    = getEv(ev,'CH');
     const dlb   = getEv(ev,'DLB');
 
-    const tr    = bxtr + drb; // Box Out + Team Reb column = boxout team + plain rebounds
+    const tr    = bxtr + drb;
 
     const trEl = document.createElement('tr');
 
@@ -574,6 +685,136 @@ function renderSummary() {
     trEl.appendChild(td(dlb));
 
     summaryBody.appendChild(trEl);
+  });
+}
+
+// Post-game report rendering
+function renderReport() {
+  reportSummaryBody.innerHTML = '';
+  reportCategoryBody.innerHTML = '';
+
+  players.forEach(p => {
+    const st = state[p.id];
+    const ev = st.events || {};
+    const hasEvents = Object.keys(ev).length > 0;
+
+    let raw = 0;
+    for (const key in ev) {
+      raw += (ev[key] || 0) * (weightMap[key] || 0);
+    }
+    const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : 0;
+    const grade = gradeFromPer10Plus(per10, st.defPoss, hasEvents);
+
+    // Build strengths & needs
+    const bb    = getEv(ev,'BB');
+    const foul  = getEv(ev,'F');
+    const gam   = getEv(ev,'GAM');
+    const gams  = getEv(ev,'GAMS');
+    const nb    = getEv(ev,'NB');
+    const sca   = getEv(ev,'SCA');
+    const jb    = getEv(ev,'JB');
+    const nt    = getEv(ev,'NT');
+
+    const bxo   = getEv(ev,'BXO');
+    const bxtr  = getEv(ev,'BXTR');
+    const bxor  = getEv(ev,'BXOR');
+    const drb   = getEv(ev,'DRB');
+    const tr    = bxtr + drb;
+
+    const wu    = getEv(ev,'WU');
+    const defl  = getEv(ev,'DEF');
+    const stl   = getEv(ev,'STL');
+    const stls  = getEv(ev,'STLS');
+    const eh    = getEv(ev,'EH');
+    const sb    = getEv(ev,'SB');
+    const ch    = getEv(ev,'CH');
+    const dlb   = getEv(ev,'DLB');
+
+    const posMetrics = [
+      { label: 'Steals',                 value: stl },
+      { label: 'Steals → Scores',       value: stls },
+      { label: 'Deflections',           value: defl },
+      { label: 'Box Outs',              value: bxo },
+      { label: 'Team Rebounds',         value: tr },
+      { label: 'Own Rebounds',          value: bxor },
+      { label: 'Wall Ups (No Foul)',    value: wu },
+      { label: 'Early Help',            value: eh },
+      { label: 'Sprint Back',           value: sb },
+      { label: 'Charges Taken',         value: ch },
+      { label: 'Dives on Loose Balls',  value: dlb },
+    ];
+
+    const negMetrics = [
+      { label: 'Blow-Bys',              value: bb },
+      { label: 'Fouls',                 value: foul },
+      { label: 'Gambles',               value: gam },
+      { label: 'Gambles → Scores',      value: gams },
+      { label: 'No Box Outs',           value: nb },
+      { label: 'Second-Chance Allowed', value: sca },
+      { label: 'Jog Back',              value: jb },
+      { label: 'No Talk',               value: nt },
+    ];
+
+    const strengths = posMetrics
+      .filter(m => m.value >= 2)
+      .sort((a,b) => b.value - a.value)
+      .slice(0,3)
+      .map(m => m.label);
+
+    const needs = negMetrics
+      .filter(m => m.value >= 1)
+      .sort((a,b) => b.value - a.value)
+      .slice(0,3)
+      .map(m => m.label);
+
+    const strengthsText = strengths.length ? strengths.join(', ') : (hasEvents ? 'No clear strengths yet' : 'N/A');
+    const needsText     = needs.length ? needs.join(', ')     : (hasEvents ? 'No major issues' : 'N/A');
+
+    // Summary row
+    const sr = document.createElement('tr');
+    function sTd(text) {
+      const cell = document.createElement('td');
+      cell.textContent = text;
+      return cell;
+    }
+    sr.appendChild(sTd(`#${p.number} ${p.name}`));
+    sr.appendChild(sTd(st.defPoss));
+    const sRawTd = sTd(raw);
+    if (raw > 0) sRawTd.classList.add('pos-score');
+    if (raw < 0) sRawTd.classList.add('neg-score');
+    sr.appendChild(sRawTd);
+    sr.appendChild(sTd(st.defPoss > 0 ? per10.toFixed(2) : ''));
+    const gradeTd = sTd(grade);
+    gradeTd.classList.add(gradeClass(grade));
+    sr.appendChild(gradeTd);
+    sr.appendChild(sTd(strengthsText));
+    sr.appendChild(sTd(needsText));
+    reportSummaryBody.appendChild(sr);
+
+    // Category row
+    const cr = document.createElement('tr');
+    function cTd(text) {
+      const cell = document.createElement('td');
+      cell.textContent = text;
+      return cell;
+    }
+    cr.appendChild(cTd(`#${p.number} ${p.name}`));
+    cr.appendChild(cTd(bb));
+    cr.appendChild(cTd(foul));
+    cr.appendChild(cTd(gam));
+    cr.appendChild(cTd(gams));
+    cr.appendChild(cTd(stl));
+    cr.appendChild(cTd(stls));
+    cr.appendChild(cTd(bxo));
+    cr.appendChild(cTd(tr));
+    cr.appendChild(cTd(bxor));
+    cr.appendChild(cTd(wu));
+    cr.appendChild(cTd(defl));
+    cr.appendChild(cTd(eh));
+    cr.appendChild(cTd(sb));
+    cr.appendChild(cTd(ch));
+    cr.appendChild(cTd(dlb));
+    reportCategoryBody.appendChild(cr);
   });
 }
 
@@ -649,14 +890,28 @@ csvBtn.onclick = () => {
   URL.revokeObjectURL(url);
 };
 
-// Print / PDF uses browser print (table view)
 pdfBtn.onclick = () => {
   window.print();
 };
 
-// Save meta when changed
 opponentInput.addEventListener('change', saveState);
 locationInput.addEventListener('change', saveState);
+
+// Mode switching
+modeLiveBtn.onclick = () => {
+  modeLiveBtn.classList.add('active');
+  modeReportBtn.classList.remove('active');
+  liveView.style.display = '';
+  reportView.style.display = 'none';
+};
+
+modeReportBtn.onclick = () => {
+  modeReportBtn.classList.add('active');
+  modeLiveBtn.classList.remove('active');
+  liveView.style.display = 'none';
+  reportView.style.display = '';
+  renderReport();
+};
 
 // Init
 loadState();
