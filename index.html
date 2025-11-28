@@ -2,10 +2,23 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>DLI TEST</title>
+  <title>DLI RESET</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // HARD RESET: unregister ALL service workers
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(r => r.unregister());
+      });
+    }
+  </script>
 </head>
-<body style="background:#000;color:#fff;font-family:Arial,sans-serif;">
-  <h1>DLI TEST PAGE</h1>
-  <p>If you see this, index.html is working and not showing sw.js anymore.</p>
+<body style="background:black;color:white;font-family:Arial,sans-serif;padding:20px;">
+
+  <h1>DLI RESET PAGE</h1>
+  <p>If you see this EXACT page, your browser is no longer using the old cached version.</p>
+
+  <p>Now we can safely paste your full app code.</p>
+
 </body>
 </html>
