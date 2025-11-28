@@ -1,27 +1,11 @@
-const CACHE_NAME = 'dli-tracker-v1';
-const ASSETS = [
-  './',
-  './index.html'
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(k => (k === CACHE_NAME ? null : caches.delete(k)))
-      )
-    )
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then(resp => resp || fetch(event.request))
-  );
-});
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DLI TEST</title>
+</head>
+<body style="background:#000;color:#fff;font-family:Arial,sans-serif;">
+  <h1>DLI TEST PAGE</h1>
+  <p>If you see this, index.html is working and not showing sw.js anymore.</p>
+</body>
+</html>
