@@ -1,297 +1,803 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Assistant Coaching Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #020617;
-      color: #e5e7eb;
-      margin: 0;
-      padding: 16px;
-    }
-    h1, h2 {
-      margin: 0 0 8px;
-    }
-    .layout {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 16px;
-    }
-    @media (max-width: 768px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
-    .card {
-      background: #020617;
-      border-radius: 12px;
-      border: 1px solid #1f2937;
-      padding: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-    th, td {
-      border-bottom: 1px solid #1f2937;
-      padding: 4px 6px;
-      text-align: left;
-    }
-    th {
-      background: #020617;
-      position: sticky;
-      top: 0;
-    }
-    .btn {
-      background: #22c55e;
-      color: #020617;
-      border-radius: 8px;
-      border: none;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-right: 6px;
-      margin-bottom: 4px;
-    }
-    .btn-secondary {
-      background: #0f172a;
-      color: #e5e7eb;
-      border: 1px solid #374151;
-    }
-    .btn-danger {
-      background: #ef4444;
-      color: #020617;
-    }
-    .small-text {
-      font-size: 0.8rem;
-      color: #9ca3af;
-    }
-    input[type="number"] {
-      width: 50px;
-    }
-    .checkbox {
-      transform: scale(1.1);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<title>DLI Live Tracker</title>
+
+<style>
+  html, body {
+    touch-action: manipulation;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    background-color: #000;
+    color: #f5f5f5;
+  }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  h3 { margin-top: 14px; }
+
+  .mode-toggle {
+    display: flex;
+    gap: 6px;
+    margin: 8px 0 10px 0;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #4b5563;
+    background-color: #0b1120;
+    color: #e5e7eb;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .mode-btn.active {
+    background-color: #f97316;
+    color: #111827;
+    border-color: #fed7aa;
+    font-weight: bold;
+  }
+
+  .game-meta {
+    font-size: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .game-meta label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .game-input {
+    background-color: #020617;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 3px 5px;
+    color: #f5f5f5;
+    font-size: 12px;
+  }
+
+  .players-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .player-chip {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #666;
+    font-size: 12px;
+    cursor: pointer;
+    background-color: #111;
+    color: #f5f5f5;
+  }
+  .on-court { background-color: #14532d; border-color: #22c55e; }
+  .selected { box-shadow: 0 0 0 2px #38bdf8; }
+
+  .buttons-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .primary-btn {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #f97316;
+    color: #111;
+  }
+
+  .small-btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #888;
+    cursor: pointer;
+    font-size: 11px;
+    background-color: #222;
+    color: #f5f5f5;
+  }
+
+  .buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .event-btn {
+    font-size: 11px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    cursor: pointer;
+    background-color: #1f2933;
+    color: #f5f5f5;
+    text-align: center;
+  }
+  .neg { background-color: #7f1d1d; }
+  .pos { background-color: #14532d; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  th, td {
+    border: 1px solid #444;
+    padding: 4px;
+    text-align: center;
+  }
+  th {
+    background-color: #111827;
+    color: #e5e7eb;
+  }
+
+  .neg-score { color: #f87171; }
+  .pos-score { color: #4ade80; }
+
+  .key-box {
+    margin-top: 14px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #020617;
+    font-size: 11px;
+  }
+
+  .grade-A { color: #4ade80; font-weight: bold; }
+  .grade-B { color: #bef264; font-weight: bold; }
+  .grade-C { color: #fde047; font-weight: bold; }
+  .grade-D { color: #fdba74; font-weight: bold; }
+  .grade-F { color: #f97373; font-weight: bold; }
+
+</style>
+
+<script>
+document.addEventListener('dblclick', function (e) {
+  e.preventDefault();
+}, { passive: false });
+</script>
+
 </head>
 <body>
-  <h1>Assistant Coaching Tracker</h1>
-  <p class="small-text">
-    Only players who are on the floor for a <strong>defensive possession</strong> will appear in the post game report.
-    If you try to refresh/close with stats entered, you’ll get an <strong>“Are you sure?”</strong> warning.
-  </p>
 
-  <div style="margin-bottom: 10px;">
-    <button id="btnDefPoss" class="btn">Mark Defensive Possession</button>
-    <button id="btnPostGame" class="btn btn-secondary">Generate Post Game Report</button>
-    <button id="btnNewGame" class="btn btn-danger">New Game / Reset</button>
+<h1>DLI Live Tracker</h1>
+
+<div class="mode-toggle">
+  <button id="modeLive" class="mode-btn active">Live Tracker</button>
+  <button id="modeReport" class="mode-btn">Post-Game Report</button>
+</div>
+
+<div class="game-meta">
+  <label>Opponent:
+    <input id="opponentInput" class="game-input" type="text" placeholder="Team name">
+  </label>
+  <label>Location:
+    <input id="locationInput" class="game-input" type="text" placeholder="Home/Away/Gym">
+  </label>
+</div>
+
+<div id="liveView">
+  <div style="font-size: 12px; margin-bottom: 6px;">
+    Single tap = <b>select</b>. Double tap = <b>sub in/out</b>. Max 5 on floor.
   </div>
-  <p class="small-text">
-    1) Check the “On Floor” boxes for your current 5. <br />
-    2) Press <strong>“Mark Defensive Possession”</strong> each time your team plays a defensive possession. <br />
-    3) Only those players will show in the report.
-  </p>
 
-  <section class="layout">
-    <!-- LEFT: Live stats / roster -->
-    <section class="card">
-      <h2>Roster & Live Stats</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Player</th>
-            <th>On Floor</th>
-            <th>PTS</th>
-            <th>REB</th>
-            <th>AST</th>
-          </tr>
-        </thead>
-        <tbody id="rosterBody"></tbody>
-      </table>
-    </section>
+  <div class="players-row" id="playersRow"></div>
 
-    <!-- RIGHT: Post game report -->
-    <section class="card">
-      <h2>Post Game Report</h2>
-      <p class="small-text" id="postGameNote">
-        Click <strong>Generate Post Game Report</strong> to see players who had at least one defensive possession.
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Player</th>
-            <th>PTS</th>
-            <th>REB</th>
-            <th>AST</th>
-            <th>Def. Poss.</th>
-          </tr>
-        </thead>
-        <tbody id="postGameBody"></tbody>
-      </table>
-    </section>
-  </section>
+  <div class="buttons-row">
+    <button id="possBtn" class="primary-btn">+1 Defensive Possession</button>
+    <button id="undoBtn" class="small-btn">Undo Last Stat</button>
+    <button id="newGameBtn" class="small-btn">New Game</button>
+    <button id="resetBtn" class="small-btn" style="border-color:#f87171;color:#fecaca;">Reset All</button>
+  </div>
 
-  <script>
-    // ==========================
-    // DATA MODEL
-    // ==========================
-    let statsDirty = false; // for "are you sure" refresh warning
+  <div class="buttons-grid" id="eventsGrid"></div>
 
-    const roster = [
-      { id: 1, number: 1, name: "Player 1", inGame: false, defPossessions: 0, hadDefPoss: false, stats: { pts: 0, reb: 0, ast: 0 } },
-      { id: 2, number: 2, name: "Player 2", inGame: false, defPossessions: 0, hadDefPoss: false, stats: { pts: 0, reb: 0, ast: 0 } },
-      { id: 3, number: 3, name: "Player 3", inGame: false, defPossessions: 0, hadDefPoss: false, stats: { pts: 0, reb: 0, ast: 0 } },
-      { id: 4, number: 4, name: "Player 4", inGame: false, defPossessions: 0, hadDefPoss: false, stats: { pts: 0, reb: 0, ast: 0 } },
-      { id: 5, number: 5, name: "Player 5", inGame: false, defPossessions: 0, hadDefPoss: false, stats: { pts: 0, reb: 0, ast: 0 } },
-      { id: 6, number: 10, name: "Player 6", inGame: false, defPossessions: 0, hadDefPoss: false, stats: { pts: 0, reb: 0, ast: 0 } },
-      { id: 7, number: 11, name: "Player 7", inGame: false, defPossessions: 0, hadDefPoss: false, stats: { pts: 0, reb: 0, ast: 0 } },
-    ];
+  <h3>Player Summary (Live)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>DefPoss</th>
+        <th>Raw</th>
+        <th>Per10</th>
+        <th>BB</th>
+        <th>LR</th>
+        <th>LWC</th>
+        <th>NB</th>
+        <th>SCA</th>
+        <th>JB</th>
+        <th>NT</th>
+        <th>F</th>
+        <th>GAM</th>
+        <th>GAMS</th>
+        <th>BXO</th>
+        <th>TR</th>
+        <th>BXOR</th>
+        <th>WU</th>
+        <th>DEF</th>
+        <th>STL</th>
+        <th>STLS</th>
+        <th>EH</th>
+        <th>SB</th>
+        <th>CH</th>
+        <th>DLB</th>
+      </tr>
+    </thead>
+    <tbody id="summaryBody"></tbody>
+  </table>
 
-    function markDirty() {
-      statsDirty = true;
-    }
+  <div class="save-box">
+    <h3>Save Stats</h3>
+    <button class="save-btn" id="csvBtn">⬇️ Export Stats (CSV)</button>
+    <button class="save-btn pdf" id="pdfBtn">🖨️ Print / PDF</button>
+  </div>
 
-    // ==========================
-    // RENDER ROSTER TABLE
-    // ==========================
-    function renderRoster() {
-      const tbody = document.getElementById("rosterBody");
-      tbody.innerHTML = "";
+  <div class="key-box">
+    <b>Stat Key</b>
+    <div>Blow-By –2, Late Rotation –2, Weak Closeout –1, No Box Out –1, Second Chance –2, Jog Back –1, No Talk –1, Foul –1</div>
+    <div>Gamble –1, Gamble→Score –2</div>
+    <div>Box Out +1, Team Rebound +2, Own Rebound +3, Rebound +1</div>
+    <div>Wall Up +1, Deflection +1, Steal +2, Steal→Score +3, Early Help +1, Sprint Back +1, Charge +2, Dive +2</div>
+  </div>
+</div>
 
-      roster.forEach(player => {
-        const tr = document.createElement("tr");
+<div id="reportView" style="display:none;margin-top:10px;">
+  <h3>Post-Game Report</h3>
 
-        tr.innerHTML = `
-          <td>${player.number}</td>
-          <td>${player.name}</td>
-          <td><input type="checkbox" class="checkbox" data-type="onFloor" data-id="${player.id}" ${player.inGame ? "checked" : ""}></td>
-          <td><input type="number" min="0" data-type="pts" data-id="${player.id}" value="${player.stats.pts}"></td>
-          <td><input type="number" min="0" data-type="reb" data-id="${player.id}" value="${player.stats.reb}"></td>
-          <td><input type="number" min="0" data-type="ast" data-id="${player.id}" value="${player.stats.ast}"></td>
-        `;
+  <h4>Overall Impact</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>DefPoss</th>
+        <th>Raw</th>
+        <th>Per10</th>
+        <th>Grade</th>
+        <th>Strengths</th>
+        <th>Needs</th>
+      </tr>
+    </thead>
+    <tbody id="reportSummaryBody"></tbody>
+  </table>
 
-        tbody.appendChild(tr);
-      });
-    }
+  <h4 style="margin-top:12px;">Category Breakdown</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>BB</th><th>F</th><th>GAM</th><th>GAMS</th>
+        <th>STL</th><th>STLS</th>
+        <th>BXO</th><th>TR</th><th>BXOR</th>
+        <th>WU</th><th>DEF</th><th>EH</th><th>SB</th><th>CH</th><th>DLB</th>
+      </tr>
+    </thead>
+    <tbody id="reportCategoryBody"></tbody>
+  </table>
 
-    // ==========================
-    // HANDLE INPUT CHANGES
-    // ==========================
-    document.addEventListener("change", function (e) {
-      const target = e.target;
-      const type = target.getAttribute("data-type");
-      const id = parseInt(target.getAttribute("data-id"), 10);
+  <div class="save-box">
+    <h3>Share Report</h3>
+    <button class="save-btn" id="emailReportBtn">✉️ Email Post-Game Report</button>
+  </div>
+</div>
 
-      if (!type || !id) return;
+<script>
+// ======================
+// EVENT DEFINITIONS
+// ======================
+const eventDefs = [
+  { key:'BB',    label:'Blow-By –2',              weight:-2 },
+  { key:'LR',    label:'Late Rotation –2',        weight:-2 },
+  { key:'LWC',   label:'Weak Closeout –1',        weight:-1 },
+  { key:'NB',    label:'No Box Out –1',           weight:-1 },
+  { key:'SCA',   label:'Second Chance –2',        weight:-2 },
+  { key:'JB',    label:'Jog Back –1',             weight:-1 },
+  { key:'NT',    label:'No Talk –1',              weight:-1 },
+  { key:'F',     label:'Foul –1',                 weight:-1 },
 
-      const player = roster.find(p => p.id === id);
-      if (!player) return;
+  { key:'GAM',   label:'Gamble –1',               weight:-1 },
+  { key:'GAMS',  label:'Gamble→Score –2',         weight:-2 },
 
-      if (type === "onFloor") {
-        player.inGame = target.checked;
-      } else if (type === "pts") {
-        player.stats.pts = parseInt(target.value || "0", 10);
-      } else if (type === "reb") {
-        player.stats.reb = parseInt(target.value || "0", 10);
-      } else if (type === "ast") {
-        player.stats.ast = parseInt(target.value || "0", 10);
-      }
+  { key:'BXO',   label:'Box Out +1',              weight:1 },
+  { key:'BXTR',  label:'Team Rebound +2',         weight:2 },
+  { key:'BXOR',  label:'Own Rebound +3',          weight:3 },
+  { key:'DRB',   label:'Rebound +1',              weight:1 }, // goes into TR
 
-      markDirty();
+  { key:'WU',    label:'Wall Up +1',              weight:1 },
+  { key:'DEF',   label:'Deflection +1',           weight:1 },
+  { key:'STL',   label:'Steal +2',                weight:2 },
+  { key:'STLS',  label:'Steal→Score +3',          weight:3 },
+
+  { key:'EH',    label:'Early Help +1',           weight:1 },
+  { key:'SB',    label:'Sprint Back +1',          weight:1 },
+  { key:'CH',    label:'Charge +2',               weight:2 },
+  { key:'DLB',   label:'Dive +2',                 weight:2 },
+];
+
+const weightMap = {};
+eventDefs.forEach(ev => weightMap[ev.key] = ev.weight);
+
+// ======================
+// ROSTER
+// ======================
+const players = [
+  { id: 1, number:'0',  name:'Roger M' },
+  { id: 2, number:'1',  name:'Devon W' },
+  { id: 3, number:'2',  name:'Inaki P' },
+  { id: 4, number:'3',  name:'John K' },
+  { id: 5, number:'4',  name:'Evan M' },
+  { id: 6, number:'5',  name:'Madden F' },
+  { id: 7, number:'11', name:'Ethan S' },
+  { id: 8, number:'12', name:'Conner G' },
+  { id: 9, number:'14', name:'Nathan A' },
+  { id:10, number:'15', name:'Oliver W' },
+  { id:11, number:'20', name:'Malachi P' },
+  { id:12, number:'22', name:'Jayden B' },
+  { id:13, number:'23', name:'Anjrew G' },
+  { id:14, number:'24', name:'Quinn C' },
+  { id:15, number:'33', name:'Craig H' },
+];
+
+const state = {};
+players.forEach(p => state[p.id] = { defPoss:0, events:{}, onCourt:false });
+
+let selectedPlayerId = 1;
+let history = [];
+
+const STORAGE_KEY = "gp-dli-tracker-v2";
+
+// ======================
+// HELPERS
+// ======================
+function getEv(ev, key) {
+  return ev[key] || 0;
+}
+
+function gradeFromPer10(per10, defPoss, hasEvents) {
+  if (!defPoss && !hasEvents) return 'N/A';
+  if (per10 >= 3.0) return 'A+';
+  if (per10 >= 2.5) return 'A';
+  if (per10 >= 2.0) return 'A-';
+  if (per10 >= 1.5) return 'B+';
+  if (per10 >= 1.0) return 'B';
+  if (per10 >= 0.5) return 'B-';
+  if (per10 >= 0.0) return 'C+';
+  if (per10 >= -0.5) return 'C';
+  if (per10 >= -1.0) return 'C-';
+  if (per10 >= -1.5) return 'D+';
+  if (per10 >= -2.0) return 'D';
+  return 'F';
+}
+
+function gradeClass(letter) {
+  if (letter === "N/A") return "";
+  return "grade-" + letter[0];
+}
+// ======================
+// COMPUTE METRICS
+// ======================
+function computePlayerMetrics(p) {
+  const st = state[p.id];
+  const ev = st.events;
+
+  let raw = 0;
+  for (const k in ev) raw += ev[k] * weightMap[k];
+
+  const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : 0;
+  const hasEvents = Object.keys(ev).length > 0;
+  const grade = gradeFromPer10(per10, st.defPoss, hasEvents);
+
+  const bb = getEv(ev,'BB');
+  const foul = getEv(ev,'F');
+  const gam = getEv(ev,'GAM');
+  const gams = getEv(ev,'GAMS');
+
+  const bxo = getEv(ev,'BXO');
+  const bxtr = getEv(ev,'BXTR');
+  const bxor = getEv(ev,'BXOR');
+  const drb = getEv(ev,'DRB');
+  const tr = bxtr + drb;
+
+  const stl = getEv(ev,'STL');
+  const stls = getEv(ev,'STLS');
+  const defl = getEv(ev,'DEF');
+  const eh = getEv(ev,'EH');
+  const sb = getEv(ev,'SB');
+  const ch = getEv(ev,'CH');
+  const dlb = getEv(ev,'DLB');
+  const wu = getEv(ev,'WU');
+
+  const strengths = [];
+  if (stl >= 2) strengths.push("Steals");
+  if (stls >= 1) strengths.push("Steal→Score");
+  if (defl >= 2) strengths.push("Deflections");
+  if (bxo >= 2) strengths.push("Box Outs");
+  if (tr >= 3) strengths.push("Team Rebounds");
+  if (bxor >= 1) strengths.push("Own Rebounds");
+  if (wu >= 1) strengths.push("Wall Ups");
+  if (sb >= 2) strengths.push("Sprint Back");
+  if (ch >= 1) strengths.push("Charges");
+  if (dlb >= 1) strengths.push("Loose Balls");
+  if (eh >= 2) strengths.push("Early Help");
+
+  const needs = [];
+  if (bb >= 1) needs.push("Blow-Bys");
+  if (foul >= 2) needs.push("Fouls");
+  if (gam >= 1) needs.push("Gambles");
+  if (gams >= 1) needs.push("Gambles→Score");
+
+  return {
+    st, ev, raw, per10, grade, hasEvents,
+    bb, foul, gam, gams,
+    bxo, tr, bxor, wu, defl, stl, stls, eh, sb, ch, dlb,
+    strengths: strengths.join(", ") || (hasEvents ? "No major strengths" : "N/A"),
+    needs: needs.join(", ") || (hasEvents ? "No major issues" : "N/A")
+  };
+}
+
+// ======================
+// RENDER PLAYERS
+// ======================
+function renderPlayersRow() {
+  const row = document.getElementById("playersRow");
+  row.innerHTML = "";
+  players.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "player-chip";
+    if (p.id === selectedPlayerId) div.classList.add("selected");
+    if (state[p.id].onCourt) div.classList.add("on-court");
+    div.textContent = `#${p.number} ${p.name}`;
+
+    div.addEventListener("click", () => {
+      selectedPlayerId = p.id;
+      renderPlayersRow();
     });
 
-    // ==========================
-    // DEFENSIVE POSSESSION LOGIC
-    // ==========================
-    function markDefensivePossession() {
-      roster.forEach(player => {
-        if (player.inGame) {
-          player.defPossessions += 1;
-          player.hadDefPoss = true;
-        }
-      });
-      markDirty();
-      alert("Defensive possession recorded for all players currently on the floor.");
-    }
-
-    // ==========================
-    // POST GAME REPORT
-    // ==========================
-    function buildPostGameReport() {
-      const tbody = document.getElementById("postGameBody");
-      const note = document.getElementById("postGameNote");
-      tbody.innerHTML = "";
-
-      // Only players who had at least one defensive possession
-      const defensivePlayers = roster.filter(p => p.hadDefPoss);
-
-      if (defensivePlayers.length === 0) {
-        note.textContent = "No players have a recorded defensive possession yet.";
-        return;
+    div.addEventListener("dblclick", () => {
+      const onCount = players.filter(pl => state[pl.id].onCourt).length;
+      if (state[p.id].onCourt) {
+        state[p.id].onCourt = false;
+      } else if (onCount < 5) {
+        state[p.id].onCourt = true;
       }
-
-      note.textContent = "Only players with at least one defensive possession are included.";
-
-      defensivePlayers.forEach(player => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${player.number}</td>
-          <td>${player.name}</td>
-          <td>${player.stats.pts}</td>
-          <td>${player.stats.reb}</td>
-          <td>${player.stats.ast}</td>
-          <td>${player.defPossessions}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // ==========================
-    // NEW GAME / RESET
-    // ==========================
-    function resetGame() {
-      const confirmReset = confirm("Are you sure you want to start a new game? All stats will be cleared.");
-      if (!confirmReset) return;
-
-      roster.forEach(p => {
-        p.inGame = false;
-        p.defPossessions = 0;
-        p.hadDefPoss = false;
-        p.stats = { pts: 0, reb: 0, ast: 0 };
-      });
-
-      statsDirty = false;
-      renderRoster();
-      document.getElementById("postGameBody").innerHTML = "";
-      document.getElementById("postGameNote").textContent =
-        "Click \"Generate Post Game Report\" to see players who had at least one defensive possession.";
-    }
-
-    // ==========================
-    // ARE YOU SURE ON REFRESH / CLOSE
-    // ==========================
-    window.addEventListener("beforeunload", function (e) {
-      if (!statsDirty) return;
-      e.preventDefault();
-      e.returnValue = "";
+      renderPlayersRow();
+      renderSummary();
+      saveState();
     });
 
-    // ==========================
-    // BUTTON HOOKUPS
-    // ==========================
-    document.getElementById("btnDefPoss").addEventListener("click", markDefensivePossession);
-    document.getElementById("btnPostGame").addEventListener("click", buildPostGameReport);
-    document.getElementById("btnNewGame").addEventListener("click", resetGame);
+    row.appendChild(div);
+  });
+}
 
-    // Initial render
-    renderRoster();
-  </script>
+// ======================
+// RENDER EVENT BUTTONS
+// ======================
+function renderEventsGrid() {
+  const grid = document.getElementById("eventsGrid");
+  grid.innerHTML = "";
+  eventDefs.forEach(ev => {
+    const btn = document.createElement("button");
+    btn.className = "event-btn " + (ev.weight < 0 ? "neg" : "pos");
+    btn.textContent = ev.label;
+    btn.onclick = () => {
+      const st = state[selectedPlayerId];
+      st.events[ev.key] = (st.events[ev.key] || 0) + 1;
+      history.push({ type:"event", pid:selectedPlayerId, key:ev.key });
+      renderSummary();
+      saveState();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+// ======================
+// RENDER SUMMARY TABLE
+// ======================
+function renderSummary() {
+  const body = document.getElementById("summaryBody");
+  body.innerHTML = "";
+
+  players.forEach(p => {
+    const st = state[p.id];
+    const ev = st.events;
+
+    let raw = 0;
+    for (const k in ev) raw += ev[k] * weightMap[k];
+    const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : 0;
+
+    const tr = getEv(ev,'BXTR') + getEv(ev,'DRB');
+
+    const row = document.createElement("tr");
+    function td(v){ const c=document.createElement("td"); c.textContent=v; return c; }
+
+    row.appendChild(td(`#${p.number} ${p.name}`));
+    row.appendChild(td(st.defPoss));
+    const r = td(raw);
+    if (raw>0) r.classList.add("pos-score");
+    if (raw<0) r.classList.add("neg-score");
+    row.appendChild(r);
+    row.appendChild(td(st.defPoss>0?per10.toFixed(2):""));
+
+    row.appendChild(td(getEv(ev,'BB')));
+    row.appendChild(td(getEv(ev,'LR')));
+    row.appendChild(td(getEv(ev,'LWC')));
+    row.appendChild(td(getEv(ev,'NB')));
+    row.appendChild(td(getEv(ev,'SCA')));
+    row.appendChild(td(getEv(ev,'JB')));
+    row.appendChild(td(getEv(ev,'NT')));
+    row.appendChild(td(getEv(ev,'F')));
+    row.appendChild(td(getEv(ev,'GAM')));
+    row.appendChild(td(getEv(ev,'GAMS')));
+
+    row.appendChild(td(getEv(ev,'BXO')));
+    row.appendChild(td(tr));
+    row.appendChild(td(getEv(ev,'BXOR')));
+    row.appendChild(td(getEv(ev,'WU')));
+    row.appendChild(td(getEv(ev,'DEF')));
+    row.appendChild(td(getEv(ev,'STL')));
+    row.appendChild(td(getEv(ev,'STLS')));
+    row.appendChild(td(getEv(ev,'EH')));
+    row.appendChild(td(getEv(ev,'SB')));
+    row.appendChild(td(getEv(ev,'CH')));
+    row.appendChild(td(getEv(ev,'DLB')));
+
+    body.appendChild(row);
+  });
+}
+
+// ======================
+// UNDO
+// ======================
+document.getElementById("undoBtn").onclick = () => {
+  const last = history.pop();
+  if (!last) return;
+
+  if (last.type === "event") {
+    const st = state[last.pid];
+    if (st.events[last.key] > 0) st.events[last.key]--;
+  }
+  renderSummary();
+  saveState();
+};
+
+// ======================
+// DEFENSIVE POSSESSION
+// ======================
+document.getElementById("possBtn").onclick = () => {
+  const ids = players.filter(p => state[p.id].onCourt).map(p => p.id);
+  if (ids.length === 0) return;
+  ids.forEach(id => state[id].defPoss++);
+  history.push({ type:"poss", ids });
+  renderSummary();
+  saveState();
+};
+
+// ======================
+// NEW GAME
+// ======================
+document.getElementById("newGameBtn").onclick = () => {
+  if (!confirm("Start a NEW game?")) return;
+  players.forEach(p => {
+    state[p.id].defPoss = 0;
+    state[p.id].events = {};
+    state[p.id].onCourt = false;
+  });
+  selectedPlayerId = 1;
+  history = [];
+  renderPlayersRow();
+  renderSummary();
+  saveState();
+};
+
+// ======================
+// RESET ALL
+// ======================
+document.getElementById("resetBtn").onclick = () => {
+  if (!confirm("RESET ALL data?")) return;
+  players.forEach(p => {
+    state[p.id].defPoss = 0;
+    state[p.id].events = {};
+    state[p.id].onCourt = false;
+  });
+  opponentInput.value = "";
+  locationInput.value = "";
+  selectedPlayerId = 1;
+  history = [];
+  renderPlayersRow();
+  renderSummary();
+  saveState();
+};
+
+// ======================
+// CSV EXPORT
+// ======================
+document.getElementById("csvBtn").onclick = () => {
+  let rows = [];
+  rows.push("Player,#,DefPoss,Raw,Per10,BB,F,GAM,GAMS,STL,STLS,BXO,TR,BXOR,WU,DEF,EH,SB,CH,DLB");
+
+  players.forEach(p => {
+    const st = state[p.id];
+    const ev = st.events;
+    let raw = 0;
+    for (const k in ev) raw += ev[k] * weightMap[k];
+    const per10 = st.defPoss>0 ? (raw/st.defPoss*10) : "";
+
+    const tr = getEv(ev,'BXTR') + getEv(ev,'DRB');
+
+    rows.push([
+      `"${p.name}"`,
+      p.number,
+      st.defPoss,
+      raw,
+      per10,
+      getEv(ev,'BB'),
+      getEv(ev,'F'),
+      getEv(ev,'GAM'),
+      getEv(ev,'GAMS'),
+      getEv(ev,'STL'),
+      getEv(ev,'STLS'),
+      getEv(ev,'BXO'),
+      tr,
+      getEv(ev,'BXOR'),
+      getEv(ev,'WU'),
+      getEv(ev,'DEF'),
+      getEv(ev,'EH'),
+      getEv(ev,'SB'),
+      getEv(ev,'CH'),
+      getEv(ev,'DLB')
+    ].join(","));
+  });
+
+  const blob = new Blob([rows.join("\n")], { type:"text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "dli_report.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// ======================
+// PRINT
+// ======================
+document.getElementById("pdfBtn").onclick = () => window.print();
+
+// ======================
+// REPORT RENDER
+// ======================
+function renderReport() {
+  const sumBody = document.getElementById("reportSummaryBody");
+  const catBody = document.getElementById("reportCategoryBody");
+  sumBody.innerHTML = "";
+  catBody.innerHTML = "";
+
+  players.forEach(p => {
+    const data = computePlayerMetrics(p);
+    const st = data.st;
+
+    const tr = getEv(st.events,'BXTR') + getEv(st.events,'DRB');
+
+    // SUMMARY
+    const sr = document.createElement("tr");
+    function td(v){ const c=document.createElement("td"); c.textContent=v; return c; }
+
+    sr.appendChild(td(`#${p.number} ${p.name}`));
+    sr.appendChild(td(st.defPoss));
+    sr.appendChild(td(data.raw));
+    sr.appendChild(td(st.defPoss>0?data.per10.toFixed(2):""));
+    const g = td(data.grade);
+    g.classList.add(gradeClass(data.grade));
+    sr.appendChild(g);
+    sr.appendChild(td(data.strengths));
+    sr.appendChild(td(data.needs));
+    sumBody.appendChild(sr);
+
+    // CATEGORY
+    const cr = document.createElement("tr");
+    cr.appendChild(td(`#${p.number} ${p.name}`));
+    cr.appendChild(td(data.bb));
+    cr.appendChild(td(data.foul));
+    cr.appendChild(td(data.gam));
+    cr.appendChild(td(data.gams));
+    cr.appendChild(td(data.stl));
+    cr.appendChild(td(data.stls));
+    cr.appendChild(td(data.bxo));
+    cr.appendChild(td(data.tr));
+    cr.appendChild(td(data.bxor));
+    cr.appendChild(td(data.wu));
+    cr.appendChild(td(data.defl));
+    cr.appendChild(td(data.eh));
+    cr.appendChild(td(data.sb));
+    cr.appendChild(td(data.ch));
+    cr.appendChild(td(data.dlb));
+    catBody.appendChild(cr);
+  });
+}
+
+// ======================
+// EMAIL REPORT
+// ======================
+document.getElementById("emailReportBtn").onclick = () => {
+  let body = "DLI Defensive Report\n\n";
+  players.forEach(p => {
+    const d = computePlayerMetrics(p);
+    const st = d.st;
+    body += `\n#${p.number} ${p.name}\n`;
+    body += `Def Poss: ${st.defPoss}, Raw: ${d.raw}, Per10: ${st.defPoss>0?d.per10.toFixed(2):"N/A"}, Grade: ${d.grade}\n`;
+    body += `Strengths: ${d.strengths}\n`;
+    body += `Needs: ${d.needs}\n`;
+  });
+  const mailto = `mailto:?subject=DLI Defensive Report&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+};
+
+// ======================
+// MODE SWITCHING
+// ======================
+document.getElementById("modeLive").onclick = () => {
+  document.getElementById("modeLive").classList.add("active");
+  document.getElementById("modeReport").classList.remove("active");
+  document.getElementById("liveView").style.display = "";
+  document.getElementById("reportView").style.display = "none";
+};
+
+document.getElementById("modeReport").onclick = () => {
+  document.getElementById("modeReport").classList.add("active");
+  document.getElementById("modeLive").classList.remove("active");
+  document.getElementById("liveView").style.display = "none";
+  document.getElementById("reportView").style.display = "";
+  renderReport();
+};
+
+// ======================
+// SAVE & LOAD
+// ======================
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    state, selectedPlayerId,
+    opponent: opponentInput.value,
+    location: locationInput.value
+  }));
+}
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  const d = JSON.parse(raw);
+  if (d.state) {
+    players.forEach(p => {
+      if (d.state[p.id]) {
+        state[p.id] = d.state[p.id];
+      }
+    });
+  }
+  if (d.selectedPlayerId) selectedPlayerId = d.selectedPlayerId;
+  if (d.opponent) opponentInput.value = d.opponent;
+  if (d.location) locationInput.value = d.location;
+}
+
+// ======================
+// INIT
+// ======================
+loadState();
+renderPlayersRow();
+renderEventsGrid();
+renderSummary();
+
+</script>
 </body>
 </html>
