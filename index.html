@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -623,76 +624,38 @@ document.getElementById("resetBtn").onclick = () => {
 };
 
 // ======================
-// CSV EXPORT (FULL STATS)
+// CSV EXPORT
 // ======================
 document.getElementById("csvBtn").onclick = () => {
   let rows = [];
-  // Match the live summary table headers
-  rows.push([
-    "Player",
-    "#",
-    "DefPoss",
-    "Raw",
-    "Per10",
-    "BB",
-    "LR",
-    "LWC",
-    "NB",
-    "SCA",
-    "JB",
-    "NT",
-    "F",
-    "GAM",
-    "GAMS",
-    "BXO",
-    "TR",    // BXTR + DRB
-    "BXOR",
-    "WU",
-    "DEF",
-    "STL",
-    "STLS",
-    "EH",
-    "SB",
-    "CH",
-    "DLB"
-  ].join(","));
+  rows.push("Player,#,DefPoss,Raw,Per10,BB,F,GAM,GAMS,STL,STLS,BXO,TR,BXOR,WU,DEF,EH,SB,CH,DLB");
 
   players.forEach(p => {
     const st = state[p.id];
-    const ev = st.events || {};
+    const ev = st.events;
     let raw = 0;
+    for (const k in ev) raw += ev[k] * weightMap[k];
+    const per10 = st.defPoss>0 ? (raw/st.defPoss*10) : "";
 
-    for (const k in ev) {
-      const w = (weightMap.hasOwnProperty(k) ? weightMap[k] : 0);
-      raw += (ev[k] || 0) * w;
-    }
-
-    const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : "";
     const tr = getEv(ev,'BXTR') + getEv(ev,'DRB');
 
     rows.push([
       `"${p.name}"`,
       p.number,
-      st.defPoss || 0,
+      st.defPoss,
       raw,
-      per10 === "" ? "" : per10,
+      per10,
       getEv(ev,'BB'),
-      getEv(ev,'LR'),
-      getEv(ev,'LWC'),
-      getEv(ev,'NB'),
-      getEv(ev,'SCA'),
-      getEv(ev,'JB'),
-      getEv(ev,'NT'),
       getEv(ev,'F'),
       getEv(ev,'GAM'),
       getEv(ev,'GAMS'),
+      getEv(ev,'STL'),
+      getEv(ev,'STLS'),
       getEv(ev,'BXO'),
       tr,
       getEv(ev,'BXOR'),
       getEv(ev,'WU'),
       getEv(ev,'DEF'),
-      getEv(ev,'STL'),
-      getEv(ev,'STLS'),
       getEv(ev,'EH'),
       getEv(ev,'SB'),
       getEv(ev,'CH'),
