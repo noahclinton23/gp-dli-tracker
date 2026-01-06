@@ -5,575 +5,157 @@
   <title>HEART AND DRIVE EFFICIENCY</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* Same simple layout style as the baseline */
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #111827;
-      color: #e5e7eb;
-      margin: 0;
-      padding: 16px;
+    :root{
+      --bg: #0b1220;
+      --panel: #0f172a;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted:#9ca3af;
+
+      --inBlueBg: rgba(59, 130, 246, 0.22);   /* blue highlight */
+      --inBlueBorder: rgba(59, 130, 246, 0.55);
+      --inBlueText: #dbeafe;
     }
-    h1, h2 { margin: 0 0 8px; }
-    .small-text { font-size: 0.8rem; color: #9ca3af; }
-    .row {
-      display: flex;
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #050814 70%);
+      color: var(--text);
+      padding: 14px;
+    }
+
+    .app{
+      max-width: 1100px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.65);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 12px;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 16px;
+      margin-bottom: 10px;
     }
-    .card {
-      flex: 1 1 380px;
-      background: #020617;
-      border-radius: 8px;
-      border: 1px solid #1f2937;
-      padding: 10px;
+
+    h1{
+      font-size: 1.15rem;
+      margin: 0;
+      letter-spacing: .02em;
     }
-    table {
-      width: 100%;
+    .sub{
+      margin: 4px 0 0;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    .hint{
+      font-size: .82rem;
+      color: var(--muted);
+      text-align:right;
+      line-height: 1.35;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15,23,42,0.75);
+      overflow:hidden;
+    }
+
+    .cardHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding: 10px 10px 8px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(2,6,23,0.55);
+    }
+
+    .cardHeader h2{
+      margin:0;
+      font-size: .92rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .pill{
+      font-size: .72rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(2,6,23,0.4);
+    }
+
+    table{
+      width:100%;
       border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: .92rem;
     }
-    th, td {
-      border-bottom: 1px solid #1f2937;
-      padding: 4px 6px;
-      text-align: left;
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(31,41,55,0.75);
+      text-align:left;
       vertical-align: middle;
     }
-    th { background: #030712; }
-    input[type="number"] {
-      width: 52px;
-      font-size: 0.85rem;
-      background: #0b1220;
-      border: 1px solid #1f2937;
-      color: #e5e7eb;
-      border-radius: 6px;
-      padding: 3px 6px;
+    th{
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(2,6,23,0.35);
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
-    input[type="checkbox"] { transform: scale(1.1); }
 
-    .btn {
-      display: inline-block;
-      font-size: 0.85rem;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
+    tr.playerRow{
       cursor: pointer;
-      margin-right: 6px;
-      margin-bottom: 6px;
-      user-select: none;
-      white-space: nowrap;
+      user-select:none;
+      transition: background .08s ease, border-color .08s ease;
     }
-    .btn-primary {
-      background: #22c55e;
-      color: #020617;
+
+    tr.playerRow:hover{
+      background: rgba(148,163,184,0.06);
+    }
+
+    tr.playerRow.inGame{
+      background: var(--inBlueBg);
+      outline: 1px solid var(--inBlueBorder);
+    }
+    tr.playerRow.inGame td{
+      color: var(--inBlueText);
+    }
+
+    .num{
+      width: 70px;
+      font-variant-numeric: tabular-nums;
       font-weight: 700;
     }
-    .btn-secondary {
-      background: #0f172a;
-      color: #e5e7eb;
-      border: 1px solid #374151;
-      font-weight: 600;
-    }
-    .btn-danger {
-      background: #ef4444;
-      color: #020617;
-      font-weight: 800;
-    }
-    .btn-action {
-      background: #0b1220;
-      color: #e5e7eb;
-      border: 1px solid #374151;
-      font-weight: 650;
-      padding: 5px 8px;
-      font-size: 0.8rem;
-      margin-right: 4px;
-      margin-bottom: 4px;
-    }
-    .actions-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-  </style>
-</head>
 
-<body>
-  <h1>HEART AND DRIVE EFFICIENCY</h1>
-  <p class="small-text">
-    Post Game Report includes only players who recorded at least one <strong>Defensive Possession</strong>.
-    Refresh/close protection is enabled if anything changes.
-  </p>
-
-  <div style="margin-top: 8px; margin-bottom: 8px;">
-    <button id="btnDefPoss" class="btn btn-primary">Mark Defensive Possession</button>
-    <button id="btnPostGame" class="btn btn-secondary">Generate Post Game Report</button>
-    <button id="btnExportCsv" class="btn btn-secondary">Export CSV</button>
-    <button id="btnReset" class="btn btn-danger">New Game / Reset</button>
-  </div>
-
-  <p class="small-text">
-    Tip: Check “On Floor” for whoever is in. Click <strong>Mark Defensive Possession</strong> each defensive trip.
-    Player report eligibility is based on having at least one recorded defensive possession.
-  </p>
-
-  <div class="row">
-    <!-- LEFT: Main Page -->
-    <section class="card">
-      <h2>Main Page</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Player</th>
-            <th>On Floor</th>
-            <th>PTS</th>
-            <th>REB</th>
-            <th>AST</th>
-            <th class="mono">HD</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="rosterBody"></tbody>
-      </table>
-      <p class="small-text">
-        <span class="mono">HD</span> is the Heart & Drive score (weighted). Actions automatically adjust stats + HD.
-      </p>
-    </section>
-
-    <!-- RIGHT: Post Game Report -->
-    <section class="card">
-      <h2>Post Game Report</h2>
-      <p class="small-text" id="postGameNote">
-        Click <strong>Generate Post Game Report</strong>. Report is rebuilt from current roster data each time.
-      </p>
-
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Player</th>
-            <th>PTS</th>
-            <th>REB</th>
-            <th>AST</th>
-            <th>DEF</th>
-            <th>STL</th>
-            <th>BLK</th>
-            <th>BOX</th>
-            <th>OREB</th>
-            <th>O2S</th>
-            <th>SC</th>
-            <th>SCS</th>
-            <th>LR</th>
-            <th>Def Poss</th>
-            <th class="mono">HD</th>
-          </tr>
-        </thead>
-        <tbody id="postGameBody"></tbody>
-      </table>
-
-      <p class="small-text" style="margin-top:10px;">
-        CSV export includes a KEY/Legend for abbreviations at the top.
-      </p>
-    </section>
-  </div>
-
-  <script>
-    // ======================================================
-    // SAFETY: refresh/close warning
-    // ======================================================
-    let statsDirty = false;
-    function markDirty() { statsDirty = true; }
-
-    window.addEventListener("beforeunload", function (e) {
-      if (!statsDirty) return;
-      e.preventDefault();
-      e.returnValue = "";
-    });
-
-    // ======================================================
-    // ROSTER (REMOVE ETHAN S. — not included)
-    // Replace names/numbers with your real roster.
-    // ======================================================
-    const roster = [
-      { id: 1, number: 1,  name: "Player 1"  },
-      { id: 2, number: 2,  name: "Player 2"  },
-      { id: 3, number: 3,  name: "Player 3"  },
-      { id: 4, number: 4,  name: "Player 4"  },
-      { id: 5, number: 5,  name: "Player 5"  },
-      { id: 6, number: 10, name: "Player 6"  },
-      { id: 7, number: 11, name: "Player 7"  }
-    ].map(p => ({
-      ...p,
-      inGame: false,
-      defPossessions: 0,
-      // Stats
-      stats: {
-        pts: 0,
-        reb: 0,
-        ast: 0,
-        defl: 0,     // DEF
-        stl: 0,      // STL
-        blk: 0,      // BLK
-        box: 0,      // BOX (box outs)
-        oreb: 0,     // OREB
-        o2s: 0,      // O2S (offensive board to score)
-        sc: 0,       // SC (second chance)
-        scs: 0,      // SCS (second chance to score)
-        lr: 0        // LR (late rotation count)
-      },
-      hd: 0 // HEART AND DRIVE score
-    }));
-
-    // ======================================================
-    // RENDER MAIN TABLE
-    // ======================================================
-    function renderRoster() {
-      const tbody = document.getElementById("rosterBody");
-      tbody.innerHTML = "";
-
-      roster.forEach(player => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${player.number}</td>
-          <td>${player.name}</td>
-          <td>
-            <input type="checkbox" data-type="onFloor" data-id="${player.id}" ${player.inGame ? "checked" : ""} />
-          </td>
-
-          <td><input type="number" min="0" data-type="pts" data-id="${player.id}" value="${player.stats.pts}" /></td>
-          <td><input type="number" min="0" data-type="reb" data-id="${player.id}" value="${player.stats.reb}" /></td>
-          <td><input type="number" min="0" data-type="ast" data-id="${player.id}" value="${player.stats.ast}" /></td>
-
-          <td class="mono">${player.hd}</td>
-
-          <td>
-            <div class="actions-wrap">
-              <button class="btn btn-action" data-action="deflStlPlus2" data-id="${player.id}">Deflection + Steal +2</button>
-              <button class="btn btn-action" data-action="blockPlus1" data-id="${player.id}">Block +1</button>
-              <button class="btn btn-action" data-action="boxRebPlus2" data-id="${player.id}">Box Out + Rebound +2</button>
-              <button class="btn btn-action" data-action="orebPlus1" data-id="${player.id}">Off Board +1</button>
-              <button class="btn btn-action" data-action="o2sPlus3" data-id="${player.id}">Off Board to Score +3</button>
-              <button class="btn btn-action" data-action="secondChanceMinus1" data-id="${player.id}">Second Chance -1</button>
-              <button class="btn btn-action" data-action="secondChanceScoreMinus2" data-id="${player.id}">Second Chance to Score -2</button>
-              <button class="btn btn-action" data-action="lateRotationMinus1" data-id="${player.id}">Late Rotation -1</button>
-            </div>
-          </td>
-        `;
-
-        tbody.appendChild(tr);
-      });
+    .status{
+      width: 110px;
+      font-size: .82rem;
+      color: var(--muted);
     }
 
-    // ======================================================
-    // INPUT CHANGES (checkbox + number inputs)
-    // ======================================================
-    document.addEventListener("change", function (e) {
-      const target = e.target;
-      const type = target.getAttribute("data-type");
-      const idAttr = target.getAttribute("data-id");
-
-      if (!type || !idAttr) return;
-      const id = parseInt(idAttr, 10);
-      const player = roster.find(p => p.id === id);
-      if (!player) return;
-
-      if (type === "onFloor") {
-        player.inGame = target.checked;
-        markDirty();
-        return;
-      }
-
-      // For numeric inputs we only have pts/reb/ast
-      const val = parseInt(target.value || "0", 10);
-      if (type === "pts") player.stats.pts = Math.max(0, val);
-      if (type === "reb") player.stats.reb = Math.max(0, val);
-      if (type === "ast") player.stats.ast = Math.max(0, val);
-
-      markDirty();
-    });
-
-    // ======================================================
-    // ACTION BUTTONS (the changes you requested)
-    // ======================================================
-    function adjustPlayer(playerId, fn) {
-      const player = roster.find(p => p.id === playerId);
-      if (!player) return;
-      fn(player);
-      markDirty();
-      renderRoster(); // keeps HD visible and updated
-    }
-
-    document.addEventListener("click", function (e) {
-      const btn = e.target.closest("button[data-action]");
-      if (!btn) return;
-
-      const action = btn.getAttribute("data-action");
-      const id = parseInt(btn.getAttribute("data-id"), 10);
-
-      if (!action || !id) return;
-
-      switch (action) {
-        case "deflStlPlus2":
-          // Deflection +1, Steal +1, HD +2
-          adjustPlayer(id, (p) => {
-            p.stats.defl += 1;
-            p.stats.stl += 1;
-            p.hd += 2;
-          });
-          break;
-
-        case "blockPlus1":
-          // Block +1, HD +1
-          adjustPlayer(id, (p) => {
-            p.stats.blk += 1;
-            p.hd += 1;
-          });
-          break;
-
-        case "boxRebPlus2":
-          // Box out +1, Rebound +1, HD +2
-          adjustPlayer(id, (p) => {
-            p.stats.box += 1;
-            p.stats.reb += 1;
-            p.hd += 2;
-          });
-          break;
-
-        case "orebPlus1":
-          // Offensive Board +1, HD +1
-          adjustPlayer(id, (p) => {
-            p.stats.oreb += 1;
-            p.hd += 1;
-          });
-          break;
-
-        case "o2sPlus3":
-          // Offensive Board to Score +3, HD +3
-          adjustPlayer(id, (p) => {
-            p.stats.o2s += 1;
-            p.hd += 3;
-          });
-          break;
-
-        case "secondChanceMinus1":
-          // Second Chance -1, HD -1
-          adjustPlayer(id, (p) => {
-            p.stats.sc += 1;
-            p.hd -= 1;
-          });
-          break;
-
-        case "secondChanceScoreMinus2":
-          // Second Chance to Score -2, HD -2
-          adjustPlayer(id, (p) => {
-            p.stats.scs += 1;
-            p.hd -= 2;
-          });
-          break;
-
-        case "lateRotationMinus1":
-          // Late Rotation -1, HD -1
-          adjustPlayer(id, (p) => {
-            p.stats.lr += 1;   // count occurrences
-            p.hd -= 1;
-          });
-          break;
-      }
-    });
-
-    // ======================================================
-    // DEFENSIVE POSSESSION LOGIC
-    // ======================================================
-    function markDefensivePossession() {
-      // Add def possession to all players currently on floor
-      roster.forEach(p => {
-        if (p.inGame) p.defPossessions += 1;
-      });
-      markDirty();
-      alert("Defensive possession recorded for all players currently marked 'On Floor'.");
-    }
-
-    // ======================================================
-    // POST GAME REPORT (REWORKED so it always logs the right players)
-    // Rule: ONLY players with defPossessions > 0 appear.
-    // ======================================================
-    function buildPostGameReport() {
-      const tbody = document.getElementById("postGameBody");
-      const note = document.getElementById("postGameNote");
-      tbody.innerHTML = "";
-
-      // This is the fix: report uses defPossessions (not a fragile boolean)
-      const playedDef = roster
-        .filter(p => p.defPossessions > 0)
-        .sort((a, b) => (b.hd - a.hd) || (b.defPossessions - a.defPossessions) || (a.number - b.number));
-
-      if (playedDef.length === 0) {
-        note.textContent = "No players have recorded a defensive possession yet.";
-        return;
-      }
-
-      note.textContent = "Report includes only players with at least one recorded defensive possession (Def Poss > 0).";
-
-      playedDef.forEach(p => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${p.number}</td>
-          <td>${p.name}</td>
-          <td>${p.stats.pts}</td>
-          <td>${p.stats.reb}</td>
-          <td>${p.stats.ast}</td>
-          <td>${p.stats.defl}</td>
-          <td>${p.stats.stl}</td>
-          <td>${p.stats.blk}</td>
-          <td>${p.stats.box}</td>
-          <td>${p.stats.oreb}</td>
-          <td>${p.stats.o2s}</td>
-          <td>${p.stats.sc}</td>
-          <td>${p.stats.scs}</td>
-          <td>${p.stats.lr}</td>
-          <td>${p.defPossessions}</td>
-          <td class="mono">${p.hd}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // ======================================================
-    // CSV EXPORT (REWORKED + includes KEY/Legend)
-    // ======================================================
-    function csvEscape(value) {
-      const s = String(value ?? "");
-      if (s.includes(",") || s.includes('"') || s.includes("\n")) {
-        return `"${s.replace(/"/g, '""')}"`;
-      }
-      return s;
-    }
-
-    function exportCsv() {
-      // Ensure report data is consistent: use same filter as report
-      const rows = roster
-        .filter(p => p.defPossessions > 0)
-        .sort((a, b) => (b.hd - a.hd) || (b.defPossessions - a.defPossessions) || (a.number - b.number));
-
-      const lines = [];
-
-      // KEY / Legend (as requested)
-      lines.push("KEY/LEGEND");
-      lines.push("ABB,MEANING");
-      lines.push("PTS,Points");
-      lines.push("REB,Rebounds");
-      lines.push("AST,Assists");
-      lines.push("DEF,Deflections");
-      lines.push("STL,Steals");
-      lines.push("BLK,Blocks");
-      lines.push("BOX,Box Outs");
-      lines.push("OREB,Offensive Boards");
-      lines.push("O2S,Offensive Board to Score");
-      lines.push("SC,Second Chance (HD -1)");
-      lines.push("SCS,Second Chance to Score (HD -2)");
-      lines.push("LR,Late Rotation (HD -1)");
-      lines.push("DEF POSS,Defensive Possessions Logged");
-      lines.push("HD,Heart & Drive Efficiency Score");
-      lines.push(""); // blank line between key and data
-
-      // Data header
-      lines.push([
-        "Number",
-        "Player",
-        "PTS",
-        "REB",
-        "AST",
-        "DEF",
-        "STL",
-        "BLK",
-        "BOX",
-        "OREB",
-        "O2S",
-        "SC",
-        "SCS",
-        "LR",
-        "DEF POSS",
-        "HD"
-      ].join(","));
-
-      rows.forEach(p => {
-        lines.push([
-          csvEscape(p.number),
-          csvEscape(p.name),
-          csvEscape(p.stats.pts),
-          csvEscape(p.stats.reb),
-          csvEscape(p.stats.ast),
-          csvEscape(p.stats.defl),
-          csvEscape(p.stats.stl),
-          csvEscape(p.stats.blk),
-          csvEscape(p.stats.box),
-          csvEscape(p.stats.oreb),
-          csvEscape(p.stats.o2s),
-          csvEscape(p.stats.sc),
-          csvEscape(p.stats.scs),
-          csvEscape(p.stats.lr),
-          csvEscape(p.defPossessions),
-          csvEscape(p.hd)
-        ].join(","));
-      });
-
-      const csv = lines.join("\n");
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "heart_and_drive_efficiency.csv";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    // ======================================================
-    // RESET / NEW GAME
-    // ======================================================
-    function resetGame() {
-      const sure = confirm("Start a new game and clear all stats?");
-      if (!sure) return;
-
-      roster.forEach(p => {
-        p.inGame = false;
-        p.defPossessions = 0;
-        p.hd = 0;
-        p.stats.pts = 0;
-        p.stats.reb = 0;
-        p.stats.ast = 0;
-        p.stats.defl = 0;
-        p.stats.stl = 0;
-        p.stats.blk = 0;
-        p.stats.box = 0;
-        p.stats.oreb = 0;
-        p.stats.o2s = 0;
-        p.stats.sc = 0;
-        p.stats.scs = 0;
-        p.stats.lr = 0;
-      });
-
-      statsDirty = false;
-      renderRoster();
-      document.getElementById("postGameBody").innerHTML = "";
-      document.getElementById("postGameNote").textContent =
-        'Click "Generate Post Game Report". Only players with Def Poss > 0 appear.';
-    }
-
-    // ======================================================
-    // BUTTON HOOKUP
-    // ======================================================
-    document.getElementById("btnDefPoss").addEventListener("click", markDefensivePossession);
-    document.getElementById("btnPostGame").addEventListener("click", buildPostGameReport);
-    document.getElementById("btnExportCsv").addEventListener("click", exportCsv);
-    document.getElementById("btnReset").addEventListener("click", resetGame);
-
-    // Initial render
-    renderRoster();
-  </script>
-</body>
-</html>
+    .status .dot{
+      display:inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      margin-right: 8px;
