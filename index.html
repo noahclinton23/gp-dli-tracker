@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>HEART AND DRIVE EFFICIENCY</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- App-like viewport: prevents pinch/double-tap zoom -->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  />
+
   <style>
     :root{
       --bg: #0b1220;
@@ -18,6 +24,12 @@
     }
 
     *{ box-sizing:border-box; }
+
+    /* Disable double-tap zoom while keeping scrolling usable */
+    html, body{
+      touch-action: manipulation;
+    }
+
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -159,3 +171,161 @@
       height: 9px;
       border-radius: 999px;
       margin-right: 8px;
+      background: rgba(148,163,184,0.55);
+      vertical-align: middle;
+    }
+    tr.inGame .status .dot{
+      background: rgba(59,130,246,0.95);
+      box-shadow: 0 0 10px rgba(59,130,246,0.55);
+    }
+
+    .footerNote{
+      padding: 10px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .78rem;
+      padding: 2px 6px;
+      border: 1px solid rgba(31,41,55,0.9);
+      border-radius: 6px;
+      background: rgba(2,6,23,0.4);
+      color: #cbd5e1;
+      display:inline-block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <h1>HEART AND DRIVE EFFICIENCY</h1>
+        <p class="sub">Live game tracker — quick subs first.</p>
+      </div>
+      <div class="hint">
+        <div>Double-tap a player to <strong>Sub In/Out</strong>.</div>
+        <div>Subbed-in players are <span class="kbd">blue</span>.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <div class="cardHeader">
+          <h2>Roster</h2>
+          <span class="pill"><span id="inCount">0</span> in game</span>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="num">#</th>
+              <th>Player</th>
+              <th class="status">Status</th>
+            </tr>
+          </thead>
+          <tbody id="rosterBody"></tbody>
+        </table>
+
+        <div class="footerNote">
+          Tip: If you want exactly 5 on the floor, tell me and I’ll add a “lock to 5” rule (without changing the layout).
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ==========================
+    // Data
+    // ==========================
+    let statsDirty = false;
+    function markDirty(){ statsDirty = true; }
+
+    const roster = [
+      { id: 100, number: 0,  name: "Roger Matute",    inGame: false },
+      { id: 101, number: 1,  name: "Devon Winder",    inGame: false },
+      { id: 102, number: 2,  name: "Inaki Polmares",  inGame: false },
+      { id: 103, number: 3,  name: "John Keohane",    inGame: false },
+      { id: 104, number: 4,  name: "Evan Medlin",     inGame: false },
+      { id: 105, number: 5,  name: "Madden Fender",   inGame: false },
+      { id: 106, number: 12, name: "Conner Graves",   inGame: false },
+      { id: 107, number: 14, name: "Nathan Allen",    inGame: false },
+      { id: 108, number: 15, name: "Oliver Whaley",   inGame: false },
+      { id: 109, number: 20, name: "Malachi Palmer",  inGame: false },
+      { id: 110, number: 22, name: "Jayden Barton",   inGame: false },
+      { id: 111, number: 23, name: "Anjrew Goins",    inGame: false },
+      { id: 112, number: 24, name: "Quinn Coykendal", inGame: false },
+      { id: 113, number: 33, name: "Craig Huskey",    inGame: false }
+    ];
+
+    // ==========================
+    // Render
+    // ==========================
+    function renderRoster(){
+      const tbody = document.getElementById("rosterBody");
+      tbody.innerHTML = "";
+
+      const sorted = [...roster].sort((a,b) => a.number - b.number);
+
+      for(const p of sorted){
+        const tr = document.createElement("tr");
+        tr.className = "playerRow" + (p.inGame ? " inGame" : "");
+        tr.dataset.id = String(p.id);
+        tr.title = "Double-tap to sub in/out";
+
+        tr.innerHTML = `
+          <td class="num">${p.number}</td>
+          <td>${p.name}</td>
+          <td class="status"><span class="dot"></span>${p.inGame ? "IN" : "OUT"}</td>
+        `;
+
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById("inCount").textContent = String(roster.filter(x => x.inGame).length);
+    }
+
+    function toggleSub(playerId){
+      const p = roster.find(x => x.id === playerId);
+      if(!p) return;
+      p.inGame = !p.inGame;
+      markDirty();
+      renderRoster();
+    }
+
+    // ==========================
+    // Interaction: Double-tap to toggle
+    // ==========================
+    document.addEventListener("dblclick", (e) => {
+      const row = e.target.closest("tr.playerRow");
+      if(!row) return;
+      const id = parseInt(row.dataset.id, 10);
+      toggleSub(id);
+    });
+
+    // ==========================
+    // Disable double-tap zoom (mobile quirk fix)
+    // ==========================
+    let lastTap = 0;
+    document.addEventListener("touchend", function (e) {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        e.preventDefault(); // stops zoom on fast double taps
+      }
+      lastTap = now;
+    }, { passive: false });
+
+    // Refresh/close warning (only if you’ve changed anything)
+    window.addEventListener("beforeunload", function (e) {
+      if (!statsDirty) return;
+      e.preventDefault();
+      e.returnValue = "";
+    });
+
+    // Init
+    renderRoster();
+  </script>
+</body>
+</html>
