@@ -533,10 +533,19 @@
 
       <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
-      <!-- NEW: quick team turnover buttons -->
+      <!-- TWO SEPARATE ALWAYS-VISIBLE TURNOVER BUTTONS -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0;">
-        <button class="teamBtn teamMinus" id="toUsBtn">TURNOVER – US</button>
-        <button class="teamBtn teamPlus" id="toOppBtn">TURNOVER – OPP</button>
+        <button class="btn btnDanger" id="toUsBtn" style="padding:14px 10px; font-size:1.0rem; font-weight:950;">
+          TO US +1 <span class="mono" id="toUsInline" style="margin-left:8px;">0</span>
+        </button>
+
+        <button class="btn btnYellow" id="toOppBtn" style="padding:14px 10px; font-size:1.0rem; font-weight:950;">
+          TO OPP +1 <span class="mono" id="toOppInline" style="margin-left:8px;">0</span>
+        </button>
+      </div>
+
+      <div class="pill" style="display:inline-block; margin:0 0 6px;">
+        TO Battle (Opp − Us): <span class="mono" id="toBattleInline">0</span>
       </div>
 
       <button class="btn" id="undoBtn" style="width:100%; margin-bottom:6px;">UNDO LAST STAT</button>
@@ -1070,7 +1079,8 @@
       document.getElementById("toOpp").textContent = team.toOpp;
 
       // Turnover battle: positive means WE are winning (they have more TOs)
-      document.getElementById("toBattle").textContent = diff(team.toOpp, team.toUs);
+      const battle = diff(team.toOpp, team.toUs);
+      document.getElementById("toBattle").textContent = battle;
 
       document.getElementById("orebUs").textContent = team.orebUs;
       document.getElementById("orebOpp").textContent = team.orebOpp;
@@ -1081,6 +1091,14 @@
       document.getElementById("ftaDiff").textContent = diff(team.ftaUs, team.ftaOpp);
 
       document.getElementById("tpaUs").textContent = team.tpaUs;
+
+      // Inline counters on DEFENSE screen
+      const usInline = document.getElementById("toUsInline");
+      const oppInline = document.getElementById("toOppInline");
+      const battleInline = document.getElementById("toBattleInline");
+      if (usInline) usInline.textContent = team.toUs;
+      if (oppInline) oppInline.textContent = team.toOpp;
+      if (battleInline) battleInline.textContent = battle;
     }
 
     function renderAll(){
@@ -1151,14 +1169,14 @@
       toast(`Poss +1 for ${inPlayers.length} IN`);
     });
 
-    // NEW: quick team turnover buttons (team only)
+    // Two separate turnover buttons (TEAM ONLY)
     document.getElementById("toUsBtn").addEventListener("click", () => {
       const before = team.toUs;
       team.toUs += 1;
       historyStack.push({ type:"team", key:"toUs", before, after: team.toUs });
       renderTeam();
       saveState();
-      toast("Turnover – US");
+      toast("TO US +1");
     });
 
     document.getElementById("toOppBtn").addEventListener("click", () => {
@@ -1167,7 +1185,7 @@
       historyStack.push({ type:"team", key:"toOpp", before, after: team.toOpp });
       renderTeam();
       saveState();
-      toast("Turnover – OPP");
+      toast("TO OPP +1");
     });
 
     function findAction(actionKey){
