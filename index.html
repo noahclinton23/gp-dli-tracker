@@ -46,7 +46,7 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: radial-gradient(circle at top, #0f172a, #050814 70%);
       color: var(--text);
-      padding: 10px;
+      padding: 8px;
     }
 
     .app{
@@ -55,19 +55,19 @@
       border: 1px solid var(--border);
       background: var(--panel);
       border-radius: 14px;
-      padding: 10px;
+      padding: 8px;
       box-shadow: 0 18px 40px rgba(0,0,0,0.45);
       position: relative;
     }
 
     h1{
       margin:0;
-      font-size: 1.02rem;
+      font-size: 1.00rem;
       letter-spacing: .02em;
     }
     .sub{
       margin-top: 4px;
-      font-size: .75rem;
+      font-size: .74rem;
       color: var(--muted);
       line-height: 1.25;
     }
@@ -75,15 +75,15 @@
     /* Small yellow report tab top-right */
     .reportTab{
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       background: var(--yellowTab);
       color: var(--yellowText);
       border: 1px solid rgba(0,0,0,0.25);
       border-radius: 10px;
       padding: 6px 9px;
       font-weight: 950;
-      font-size: .72rem;
+      font-size: .70rem;
       letter-spacing: .10em;
       cursor: pointer;
       user-select:none;
@@ -94,11 +94,11 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin: 8px 0 8px;
+      margin: 8px 0 6px;
       color: var(--muted);
-      font-size: .74rem;
+      font-size: .72rem;
     }
     .pill{
       font-size: .70rem;
@@ -121,10 +121,10 @@
       font-weight: 950;
       letter-spacing: .08em;
       text-transform: uppercase;
-      font-size: .92rem;
+      font-size: .90rem;
       cursor: pointer;
       user-select: none;
-      margin: 8px 0 8px;
+      margin: 6px 0 6px;
       box-shadow: 0 10px 22px rgba(0,0,0,0.30);
     }
     .defPossBtn:active{ transform: translateY(1px); }
@@ -140,25 +140,32 @@
     @media (min-width: 430px){
       .rosterGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
+    /* Landscape: show more columns so roster takes less vertical space */
+    @media (orientation: landscape){
+      body{ padding: 6px; }
+      .app{ padding: 6px; }
+      .rosterGrid{ grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
 
     .playerTile{
       border-radius: 12px;
       border: 1px solid var(--border);
       background: rgba(2,6,23,0.55);
-      padding: 8px 8px;
+      padding: 7px 7px;
       cursor: pointer;
       user-select:none;
       line-height: 1.1;
-      min-height: 46px;
+      min-height: 44px;
       display:flex;
       flex-direction:column;
       justify-content:center;
       gap: 3px;
       transition: background .08s ease, border-color .08s ease, box-shadow .08s ease;
       overflow:hidden;
-      touch-action: manipulation; /* helps iOS pointer handling */
+
+      /* KEY: stop iOS double-tap zoom on player tiles */
+      touch-action: none;
     }
-    .playerTile:hover{ background: rgba(148,163,184,0.08); }
 
     .playerTile .topline{
       display:flex;
@@ -169,16 +176,16 @@
     .playerTile .num{
       font-weight: 950;
       font-variant-numeric: tabular-nums;
-      font-size: .86rem;
+      font-size: .84rem;
     }
     .playerTile .status{
-      font-size: .68rem;
+      font-size: .66rem;
       color: var(--muted);
       letter-spacing: .08em;
       font-weight: 850;
     }
     .playerTile .name{
-      font-size: .78rem;
+      font-size: .76rem;
       color: var(--text);
       white-space: nowrap;
       overflow:hidden;
@@ -203,10 +210,10 @@
       border-radius: 12px;
       background: var(--panel2);
       overflow:hidden;
-      margin-top: 10px;
+      margin-top: 8px;
     }
     .sectionHeader{
-      padding: 8px 10px;
+      padding: 7px 9px;
       border-bottom: 1px solid var(--border);
       background: rgba(2,6,23,0.55);
       display:flex;
@@ -217,7 +224,7 @@
     }
     .sectionHeader h2{
       margin:0;
-      font-size: .84rem;
+      font-size: .82rem;
       letter-spacing: .12em;
       text-transform: uppercase;
     }
@@ -232,20 +239,25 @@
     @media (min-width: 430px){
       .actionGrid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
+    /* Landscape: more columns to reduce scrolling */
+    @media (orientation: landscape){
+      .actionGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 8px; gap: 7px; }
+      .sectionCard{ margin-top: 6px; }
+    }
 
     .actionBtn{
       border-radius: 12px;
       border: 1px solid var(--border);
       background: rgba(2,6,23,0.45);
       color: var(--text);
-      padding: 10px 8px;
+      padding: 9px 7px;
       font-weight: 900;
-      font-size: .82rem;
+      font-size: .80rem;
       cursor: pointer;
       user-select:none;
       text-align:center;
       line-height: 1.15;
-      min-height: 44px;
+      min-height: 42px;
     }
     .actionBtn:active{ transform: translateY(1px); }
 
@@ -258,38 +270,30 @@
       border-color: var(--posBorder);
     }
 
-    /* Live stats table (compact + internal scroll) */
+    /* Live stats table (NO internal scroll box) */
     table{
       width: 100%;
       border-collapse: collapse;
-      font-size: .84rem;
+      font-size: .82rem;
     }
     th, td{
-      padding: 8px 8px;
+      padding: 7px 7px;
       border-bottom: 1px solid rgba(31,41,55,0.75);
       text-align:left;
       vertical-align: middle;
     }
     th{
-      font-size: .70rem;
+      font-size: .68rem;
       letter-spacing: .10em;
       text-transform: uppercase;
       color: var(--muted);
       background: rgba(2,6,23,0.35);
-      position: sticky;
-      top: 0;
-      z-index: 1;
     }
     tr.inGameRow{ background: rgba(59, 130, 246, 0.10); }
 
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-variant-numeric: tabular-nums;
-    }
-
-    .tableWrap{
-      max-height: 32vh;
-      overflow:auto;
     }
 
     /* Modal overlay for report */
@@ -395,8 +399,8 @@
       left: 50%;
       transform: translateX(-50%);
       bottom: 16px;
-      background: rgba(2,6,23,0.92);
-      border: 1px solid rgba(148,163,184,0.30);
+      background: var(--toastBg);
+      border: 1px solid var(--toastBorder);
       border-radius: 999px;
       padding: 10px 14px;
       font-size: .82rem;
@@ -429,7 +433,7 @@
     <div class="metaLine">
       <div class="pill">Selected: <span id="selectedLabel" class="mono">None</span></div>
       <div class="pill">IN: <span id="inCount">0</span>/5</div>
-      <div class="pill">Option B: +<span class="mono" id="bonusLabel">0.2</span> per Def Poss</div>
+      <div class="pill">Score = actions only • Possessions = volume</div>
     </div>
 
     <!-- Roster grid -->
@@ -439,7 +443,7 @@
     <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
     <!-- Clear all stats -->
-    <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:8px;">CLEAR ALL STATS</button>
+    <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:6px;">CLEAR ALL STATS</button>
 
     <!-- Negatives -->
     <section class="sectionCard">
@@ -463,16 +467,16 @@
     <section class="sectionCard">
       <div class="sectionHeader">
         <h2>Live Stats</h2>
-        <span class="pill">Score + Score/10 for everyone</span>
+        <span class="pill">Score + Score/10 + Poss</span>
       </div>
-      <div class="tableWrap">
+      <div style="padding: 8px 10px;">
         <table>
           <thead>
             <tr>
               <th>#</th>
               <th>Player</th>
               <th>IN</th>
-              <th class="mono">DefPoss</th>
+              <th class="mono">Poss</th>
               <th class="mono">Score</th>
               <th class="mono">Score/10</th>
             </tr>
@@ -508,9 +512,8 @@
               <tr>
                 <th>#</th>
                 <th>Player</th>
-                <th class="mono">DefPoss</th>
+                <th class="mono">Poss</th>
                 <th class="mono">ActionScore</th>
-                <th class="mono">TotalScore</th>
                 <th class="mono">Score/10</th>
               </tr>
             </thead>
@@ -524,10 +527,6 @@
   </div>
 
   <script>
-    // ==========================
-    // Option B constant
-    // ==========================
-    const DEF_POSS_BONUS = 0.2;
     const STORAGE_KEY = "hde_v1_autosave";
 
     // ==========================
@@ -577,6 +576,7 @@
         sprintback: 0,
         charge: 0,
         dive: 0,
+        onball: 0,   // NEW: Good On-Ball Defense +1
 
         rebound: 0
       },
@@ -609,6 +609,7 @@
       { key: "steal_score", label: "Steal→Score", pts: +3, inc: ["steal_score","steal"] },
       { key: "goodrotation", label: "Good Rotation", pts: +1, inc: ["goodrotation"] },
       { key: "sprintback", label: "Sprint Back", pts: +1, inc: ["sprintback"] },
+      { key: "onball", label: "Good On-Ball D", pts: +1, inc: ["onball"] }, // NEW
       { key: "charge", label: "Charge", pts: +2, inc: ["charge"] },
       { key: "dive", label: "Dive", pts: +2, inc: ["dive"] }
     ];
@@ -628,26 +629,15 @@
       toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1100);
     }
 
-    // Prevent double-tap zoom (mobile)
-    let lastTapForZoom = 0;
-    document.addEventListener("touchend", function (e) {
-      const now = Date.now();
-      if (now - lastTapForZoom < 300) e.preventDefault();
-      lastTapForZoom = now;
-    }, { passive: false });
-
     // ==========================
     // Helpers
     // ==========================
     function getPlayer(id){ return roster.find(p => p.id === id) || null; }
-
-    function totalScore(p){
-      return p.actionScore + (p.defPoss * DEF_POSS_BONUS);
-    }
+    function actionOnlyScore(p){ return p.actionScore; } // Score is actions only
 
     function scorePer10(p){
       if (p.defPoss <= 0) return null;
-      return (totalScore(p) / p.defPoss) * 10;
+      return (actionOnlyScore(p) / p.defPoss) * 10;
     }
 
     function format1(n){
@@ -747,7 +737,6 @@
       document.getElementById("inCount").textContent = String(countIn());
       const sel = selectedPlayerId ? getPlayer(selectedPlayerId) : null;
       document.getElementById("selectedLabel").textContent = sel ? `#${sel.number} ${sel.name}` : "None";
-      document.getElementById("bonusLabel").textContent = format1(DEF_POSS_BONUS);
     }
 
     function renderActionGrids(){
@@ -787,7 +776,7 @@
           <td>${p.name}</td>
           <td class="mono">${p.inGame ? "IN" : "OUT"}</td>
           <td class="mono">${p.defPoss}</td>
-          <td class="mono">${format1(totalScore(p))}</td>
+          <td class="mono">${format1(actionOnlyScore(p))}</td>
           <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
         `;
         tbody.appendChild(tr);
@@ -802,7 +791,6 @@
     // ==========================
     // Player tap behavior:
     // single tap = select, double tap = sub in/out
-    // implemented with ONE event (pointerup) so iPhone doesn't double-fire
     // ==========================
     const DOUBLE_TAP_MS = 320;
     let lastTap = { id: null, t: 0 };
@@ -841,18 +829,23 @@
       const isDouble = (lastTap.id === id) && (now - lastTap.t <= DOUBLE_TAP_MS);
 
       if (isDouble){
-        toggleSub(id); // double tap = sub
+        toggleSub(id);
         lastTap.id = null;
         lastTap.t = 0;
       } else {
-        selectPlayer(id); // single tap = select
+        selectPlayer(id);
         lastTap.id = id;
         lastTap.t = now;
       }
     });
 
+    // KEY: prevent iOS Safari double-tap zoom on player tiles
+    document.getElementById("rosterGrid").addEventListener("touchend", (e) => {
+      if (e.target.closest(".playerTile")) e.preventDefault();
+    }, { passive: false });
+
     // ==========================
-    // Defensive possession button
+    // Defensive possession button (NO score impact)
     // ==========================
     document.getElementById("defPossBtn").addEventListener("click", () => {
       const inPlayers = roster.filter(p => p.inGame);
@@ -861,9 +854,10 @@
         return;
       }
       for (const p of inPlayers) p.defPoss += 1;
+
       renderLiveTable();
       saveState();
-      toast(`Def Poss +1 for ${inPlayers.length} IN`);
+      toast(`Poss +1 for ${inPlayers.length} IN`);
     });
 
     // ==========================
@@ -956,7 +950,7 @@
     function buildReportRows(){
       return roster
         .filter(p => hasAnyStats(p))
-        .sort((a,b) => (totalScore(b) - totalScore(a)) || (b.defPoss - a.defPoss) || (a.number - b.number));
+        .sort((a,b) => (actionOnlyScore(b) - actionOnlyScore(a)) || (b.defPoss - a.defPoss) || (a.number - b.number));
     }
 
     function buildReportTable(){
@@ -971,8 +965,7 @@
           <td class="mono">${p.number}</td>
           <td>${p.name}</td>
           <td class="mono">${p.defPoss}</td>
-          <td class="mono">${format1(p.actionScore)}</td>
-          <td class="mono">${format1(totalScore(p))}</td>
+          <td class="mono">${format1(actionOnlyScore(p))}</td>
           <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
         `;
         body.appendChild(tr);
@@ -1022,7 +1015,7 @@
       cards.className = "cardsGrid";
 
       for(const p of rows){
-        const score = totalScore(p);
+        const score = actionOnlyScore(p);
         const grade = gradeFor(score);
 
         const positives = driverList(p, "pos");
@@ -1049,7 +1042,7 @@
           <div class="top">
             <div><strong>#${p.number} ${p.name}</strong>
               <div class="mono" style="color:var(--muted); font-size:.80rem;">
-                Score: ${format1(score)} • DefPoss: ${p.defPoss}
+                Score: ${format1(score)} • Poss: ${p.defPoss}
               </div>
             </div>
             <div class="grade">${grade}</div>
@@ -1121,13 +1114,13 @@
 </head>
 <body>
   <h1>HEART AND DRIVE EFFICIENCY</h1>
-  <div class="muted">Generated: ${stamp} • Option B bonus: +${DEF_POSS_BONUS} per Defensive Possession</div>
+  <div class="muted">Generated: ${stamp} • Score = actions only • Possessions = volume</div>
 
   <div class="top3">
-    <h2>Top 3 Players (by Total Score)</h2>
+    <h2>Top 3 Players (by Score)</h2>
     ${top3.map(p => `
       <div class="player">
-        <strong>#${p.number} ${p.name} — Score ${format1(totalScore(p))} (${gradeFor(totalScore(p))})</strong>
+        <strong>#${p.number} ${p.name} — Score ${format1(actionOnlyScore(p))} (${gradeFor(actionOnlyScore(p))})</strong>
         <div style="font-size:12px;">${summarizeTopPlayer(p)}</div>
       </div>
     `).join("")}
@@ -1138,9 +1131,8 @@
       <tr>
         <th>#</th>
         <th>Player</th>
-        <th class="mono">DefPoss</th>
-        <th class="mono">ActionScore</th>
-        <th class="mono">TotalScore</th>
+        <th class="mono">Poss</th>
+        <th class="mono">Score</th>
         <th class="mono">Score/10</th>
       </tr>
     </thead>
@@ -1152,8 +1144,7 @@
             <td class="mono">${p.number}</td>
             <td>${p.name}</td>
             <td class="mono">${p.defPoss}</td>
-            <td class="mono">${format1(p.actionScore)}</td>
-            <td class="mono">${format1(totalScore(p))}</td>
+            <td class="mono">${format1(actionOnlyScore(p))}</td>
             <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
           </tr>
         `;
@@ -1164,8 +1155,8 @@
   <div class="legend">
     <strong>Legend</strong>
     <ul>
-      <li>Score = ActionScore + (DefPoss × ${DEF_POSS_BONUS})</li>
-      <li>Score/10 = (TotalScore ÷ DefPoss) × 10</li>
+      <li>Score = ActionScore only (no possession bonus)</li>
+      <li>Score/10 = (Score ÷ Possessions) × 10</li>
       <li>Grades: B- starts at 5+ (good overall)</li>
     </ul>
   </div>
@@ -1183,7 +1174,48 @@
     document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
 
     // ==========================
-    // Load autosave + init render
+    // Clear all stats
+    // ==========================
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
+      if(!ok) return;
+
+      for (const p of roster){
+        p.inGame = false;
+        p.defPoss = 0;
+        p.actionScore = 0;
+        for (const k in p.c) p.c[k] = 0;
+      }
+      selectedPlayerId = null;
+
+      clearSavedState();
+      renderAll();
+      toast("Cleared.");
+    });
+
+    // ==========================
+    // Report modal wiring
+    // ==========================
+    const overlay = document.getElementById("reportOverlay");
+    document.getElementById("openReport").addEventListener("click", () => {
+      buildReportTable();
+      document.getElementById("cardsArea").innerHTML = "";
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden", "false");
+    });
+    document.getElementById("btnCloseReport").addEventListener("click", () => {
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden", "true");
+    });
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay){
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    // ==========================
+    // Init
     // ==========================
     loadState();
     renderActionGrids();
