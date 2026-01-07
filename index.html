@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>HEART AND DRIVE EFFICIENCY</title>
 
-  <!-- Allow pinch zoom. We'll block double-tap zoom with JS (but you won't need double-tap anymore). -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
 
   <style>
@@ -40,7 +39,6 @@
 
     *{ box-sizing:border-box; }
 
-    /* Default: reduce accidental browser gestures */
     html, body {
       touch-action: manipulation;
       overscroll-behavior: none;
@@ -323,7 +321,6 @@
     }
     .toast.show{ opacity: 1; }
 
-    /* Report modal */
     .overlay{
       position: fixed;
       inset: 0;
@@ -394,14 +391,13 @@
       line-height: 1.35;
     }
 
-    /* LANDSCAPE: show all buttons (neg+pos) at once by compressing + adding columns */
+    /* LANDSCAPE: show all neg+pos buttons at once */
     @media (orientation: landscape){
       body{ padding: 4px; }
 
       .app{
         padding: 6px;
         border-radius: 12px;
-        /* keep the main app from growing too tall */
         max-height: calc(100vh - 8px);
         overflow: hidden;
       }
@@ -427,7 +423,6 @@
       .sectionHeader{ padding: 6px 8px; }
       .sectionHeader h2{ font-size: .76rem; }
 
-      /* KEY CHANGE: more columns, smaller buttons so ALL show without scrolling */
       .actionGrid{
         grid-template-columns: repeat(6, minmax(0, 1fr));
         padding: 8px;
@@ -440,7 +435,6 @@
         border-radius: 10px;
       }
 
-      /* Live stats can scroll internally if needed, but buttons stay visible */
       .liveWrap{
         max-height: 22vh;
         overflow: auto;
@@ -459,7 +453,7 @@
     <div>
       <h1>HEART AND DRIVE EFFICIENCY</h1>
       <div class="sub">
-        Tap player = <strong>select/highlight</strong>. <strong>TRIPLE tap</strong> = <strong>sub in/out</strong> (max 5). (No double-tap needed.)
+        Tap player = <strong>select/highlight</strong>. <strong>TRIPLE tap</strong> = <strong>sub in/out</strong> (max 5).
       </div>
     </div>
 
@@ -517,7 +511,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- Report modal -->
   <div class="overlay" id="reportOverlay" aria-hidden="true">
     <div class="modal">
       <div class="modalHeader">
@@ -554,7 +547,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hde_v5_autosave";
+    const STORAGE_KEY = "hde_v6_autosave";
 
     const roster = [
       { number: 0,  name: "Roger Matute" },
@@ -667,7 +660,6 @@
 
     let selectedPlayerId = null;
 
-    // Undo stack (not autosaved on purpose)
     const historyStack = [];
 
     const toastEl = document.getElementById("toast");
@@ -680,7 +672,7 @@
     }
 
     function getPlayer(id){ return roster.find(p => p.id === id) || null; }
-    function score(p){ return p.actionScore; } // Score = actions only
+    function score(p){ return p.actionScore; }
     function scorePer10(p){
       if (p.defPoss <= 0) return null;
       return (score(p) / p.defPoss) * 10;
@@ -701,7 +693,6 @@
       return false;
     }
 
-    // Autosave
     function saveState(){
       try{
         const state = {
@@ -742,7 +733,6 @@
       } catch(e){}
     }
 
-    // Render
     function renderRosterGrid(){
       const grid = document.getElementById("rosterGrid");
       grid.innerHTML = "";
@@ -840,16 +830,9 @@
       saveState();
     }
 
-    // ====== TRIPLE TAP LOGIC ======
-    // Tap once: select immediately
-    // Triple tap (same player within window): toggle sub
+    // TRIPLE TAP
     const TAP_WINDOW_MS = 650;
-
-    const tapState = {
-      id: null,
-      count: 0,
-      lastTime: 0
-    };
+    const tapState = { id: null, count: 0, lastTime: 0 };
 
     document.getElementById("rosterGrid").addEventListener("pointerup", (e) => {
       const tile = e.target.closest(".playerTile");
@@ -858,10 +841,8 @@
       const id = parseInt(tile.dataset.id, 10);
       const now = Date.now();
 
-      // Always select on any tap (fast)
       selectPlayer(id);
 
-      // Update triple-tap state
       if (tapState.id === id && (now - tapState.lastTime) <= TAP_WINDOW_MS){
         tapState.count += 1;
       } else {
@@ -878,21 +859,6 @@
       }
     });
 
-    // ===== PINCH-ONLY ZOOM (stronger double-tap zoom block) =====
-    // This targets the classic Safari double-tap zoom without blocking pinch.
-    let lastTouchTime = 0;
-    function blockDoubleTapZoom(e){
-      const now = Date.now();
-      if (now - lastTouchTime <= 300){
-        e.preventDefault();
-      }
-      lastTouchTime = now;
-    }
-    // Use both touchstart and touchend for stronger coverage
-    document.addEventListener("touchstart", blockDoubleTapZoom, { passive: false });
-    document.addEventListener("touchend", blockDoubleTapZoom, { passive: false });
-
-    // Defensive possession button (NO score impact)
     document.getElementById("defPossBtn").addEventListener("click", () => {
       const inPlayers = roster.filter(p => p.inGame);
       if (inPlayers.length === 0){
@@ -913,7 +879,6 @@
       toast(`Poss +1 for ${inPlayers.length} IN`);
     });
 
-    // Apply actions to selected player
     function findAction(actionKey){
       return [...NEG_ACTIONS, ...POS_ACTIONS].find(a => a.key === actionKey) || null;
     }
@@ -962,7 +927,6 @@
       applyAction(btn.dataset.action);
     });
 
-    // Undo button
     document.getElementById("undoBtn").addEventListener("click", () => {
       const last = historyStack.pop();
       if (!last){
@@ -1007,7 +971,6 @@
       toast("Nothing to undo.");
     });
 
-    // Clear all stats (confirm)
     document.getElementById("clearAllBtn").addEventListener("click", () => {
       const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
       if(!ok) return;
@@ -1027,7 +990,7 @@
       toast("Cleared.");
     });
 
-    // ===== Report modal + PDF + report cards =====
+    // ===== Report modal + PDF + report cards (unchanged) =====
     const overlay = document.getElementById("reportOverlay");
 
     function buildReportRows(){
