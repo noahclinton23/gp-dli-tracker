@@ -1,455 +1,1612 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>DLI Live Tracker</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 10px;
-  background-color: #000;
-  color: #f5f5f5;
-}
-h1 { font-size: 20px; margin-bottom: 4px; }
-h3 { margin-top: 14px; }
+  <meta charset="UTF-8" />
+  <title>HEART AND DRIVE EFFICIENCY</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
 
-.game-meta {
-  font-size: 12px;
-  margin-bottom: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-}
-.game-meta label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.game-input {
-  background-color: #020617;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 3px 5px;
-  color: #f5f5f5;
-  font-size: 12px;
-}
+  <style>
+    :root{
+      --border:#1f2937;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
 
-.players-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.player-chip {
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #666;
-  font-size: 12px;
-  cursor: pointer;
-  background-color: #111;
-  color: #f5f5f5;
-}
-.on-court { background-color: #14532d; border-color: #22c55e; }
-.selected { box-shadow: 0 0 0 2px #38bdf8; }
+      --panel: rgba(2,6,23,0.76);
+      --panel2: rgba(15,23,42,0.80);
 
-.buttons-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
-}
+      --inBlueBg: rgba(59,130,246,0.22);
+      --inBlueBorder: rgba(59,130,246,0.58);
+      --inBlueText: #dbeafe;
 
-.primary-btn {
-  flex: 1;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #e5e5e5;
-  font-weight: bold;
-  cursor: pointer;
-  background-color: #f97316;
-  color: #111;
-}
+      --selectedGlow: rgba(34,197,94,0.62);
 
-.small-btn {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #888;
-  cursor: pointer;
-  font-size: 11px;
-  background-color: #222;
-  color: #f5f5f5;
-}
+      --negBg: rgba(239,68,68,0.11);
+      --negBorder: rgba(239,68,68,0.32);
 
-.buttons-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.event-btn {
-  font-size: 11px;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #333;
-  cursor: pointer;
-  background-color: #1f2933;
-  color: #f5f5f5;
-  text-align: center;
-}
-.neg { background-color: #7f1d1d; }
-.pos { background-color: #14532d; }
+      --posBg: rgba(34,197,94,0.11);
+      --posBorder: rgba(34,197,94,0.32);
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-  font-size: 11px;
-  margin-top: 4px;
-}
-th, td {
-  border: 1px solid #444;
-  padding: 4px;
-  text-align: center;
-}
-th {
-  background-color: #111827;
-  color: #e5e7eb;
-}
-tr:nth-child(even) td { background-color: #020617; }
-tr:nth-child(odd)  td { background-color: #020617; }
+      --orange:#f59e0b;
+      --orange2:#fbbf24;
 
-.neg-score { color: #f87171; }
-.pos-score { color: #4ade80; }
+      --yellowTab:#fbbf24;
+      --yellowText:#111827;
 
-.key-box {
-  margin-top: 14px;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #444;
-  background-color: #020617;
-  font-size: 11px;
-}
-.key-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 4px;
-}
-.key-item { white-space: nowrap; }
+      --toastBg: rgba(2,6,23,0.92);
+      --toastBorder: rgba(148,163,184,0.30);
 
-.save-box {
-  margin-top: 20px;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #444;
-  background-color: #111827;
-}
-.save-box h3 { margin-bottom: 6px; }
-.save-btn {
-  padding: 8px 12px;
-  margin: 4px 0;
-  background-color: #2563eb;
-  border-radius: 6px;
-  border: none;
-  color: white;
-  font-size: 13px;
-  cursor: pointer;
-  width: 100%;
-}
-.save-btn.pdf { background-color: #d97706; }
-</style>
+      --subInBg: rgba(34,197,94,0.92);
+      --subOutBg: rgba(239,68,68,0.92);
+      --darkText:#111827;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html, body {
+      touch-action: manipulation;
+      overscroll-behavior: none;
+    }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #050814 70%);
+      color: var(--text);
+      padding: 8px;
+    }
+
+    .app{
+      max-width: 1100px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 8px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+      position: relative;
+
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    h1{ margin:0; font-size: 1.00rem; letter-spacing: .02em; }
+    .sub{
+      margin-top: 4px;
+      font-size: .74rem;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .reportTab{
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--yellowTab);
+      color: var(--yellowText);
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-weight: 950;
+      font-size: .70rem;
+      letter-spacing: .10em;
+      cursor: pointer;
+      user-select:none;
+    }
+
+    /* TOP APP TABS */
+    .topTabs{
+      display:flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 10px 0 8px;
+    }
+    .tabBtn{
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.45);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 950;
+      font-size: .72rem;
+      letter-spacing: .08em;
+      cursor:pointer;
+      user-select:none;
+      touch-action: manipulation;
+      white-space: nowrap;
+    }
+    .tabBtn.active{
+      background: rgba(251,191,36,0.95);
+      color:#111827;
+      border-color: rgba(0,0,0,0.25);
+    }
+
+    .metaLine{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 8px 0 6px;
+      color: var(--muted);
+      font-size: .72rem;
+    }
+    .pill{
+      font-size: .70rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(2,6,23,0.45);
+      white-space: nowrap;
+    }
+
+    .rosterGrid{
+      display:grid;
+      gap: 6px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @media (min-width: 430px){
+      .rosterGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    .playerTile{
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.55);
+      padding: 7px 7px;
+      cursor: pointer;
+      user-select:none;
+      line-height: 1.1;
+      min-height: 44px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap: 3px;
+      overflow:hidden;
+      touch-action: manipulation;
+      -webkit-touch-callout: none;
+    }
+
+    .playerTile .topline{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap: 6px;
+    }
+    .playerTile .num{
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      font-size: .84rem;
+    }
+    .playerTile .status{
+      font-size: .66rem;
+      color: var(--muted);
+      letter-spacing: .08em;
+      font-weight: 850;
+    }
+    .playerTile .name{
+      font-size: .76rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    .playerTile.inGame{
+      background: var(--inBlueBg);
+      border-color: var(--inBlueBorder);
+      color: var(--inBlueText);
+    }
+    .playerTile.inGame .name{ color: var(--inBlueText); }
+    .playerTile.inGame .status{ color: rgba(219,234,254,0.9); }
+
+    .playerTile.selected{
+      box-shadow: 0 0 0 2px var(--selectedGlow);
+    }
+
+    .subRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 6px 0 6px;
+    }
+    .subBtn{
+      border-radius: 14px;
+      padding: 12px 10px;
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-size: .86rem;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.25);
+      color: var(--darkText);
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .subBtn:active{ transform: translateY(1px); }
+    .subIn{ background: var(--subInBg); }
+    .subOut{ background: var(--subOutBg); }
+
+    .defPossBtn{
+      width: 100%;
+      background: linear-gradient(180deg, var(--orange2), var(--orange));
+      color: #111827;
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .90rem;
+      cursor: pointer;
+      user-select: none;
+      margin: 6px 0 6px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.30);
+      touch-action: manipulation;
+    }
+    .defPossBtn:active{ transform: translateY(1px); }
+
+    .sectionCard{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel2);
+      overflow:hidden;
+      margin-top: 8px;
+    }
+    .sectionHeader{
+      padding: 7px 9px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(2,6,23,0.55);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sectionHeader h2{
+      margin:0;
+      font-size: .82rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .actionGrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px;
+    }
+    @media (min-width: 430px){
+      .actionGrid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    .actionBtn{
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.45);
+      color: var(--text);
+      padding: 9px 7px;
+      font-weight: 900;
+      font-size: .80rem;
+      cursor: pointer;
+      user-select:none;
+      text-align:center;
+      line-height: 1.15;
+      min-height: 42px;
+      touch-action: manipulation;
+    }
+    .actionBtn:active{ transform: translateY(1px); }
+    .actionBtn.neg{ background: var(--negBg); border-color: var(--negBorder); }
+    .actionBtn.pos{ background: var(--posBg); border-color: var(--posBorder); }
+
+    table{ width: 100%; border-collapse: collapse; font-size: .82rem; }
+    th, td{
+      padding: 7px 7px;
+      border-bottom: 1px solid rgba(31,41,55,0.75);
+      text-align:left;
+      vertical-align: middle;
+    }
+    th{
+      font-size: .68rem;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(2,6,23,0.35);
+    }
+    tr.inGameRow{ background: rgba(59,130,246,0.10); }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .btn{
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(15,23,42,0.85);
+      color: var(--text);
+      padding: 8px 10px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: .78rem;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .btnYellow{
+      background: rgba(251,191,36,0.95);
+      color: #111827;
+      border-color: rgba(0,0,0,0.25);
+    }
+    .btnDanger{
+      background: rgba(239,68,68,0.92);
+      color:#111827;
+      border-color: rgba(0,0,0,0.25);
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      background: var(--toastBg);
+      border: 1px solid var(--toastBorder);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: .82rem;
+      color: var(--text);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .15s ease;
+      z-index: 10000;
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{ opacity: 1; }
+
+    /* Team tab widgets */
+    .teamGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px;
+    }
+    @media (min-width: 520px){
+      .teamGrid{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .teamCard{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(2,6,23,0.45);
+      padding: 10px;
+    }
+    .teamCard h3{
+      margin:0 0 8px;
+      font-size: .78rem;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .teamBig{
+      font-size: 1.8rem;
+      font-weight: 950;
+      letter-spacing: .03em;
+      margin: 4px 0 8px;
+    }
+    .teamControls{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .teamBtn{
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.25);
+      padding: 10px 8px;
+      font-weight: 950;
+      font-size: .85rem;
+      cursor:pointer;
+      user-select:none;
+      touch-action: manipulation;
+      color:#111827;
+    }
+    .teamPlus{ background: rgba(34,197,94,0.90); }
+    .teamMinus{ background: rgba(239,68,68,0.90); }
+    .teamBtn:active{ transform: translateY(1px); }
+    .diffLine{
+      margin-top: 8px;
+      font-size: .80rem;
+      color: var(--muted);
+    }
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* Report modal */
+    .overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display:none;
+      align-items:flex-start;
+      justify-content:center;
+      padding: 12px;
+      z-index: 9999;
+    }
+    .overlay.show{ display:flex; }
+    .modal{
+      width: 100%;
+      max-width: 1100px;
+      background: rgba(2,6,23,0.92);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      overflow:hidden;
+    }
+    .modalHeader{
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: rgba(2,6,23,0.7);
+    }
+    .modalHeader h3{
+      margin:0;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-size: .88rem;
+    }
+    .modalBody{
+      padding: 10px;
+      max-height: 78vh;
+      overflow:auto;
+    }
+
+    .cardsGrid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .reportCard{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15,23,42,0.75);
+      padding: 10px;
+    }
+    .reportCard .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .grade{ font-weight: 950; font-size: 1.10rem; }
+    .bullets{
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.35;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="app" id="appRoot">
+    <div class="reportTab" id="openReport">REPORT</div>
 
-<h1>DLI Live Tracker</h1>
+    <div>
+      <h1>HEART AND DRIVE EFFICIENCY</h1>
+      <div class="sub">
+        DEFENSE tab = individual player logging. Other tabs = TEAM ONLY counters (no player score impact).
+      </div>
+    </div>
 
-<div class="game-meta">
-  <label>Opponent:
-    <input id="opponentInput" class="game-input" type="text" placeholder="Team name">
-  </label>
-  <label>Location:
-    <input id="locationInput" class="game-input" type="text" placeholder="Home/Away/Gym">
-  </label>
-</div>
+    <div class="topTabs" id="topTabs">
+      <button class="tabBtn active" data-tab="def">DEFENSE</button>
+      <button class="tabBtn" data-tab="off">OFF POSS / TO</button>
+      <button class="tabBtn" data-tab="oreb">OREB</button>
+      <button class="tabBtn" data-tab="fta">FTA</button>
+      <button class="tabBtn" data-tab="tpa">3PA (US)</button>
+    </div>
 
-<div style="font-size: 12px; margin-bottom: 6px;">
-  Single tap = <b>select for stats</b>. Double tap = <b>sub in/out (ON COURT)</b>. Max 5 on the floor.
-</div>
+    <!-- DEFENSE SCREEN -->
+    <div class="screen active" id="screen-def">
+      <div class="metaLine">
+        <div class="pill">Active: <span id="activeLabel" class="mono">None</span></div>
+        <div class="pill">Selected: <span id="selCount" class="mono">0</span></div>
+        <div class="pill">IN: <span id="inCount">0</span>/5</div>
+      </div>
 
-<div class="players-row" id="playersRow"></div>
+      <div class="rosterGrid" id="rosterGrid"></div>
 
-<div class="buttons-row">
-  <button id="possBtn" class="primary-btn">+1 Defensive Possession</button>
-  <button id="undoBtn" class="small-btn">Undo Last Stat</button>
-  <button id="newGameBtn" class="small-btn">New Game</button>
-  <button id="resetBtn" class="small-btn" style="border-color:#f87171;color:#fecaca;">Reset All</button>
-</div>
+      <div class="subRow">
+        <button class="subBtn subIn" id="subInBtn">SUB IN (Selected)</button>
+        <button class="subBtn subOut" id="subOutBtn">SUB OUT (Selected)</button>
+      </div>
 
-<div class="buttons-grid" id="eventsGrid"></div>
+      <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
-<h3>Player Summary</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Player</th>
-      <th>Defensive Possessions</th>
-      <th>Raw Score</th>
-      <th>Score per 10</th>
-      <th>Blow-By</th>
-      <th>Late Rotation</th>
-      <th>No Box Out</th>
-      <th>Second-Chance Allowed</th>
-      <th>Jog Back</th>
-      <th>No Talk</th>
-      <th>Box-Out → Team Rebound</th>
-      <th>Box-Out Contact</th>
-      <th>Deflection</th>
-      <th>Early Help</th>
-      <th>Sprint Back</th>
-      <th>Charge Taken</th>
-    </tr>
-  </thead>
-  <tbody id="summaryBody"></tbody>
-</table>
+      <button class="btn" id="undoBtn" style="width:100%; margin-bottom:6px;">UNDO LAST STAT</button>
+      <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:6px;">CLEAR ALL STATS</button>
 
-<div class="save-box">
-  <h3>Save Stats</h3>
-  <button class="save-btn" id="csvBtn">⬇️ Export Stats (CSV)</button>
-  <button class="save-btn pdf" id="pdfBtn">🖨️ Export Stats (PDF)</button>
-</div>
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>Negatives</h2>
+          <span class="pill">Applies to ACTIVE player</span>
+        </div>
+        <div class="actionGrid" id="negGrid"></div>
+      </section>
 
-<div class="key-box">
-  <div><b>Stat Key</b></div>
-  <div class="key-row">
-    <div class="key-item">Blow-By = –3</div>
-    <div class="key-item">Late Rotation = –2</div>
-    <div class="key-item">No Box Out = –1</div>
-    <div class="key-item">Second-Chance Allowed = –2</div>
-    <div class="key-item">Jog Back = –1</div>
-    <div class="key-item">No Talk = –1</div>
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>Positives</h2>
+          <span class="pill">Applies to ACTIVE player</span>
+        </div>
+        <div class="actionGrid" id="posGrid"></div>
+      </section>
+
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>Live Stats</h2>
+          <span class="pill">Score + Score/10 + Poss</span>
+        </div>
+        <div style="padding: 8px 10px; overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>IN</th>
+                <th class="mono">Poss</th>
+                <th class="mono">Score</th>
+                <th class="mono">Score/10</th>
+              </tr>
+            </thead>
+            <tbody id="liveBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- TEAM SCREENS (TEAM ONLY) -->
+    <div class="screen" id="screen-off">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>OFF POSS / TO</h2>
+          <span class="pill">Off Poss Diff = Us − Opp • TO Battle = Opp − Us</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>Offensive Possessions (Us)</h3>
+            <div class="teamBig mono" id="offPossUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="offPossUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="offPossUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>Offensive Possessions (Opp)</h3>
+            <div class="teamBig mono" id="offPossOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="offPossOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="offPossOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>Off Poss Differential</h3>
+            <div class="teamBig mono" id="offPossDiff">0</div>
+            <div class="diffLine">Us − Opp</div>
+          </div>
+
+          <div class="teamCard">
+            <h3>Turnovers (Us)</h3>
+            <div class="teamBig mono" id="toUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="toUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="toUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>Turnovers (Opp)</h3>
+            <div class="teamBig mono" id="toOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="toOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="toOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>TO Battle</h3>
+            <div class="teamBig mono" id="toBattle">0</div>
+            <div class="diffLine">Opp − Us (Positive = Winning)</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="screen" id="screen-oreb">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>OFFENSIVE REBOUNDS</h2>
+          <span class="pill">Differential = Us − Opp</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>OREB (Us)</h3>
+            <div class="teamBig mono" id="orebUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="orebUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="orebUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>OREB (Opp)</h3>
+            <div class="teamBig mono" id="orebOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="orebOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="orebOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>OREB Differential</h3>
+            <div class="teamBig mono" id="orebDiff">0</div>
+            <div class="diffLine">Us − Opp</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="screen" id="screen-fta">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>FREE THROWS ATTEMPTED</h2>
+          <span class="pill">Differential = Us − Opp</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>FTA (Us)</h3>
+            <div class="teamBig mono" id="ftaUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="ftaUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="ftaUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>FTA (Opp)</h3>
+            <div class="teamBig mono" id="ftaOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="ftaOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="ftaOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>FTA Differential</h3>
+            <div class="teamBig mono" id="ftaDiff">0</div>
+            <div class="diffLine">Us − Opp</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="screen" id="screen-tpa">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>3 POINTERS ATTEMPTED (US ONLY)</h2>
+          <span class="pill">Team Only</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>3PA (Us)</h3>
+            <div class="teamBig mono" id="tpaUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="tpaUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="tpaUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
   </div>
-  <div class="key-row">
-    <div class="key-item">Box-Out → Team Rebound = +2</div>
-    <div class="key-item">Box-Out Contact = +1</div>
-    <div class="key-item">Deflection = +1</div>
-    <div class="key-item">Early Help = +1</div>
-    <div class="key-item">Sprint Back = +1</div>
-    <div class="key-item">Charge Taken = +2</div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="overlay" id="reportOverlay" aria-hidden="true">
+    <div class="modal">
+      <div class="modalHeader">
+        <h3>Post Game Report</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btnYellow" id="btnExportPdf">EXPORT PDF</button>
+          <button class="btn" id="btnReportCards">REPORT CARDS</button>
+          <button class="btn btnDanger" id="btnCloseReport">CLOSE</button>
+        </div>
+      </div>
+      <div class="modalBody">
+        <div class="pill" style="display:inline-block; margin-bottom:10px;">
+          Clean list includes players who recorded stats or possessions.
+        </div>
+
+        <div style="max-height: 45vh; overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th class="mono">Poss</th>
+                <th class="mono">Score</th>
+                <th class="mono">Score/10</th>
+              </tr>
+            </thead>
+            <tbody id="reportBody"></tbody>
+          </table>
+        </div>
+
+        <div id="cardsArea"></div>
+      </div>
+    </div>
   </div>
-</div>
 
-<script>
-const eventDefs = [
-  { key: 'BB',   label: 'Blow-By –3',                weight: -3 },
-  { key: 'LR',   label: 'Late Rotation –2',          weight: -2 },
-  { key: 'NB',   label: 'No Box Out –1',             weight: -1 },
-  { key: 'SCA',  label: 'Second-Chance Allowed –2',  weight: -2 },
-  { key: 'JB',   label: 'Jog Back –1',               weight: -1 },
-  { key: 'NT',   label: 'No Talk –1',                weight: -1 },
-  { key: 'BXTR', label: 'Box-Out → Team Rebound +2', weight:  2 },
-  { key: 'BXC',  label: 'Box-Out Contact +1',        weight:  1 },
-  { key: 'DEF',  label: 'Deflection +1',             weight:  1 },
-  { key: 'EH',   label: 'Early Help +1',             weight:  1 },
-  { key: 'SB',   label: 'Sprint Back +1',            weight:  1 },
-  { key: 'CH',   label: 'Charge Taken +2',           weight:  2 },
-];
+  <script>
+    const STORAGE_KEY = "hde_v10_autosave";
 
-let players = [
-  { id: 1, number: '0',  name: 'Roger M' },
-  { id: 2, number: '1',  name: 'Devon W' },
-  { id: 3, number: '2',  name: 'Inaki P' },
-  { id: 4, number: '3',  name: 'John K' },
-  { id: 5, number: '4',  name: 'Evan M' },
-  { id: 6, number: '5',  name: 'Madden F' },
-  { id: 7, number: '11', name: 'Ethan S' },
-  { id: 8, number: '12', name: 'Conner G' },
-  { id: 9, number: '14', name: 'Nathan A' },
-  { id:10, number: '15', name: 'Oliver W' },
-  { id:11, number: '20', name: 'Malachi P' },
-  { id:12, number: '22', name: 'Jayden B' },
-  { id:13, number: '23', name: 'Anjrew G' },
-  { id:14, number: '24', name: 'Quinn C' },
-  { id:15, number: '33', name: 'Craig H' },
-];
-
-const state = {};
-players.forEach(p => state[p.id] = { defPoss: 0, events: {}, onCourt: false });
-
-let selectedPlayerId = players[0].id;
-const history = [];
-
-const playersRow     = document.getElementById('playersRow');
-const eventsGrid     = document.getElementById('eventsGrid');
-const summaryBody    = document.getElementById('summaryBody');
-const possBtn        = document.getElementById('possBtn');
-const undoBtn        = document.getElementById('undoBtn');
-const newGameBtn     = document.getElementById('newGameBtn');
-const resetBtn       = document.getElementById('resetBtn');
-const csvBtn         = document.getElementById('csvBtn');
-const pdfBtn         = document.getElementById('pdfBtn');
-const opponentInput  = document.getElementById('opponentInput');
-const locationInput  = document.getElementById('locationInput');
-
-// Single tap = select, double tap = sub in/out
-function renderPlayersRow() {
-  playersRow.innerHTML = '';
-  players.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'player-chip';
-    if (state[p.id].onCourt) div.classList.add('on-court');
-    if (selectedPlayerId === p.id) div.classList.add('selected');
-    div.textContent = `#${p.number} ${p.name}`;
-
-    // Single tap: select for stats
-    div.addEventListener('click', () => {
-      selectedPlayerId = p.id;
-      renderPlayersRow();
-    });
-
-    // Double tap: toggle onCourt (sub in/out)
-    div.addEventListener('dblclick', () => {
-      const onCount = players.filter(pl => state[pl.id].onCourt).length;
-      if (state[p.id].onCourt) {
-        state[p.id].onCourt = false;
-      } else if (onCount < 5) {
-        state[p.id].onCourt = true;
-      }
-      renderPlayersRow();
-      renderSummary();
-    });
-
-    playersRow.appendChild(div);
-  });
-}
-
-// Events grid
-function renderEventsGrid() {
-  eventsGrid.innerHTML = '';
-  eventDefs.forEach(ev => {
-    const btn = document.createElement('button');
-    btn.className = 'event-btn ' + (ev.weight < 0 ? 'neg' : 'pos');
-    btn.textContent = ev.label;
-    btn.onclick = () => {
-      state[selectedPlayerId].events[ev.key] =
-        (state[selectedPlayerId].events[ev.key] || 0) + 1;
-      history.push({ type: 'event', playerId: selectedPlayerId, key: ev.key });
-      renderSummary();
+    // TEAM ONLY counters
+    const team = {
+      offPossUs: 0, offPossOpp: 0,
+      toUs: 0, toOpp: 0,
+      orebUs: 0, orebOpp: 0,
+      ftaUs: 0, ftaOpp: 0,
+      tpaUs: 0
     };
-    eventsGrid.appendChild(btn);
-  });
-}
 
-// Possessions
-possBtn.onclick = () => {
-  const ids = players.filter(p => state[p.id].onCourt).map(p => p.id);
-  ids.forEach(id => state[id].defPoss++);
-  history.push({ type: 'poss', playerIds: ids });
-  renderSummary();
-};
+    const roster = [
+      { number: 0,  name: "Roger Matute" },
+      { number: 1,  name: "Devon Winder" },
+      { number: 2,  name: "Inaki Polmares" },
+      { number: 3,  name: "John Keohane" },
+      { number: 4,  name: "Evan Medlin" },
+      { number: 5,  name: "Madden Fender" },
+      { number: 12, name: "Conner Graves" },
+      { number: 14, name: "Nathan Allen" },
+      { number: 15, name: "Oliver Whaley" },
+      { number: 20, name: "Malachi Palmer" },
+      { number: 22, name: "Jayden Barton" },
+      { number: 23, name: "Anjrew Goins" },
+      { number: 24, name: "Quinn Coykendal" },
+      { number: 33, name: "Craig Huskey" }
+    ].map((p, idx) => ({
+      id: idx + 1,
+      number: p.number,
+      name: p.name,
+      inGame: false,
+      defPoss: 0,
+      c: {
+        blowby: 0,
+        laterotation: 0,
+        weakcloseout: 0,
+        noboxout: 0,
+        secondchance: 0,
+        secondchance_score: 0,
+        jogback: 0,
+        poorcomm: 0,
+        foul: 0,
+        gamble: 0,
+        gamble_score: 0,
 
-// Undo
-undoBtn.onclick = () => {
-  const last = history.pop();
-  if (!last) return;
-  if (last.type === 'event') {
-    const st = state[last.playerId];
-    if (st.events[last.key] > 0) st.events[last.key]--;
-  } else if (last.type === 'poss') {
-    last.playerIds.forEach(id => { if (state[id].defPoss > 0) state[id].defPoss--; });
-  }
-  renderSummary();
-};
+        boxout: 0,
+        boxout_reb: 0,
+        deflection: 0,
+        defl_steal: 0,
+        steal: 0,
+        steal_score: 0,
+        goodrotation: 0,
+        sprintback: 0,
+        onball: 0,
+        block: 0,
+        rebound: 0,
+        charge: 0,
+        dive: 0
+      },
+      actionScore: 0
+    }));
 
-// New Game: clear stats, keep opponent/location
-newGameBtn.onclick = () => {
-  if (!confirm("Start NEW GAME? This clears all stats but keeps opponent/location.")) return;
-  players.forEach(p => {
-    state[p.id].defPoss = 0;
-    state[p.id].events = {};
-    state[p.id].onCourt = false;
-  });
-  selectedPlayerId = players[0].id;
-  history.length = 0;
-  renderPlayersRow();
-  renderSummary();
-};
+    const ACTION_ABBR = {
+      blowby: "BB",
+      laterotation: "LR",
+      weakcloseout: "WC",
+      noboxout: "NBO",
+      secondchance: "2CA",
+      secondchance_score: "2CS",
+      jogback: "JB",
+      poorcomm: "PC",
+      foul: "F",
+      gamble: "G",
+      gamble_score: "GS",
 
-// Reset All: clear everything, including opponent/location
-resetBtn.onclick = () => {
-  if (!confirm("RESET ALL? This clears stats, on-court, history, and opponent/location.")) return;
-  players.forEach(p => {
-    state[p.id].defPoss = 0;
-    state[p.id].events = {};
-    state[p.id].onCourt = false;
-  });
-  history.length = 0;
-  selectedPlayerId = players[0].id;
-  opponentInput.value = '';
-  locationInput.value = '';
-  renderPlayersRow();
-  renderSummary();
-};
+      boxout: "BO",
+      rebound: "REB",
+      block: "BLK",
+      boxout_reb_combo: "BR",
+      deflection: "DFL",
+      defl_steal_combo: "DS",
+      steal: "STL",
+      steal_score: "STS",
+      goodrotation: "GR",
+      sprintback: "SB",
+      onball: "OBD",
+      charge: "CHG",
+      dive: "DIVE"
+    };
 
-// Scores
-function calcScores(id) {
-  const st = state[id];
-  let raw = 0;
-  eventDefs.forEach(ev => raw += (st.events[ev.key] || 0) * ev.weight);
-  const per10 = st.defPoss > 0 ? (raw / st.defPoss * 10) : null;
-  return { raw, per10 };
-}
+    const NEG_ACTIONS = [
+      { key: "blowby", label: "Blow By", pts: -2, inc: ["blowby"] },
+      { key: "laterotation", label: "Late Rotation", pts: -1, inc: ["laterotation"] },
+      { key: "weakcloseout", label: "Weak Closeout", pts: -1, inc: ["weakcloseout"] },
+      { key: "noboxout", label: "No Box Out", pts: -1, inc: ["noboxout"] },
+      { key: "secondchance", label: "2nd Chance Allowed", pts: -1, inc: ["secondchance"] },
+      { key: "secondchance_score", label: "2nd Chance → Score", pts: -2, inc: ["secondchance_score"] },
+      { key: "jogback", label: "Jog Back", pts: -1, inc: ["jogback"] },
+      { key: "poorcomm", label: "Poor Comm", pts: -1, inc: ["poorcomm"] },
+      { key: "foul", label: "Foul", pts: -1.5, inc: ["foul"] },
+      { key: "gamble", label: "Gamble", pts: -1, inc: ["gamble"] },
+      { key: "gamble_score", label: "Gamble → Score", pts: -2, inc: ["gamble_score"] }
+    ];
 
-// Table
-function renderSummary() {
-  summaryBody.innerHTML = '';
-  players.forEach(p => {
-    const st = state[p.id];
-    const { raw, per10 } = calcScores(p.id);
-    const onTag = state[p.id].onCourt ? ' (ON)' : '';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>#${p.number}${onTag}</td>
-      <td>${st.defPoss || ''}</td>
-      <td class="${raw < 0 ? 'neg-score' : 'pos-score'}">${raw || ''}</td>
-      <td class="${per10 < 0 ? 'neg-score' : 'pos-score'}">${per10 ? per10.toFixed(2) : ''}</td>
-      ${['BB','LR','NB','SCA','JB','NT','BXTR','BXC','DEF','EH','SB','CH']
-        .map(k => `<td>${st.events[k] || ''}</td>`).join('')}
-    `;
-    summaryBody.appendChild(tr);
-  });
-}
+    const POS_ACTIONS = [
+      { key: "boxout", label: "Box Out", pts: +1, inc: ["boxout"] },
+      { key: "rebound", label: "Rebound", pts: +1, inc: ["rebound"] },
+      { key: "block", label: "Block", pts: +1, inc: ["block"] },
+      { key: "boxout_reb_combo", label: "Box+Reb", pts: +2, inc: ["boxout","rebound","boxout_reb"] },
+      { key: "deflection", label: "Deflection", pts: +1, inc: ["deflection"] },
+      { key: "defl_steal_combo", label: "Defl+Steal", pts: +2, inc: ["deflection","steal","defl_steal"] },
+      { key: "steal", label: "Steal", pts: +1, inc: ["steal"] },
+      { key: "steal_score", label: "Steal→Score", pts: +3, inc: ["steal_score","steal"] },
+      { key: "goodrotation", label: "Good Rotation", pts: +1, inc: ["goodrotation"] },
+      { key: "sprintback", label: "Sprint Back", pts: +1, inc: ["sprintback"] },
+      { key: "onball", label: "Good On-Ball D", pts: +1, inc: ["onball"] },
+      { key: "charge", label: "Charge", pts: +2, inc: ["charge"] },
+      { key: "dive", label: "Dive", pts: +2, inc: ["dive"] }
+    ];
 
-// CSV export
-csvBtn.onclick = () => {
-  let opponent = opponentInput.value || "Opponent";
-  let date = new Date().toLocaleDateString().replaceAll("/", "-");
+    let activePlayerId = null;
+    const selectedSet = new Set();
 
-  let csv = "Player,#,DefPoss,Raw,Per10,Blow-By,LateRotation,NoBoxOut,SecondChance,JogBack,NoTalk,BoxOutTeam,BoxOutContact,Deflection,EarlyHelp,SprintBack,ChargeTaken,OnCourt\n";
+    // Undo stack supports: poss, action, team
+    const historyStack = [];
 
-  players.forEach(p => {
-    const st = state[p.id];
-    const { raw, per10 } = calcScores(p.id);
-    const onFlag = state[p.id].onCourt ? "ON" : "";
-    csv += `${p.name},${p.number},${st.defPoss},${raw},${per10 || ""},` +
-           `${st.events['BB']||0},${st.events['LR']||0},${st.events['NB']||0},${st.events['SCA']||0},${st.events['JB']||0},${st.events['NT']||0},${st.events['BXTR']||0},${st.events['BXC']||0},${st.events['DEF']||0},${st.events['EH']||0},${st.events['SB']||0},${st.events['CH']||0},${onFlag}\n`;
-  });
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1100);
+    }
 
-  let blob = new Blob([csv], { type: "text/csv" });
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `DLI_${opponent}_${date}.csv`;
-  link.click();
-};
+    function clamp0(x){ return Math.max(0, Number(x) || 0); }
+    function diff(a,b){ return (Number(a)||0) - (Number(b)||0); }
 
-// PDF export
-pdfBtn.onclick = () => {
-  window.print();
-};
+    function getPlayer(id){ return roster.find(p => p.id === id) || null; }
+    function score(p){ return p.actionScore; }
+    function scorePer10(p){
+      if (p.defPoss <= 0) return null;
+      return (score(p) / p.defPoss) * 10;
+    }
+    function format1(n){
+      const rounded = Math.round(n * 10) / 10;
+      return (Math.abs(rounded % 1) > 0) ? rounded.toFixed(1) : String(rounded);
+    }
+    function shortName(full){
+      const parts = String(full).trim().split(/\s+/);
+      return parts.length ? parts[parts.length - 1] : full;
+    }
+    function countIn(){ return roster.filter(p => p.inGame).length; }
+    function hasAnyStats(p){
+      if (p.defPoss > 0) return true;
+      if (p.actionScore !== 0) return true;
+      for (const k in p.c){ if (p.c[k] !== 0) return true; }
+      return false;
+    }
 
-renderPlayersRow();
-renderEventsGrid();
-renderSummary();
-</script>
+    // Autosave
+    function saveState(){
+      try{
+        const state = {
+          v: 1,
+          activePlayerId,
+          selectedIds: Array.from(selectedSet),
+          currentTab: currentTab,
+          team: { ...team },
+          roster: roster.map(p => ({
+            id: p.id,
+            inGame: p.inGame,
+            defPoss: p.defPoss,
+            actionScore: p.actionScore,
+            c: p.c
+          }))
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch(e){}
+    }
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (!state || state.v !== 1 || !Array.isArray(state.roster)) return;
 
+        activePlayerId = state.activePlayerId ?? null;
+        selectedSet.clear();
+        if (Array.isArray(state.selectedIds)){
+          for (const id of state.selectedIds) selectedSet.add(Number(id));
+        }
+
+        if (state.team && typeof state.team === "object"){
+          for (const k in team){
+            if (state.team[k] !== undefined) team[k] = clamp0(state.team[k]);
+          }
+        }
+
+        currentTab = state.currentTab || "def";
+
+        for (const s of state.roster){
+          const p = roster.find(x => x.id === s.id);
+          if (!p) continue;
+          p.inGame = !!s.inGame;
+          p.defPoss = clamp0(s.defPoss);
+          p.actionScore = Number(s.actionScore || 0);
+          if (s.c && typeof s.c === "object"){
+            for (const k in p.c){
+              if (s.c[k] !== undefined) p.c[k] = clamp0(s.c[k]);
+            }
+          }
+        }
+      } catch(e){}
+    }
+
+    function renderRosterGrid(){
+      const grid = document.getElementById("rosterGrid");
+      grid.innerHTML = "";
+
+      const sorted = [...roster].sort((a,b) => a.number - b.number);
+      for (const p of sorted){
+        const tile = document.createElement("div");
+        const isSelected = selectedSet.has(p.id);
+        tile.className =
+          "playerTile" +
+          (p.inGame ? " inGame" : "") +
+          (isSelected ? " selected" : "");
+        tile.dataset.id = String(p.id);
+
+        tile.innerHTML = `
+          <div class="topline">
+            <div class="num">${p.number}</div>
+            <div class="status">${p.inGame ? "IN" : "OUT"}</div>
+          </div>
+          <div class="name">${shortName(p.name)}</div>
+        `;
+        grid.appendChild(tile);
+      }
+
+      document.getElementById("inCount").textContent = String(countIn());
+      document.getElementById("selCount").textContent = String(selectedSet.size);
+
+      const a = activePlayerId ? getPlayer(activePlayerId) : null;
+      document.getElementById("activeLabel").textContent = a ? `#${a.number} ${a.name}` : "None";
+    }
+
+    function renderActionGrids(){
+      const neg = document.getElementById("negGrid");
+      const pos = document.getElementById("posGrid");
+      neg.innerHTML = "";
+      pos.innerHTML = "";
+
+      for(const a of NEG_ACTIONS){
+        const b = document.createElement("button");
+        b.className = "actionBtn neg";
+        b.dataset.action = a.key;
+        b.textContent = `${a.label} ${format1(a.pts)}`;
+        neg.appendChild(b);
+      }
+      for(const a of POS_ACTIONS){
+        const b = document.createElement("button");
+        b.className = "actionBtn pos";
+        b.dataset.action = a.key;
+        b.textContent = `${a.label} +${format1(a.pts)}`;
+        pos.appendChild(b);
+      }
+    }
+
+    function renderLiveTable(){
+      const tbody = document.getElementById("liveBody");
+      tbody.innerHTML = "";
+
+      const sorted = [...roster].sort((a,b) => a.number - b.number);
+      for(const p of sorted){
+        const tr = document.createElement("tr");
+        if (p.inGame) tr.classList.add("inGameRow");
+
+        const sp10 = scorePer10(p);
+        tr.innerHTML = `
+          <td class="mono">${p.number}</td>
+          <td>${p.name}</td>
+          <td class="mono">${p.inGame ? "IN" : "OUT"}</td>
+          <td class="mono">${p.defPoss}</td>
+          <td class="mono">${format1(score(p))}</td>
+          <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function renderTeam(){
+      document.getElementById("offPossUs").textContent = team.offPossUs;
+      document.getElementById("offPossOpp").textContent = team.offPossOpp;
+      document.getElementById("offPossDiff").textContent = diff(team.offPossUs, team.offPossOpp);
+
+      document.getElementById("toUs").textContent = team.toUs;
+      document.getElementById("toOpp").textContent = team.toOpp;
+
+      // Turnover battle: positive means WE are winning (they have more TOs)
+      document.getElementById("toBattle").textContent = diff(team.toOpp, team.toUs);
+
+      document.getElementById("orebUs").textContent = team.orebUs;
+      document.getElementById("orebOpp").textContent = team.orebOpp;
+      document.getElementById("orebDiff").textContent = diff(team.orebUs, team.orebOpp);
+
+      document.getElementById("ftaUs").textContent = team.ftaUs;
+      document.getElementById("ftaOpp").textContent = team.ftaOpp;
+      document.getElementById("ftaDiff").textContent = diff(team.ftaUs, team.ftaOpp);
+
+      document.getElementById("tpaUs").textContent = team.tpaUs;
+    }
+
+    function renderAll(){
+      renderRosterGrid();
+      renderLiveTable();
+      renderTeam();
+    }
+
+    function toggleSelectAndSetActive(id){
+      if (selectedSet.has(id)) selectedSet.delete(id);
+      else selectedSet.add(id);
+
+      activePlayerId = id;
+      renderRosterGrid();
+      saveState();
+    }
+
+    function subInSelected(){
+      const selectedIds = Array.from(selectedSet);
+      if (selectedIds.length === 0){ toast("No players selected."); return; }
+
+      let inCountNow = countIn();
+      for (const id of selectedIds){
+        const p = getPlayer(id);
+        if (!p) continue;
+        if (p.inGame) continue;
+        if (inCountNow >= 5){ toast("Max 5 IN."); break; }
+        p.inGame = true;
+        inCountNow += 1;
+      }
+      renderAll();
+      saveState();
+      toast("Sub in applied.");
+    }
+
+    function subOutSelected(){
+      const selectedIds = Array.from(selectedSet);
+      if (selectedIds.length === 0){ toast("No players selected."); return; }
+      for (const id of selectedIds){
+        const p = getPlayer(id);
+        if (!p) continue;
+        p.inGame = false;
+      }
+      renderAll();
+      saveState();
+      toast("Sub out applied.");
+    }
+
+    document.getElementById("rosterGrid").addEventListener("pointerup", (e) => {
+      const tile = e.target.closest(".playerTile");
+      if(!tile) return;
+      const id = parseInt(tile.dataset.id, 10);
+      toggleSelectAndSetActive(id);
+    });
+
+    document.getElementById("subInBtn").addEventListener("click", subInSelected);
+    document.getElementById("subOutBtn").addEventListener("click", subOutSelected);
+
+    document.getElementById("defPossBtn").addEventListener("click", () => {
+      const inPlayers = roster.filter(p => p.inGame);
+      if (inPlayers.length === 0){ toast("No players IN."); return; }
+      for (const p of inPlayers) p.defPoss += 1;
+
+      historyStack.push({ type: "poss", playerIds: inPlayers.map(p => p.id), delta: 1 });
+
+      renderLiveTable();
+      saveState();
+      toast(`Poss +1 for ${inPlayers.length} IN`);
+    });
+
+    function findAction(actionKey){
+      return [...NEG_ACTIONS, ...POS_ACTIONS].find(a => a.key === actionKey) || null;
+    }
+
+    function applyAction(actionKey){
+      const p = activePlayerId ? getPlayer(activePlayerId) : null;
+      if (!p){ toast("Tap a player to set ACTIVE."); return; }
+      const a = findAction(actionKey);
+      if (!a) return;
+
+      historyStack.push({ type: "action", playerId: p.id, pts: a.pts, incKeys: [...a.inc], actionKey });
+
+      for(const k of a.inc){ p.c[k] = (p.c[k] || 0) + 1; }
+      if (actionKey === "boxout_reb_combo") p.c.boxout_reb += 1;
+      if (actionKey === "defl_steal_combo") p.c.defl_steal += 1;
+
+      p.actionScore += a.pts;
+
+      renderLiveTable();
+      saveState();
+      toast(`#${p.number} ${shortName(p.name)}: ${a.label} (${format1(a.pts)})`);
+    }
+
+    document.getElementById("negGrid").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if(!btn) return;
+      applyAction(btn.dataset.action);
+    });
+
+    document.getElementById("posGrid").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if(!btn) return;
+      applyAction(btn.dataset.action);
+    });
+
+    // TEAM buttons (+/-)
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-team][data-delta]");
+      if(!btn) return;
+
+      const key = btn.dataset.team;
+      const delta = Number(btn.dataset.delta || 0);
+      if (!(key in team)) return;
+
+      const before = team[key];
+      team[key] = clamp0(team[key] + delta);
+
+      historyStack.push({ type: "team", key, before, after: team[key] });
+
+      renderTeam();
+      saveState();
+      toast(`${key}: ${before} → ${team[key]}`);
+    });
+
+    document.getElementById("undoBtn").addEventListener("click", () => {
+      const last = historyStack.pop();
+      if (!last){ toast("Nothing to undo."); return; }
+
+      if (last.type === "poss"){
+        for (const id of last.playerIds){
+          const p = getPlayer(id);
+          if (!p) continue;
+          p.defPoss = Math.max(0, p.defPoss - (last.delta || 1));
+        }
+        renderLiveTable();
+        saveState();
+        toast("Undid possession.");
+        return;
+      }
+
+      if (last.type === "action"){
+        const p = getPlayer(last.playerId);
+        if (!p){ toast("Undo failed (player missing)."); return; }
+
+        for (const k of last.incKeys || []){
+          p.c[k] = Math.max(0, (p.c[k] || 0) - 1);
+        }
+
+        if (last.actionKey === "boxout_reb_combo") p.c.boxout_reb = Math.max(0, (p.c.boxout_reb || 0) - 1);
+        if (last.actionKey === "defl_steal_combo") p.c.defl_steal = Math.max(0, (p.c.defl_steal || 0) - 1);
+
+        p.actionScore = (p.actionScore || 0) - (last.pts || 0);
+
+        renderLiveTable();
+        saveState();
+        toast(`Undid last stat for #${p.number}.`);
+        return;
+      }
+
+      if (last.type === "team"){
+        if (last.key in team){
+          team[last.key] = clamp0(last.before);
+          renderTeam();
+          saveState();
+          toast(`Undid ${last.key}.`);
+          return;
+        }
+      }
+
+      toast("Nothing to undo.");
+    });
+
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
+      if(!ok) return;
+
+      for (const p of roster){
+        p.inGame = false;
+        p.defPoss = 0;
+        p.actionScore = 0;
+        for (const k in p.c) p.c[k] = 0;
+      }
+      activePlayerId = null;
+      selectedSet.clear();
+
+      for (const k in team) team[k] = 0;
+
+      try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
+      historyStack.length = 0;
+
+      renderAll();
+      toast("Cleared.");
+    });
+
+    // ===== Tabs =====
+    let currentTab = "def";
+
+    function setTab(tab){
+      currentTab = tab;
+      document.querySelectorAll(".tabBtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      const el = document.getElementById(`screen-${tab}`);
+      if (el) el.classList.add("active");
+      saveState();
+    }
+
+    document.getElementById("topTabs").addEventListener("click", (e) => {
+      const btn = e.target.closest(".tabBtn");
+      if (!btn) return;
+      setTab(btn.dataset.tab);
+    });
+
+    // ===== Report modal + PDF + report cards =====
+    const overlay = document.getElementById("reportOverlay");
+
+    function buildReportRows(){
+      return roster
+        .filter(p => hasAnyStats(p))
+        .sort((a,b) => (score(b) - score(a)) || (b.defPoss - a.defPoss) || (a.number - b.number));
+    }
+
+    function buildReportTable(){
+      const body = document.getElementById("reportBody");
+      body.innerHTML = "";
+      const rows = buildReportRows();
+
+      for(const p of rows){
+        const tr = document.createElement("tr");
+        const sp10 = scorePer10(p);
+        tr.innerHTML = `
+          <td class="mono">${p.number}</td>
+          <td>${p.name}</td>
+          <td class="mono">${p.defPoss}</td>
+          <td class="mono">${format1(score(p))}</td>
+          <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }
+
+    function gradeFor(s){
+      if (s >= 15) return "A+";
+      if (s >= 12) return "A";
+      if (s >= 10) return "A-";
+      if (s >= 8)  return "B+";
+      if (s >= 6)  return "B";
+      if (s >= 5)  return "B-";
+      if (s >= 3)  return "C+";
+      if (s >= 1)  return "C";
+      if (s >= 0)  return "C-";
+      if (s >= -2) return "D";
+      return "F";
+    }
+
+    function driverList(p, type){
+      const list = [];
+      const all = [...NEG_ACTIONS, ...POS_ACTIONS];
+
+      for (const a of all){
+        let cnt = p.c[a.key] ?? 0;
+        if (a.key === "boxout_reb_combo") cnt = p.c.boxout_reb ?? 0;
+        if (a.key === "defl_steal_combo") cnt = p.c.defl_steal ?? 0;
+        if (cnt <= 0) continue;
+
+        const total = cnt * a.pts;
+        if (type === "pos" && total > 0) list.push({ label:a.label, count:cnt, points:total });
+        if (type === "neg" && total < 0) list.push({ label:a.label, count:cnt, points:total });
+      }
+
+      list.sort((a,b) => Math.abs(b.points) - Math.abs(a.points));
+      return list;
+    }
+
+    function buildReportCards(){
+      const container = document.getElementById("cardsArea");
+      const rows = buildReportRows();
+
+      const cards = document.createElement("div");
+      cards.className = "cardsGrid";
+
+      for(const p of rows){
+        const s = score(p);
+        const grade = gradeFor(s);
+
+        const positives = driverList(p, "pos");
+        const negatives = driverList(p, "neg");
+
+        const bullets = [];
+        if (s >= 5){
+          bullets.push(positives[0] ? `Did well: ${positives[0].label} (${positives[0].count})` : "Did well: Hustle impact");
+          bullets.push(positives[1] ? `Did well: ${positives[1].label} (${positives[1].count})` : "Did well: Consistent effort");
+          bullets.push(negatives[0] ? `Improve: ${negatives[0].label} (${negatives[0].count})` : "Improve: Keep it clean (no negatives)");
+        } else {
+          bullets.push(positives[0] ? `Did well: ${positives[0].label} (${positives[0].count})` : "Did well: Find 1 hustle play early");
+          bullets.push(negatives[0] ? `Improve: ${negatives[0].label} (${negatives[0].count})` : "Improve: Fewer breakdowns");
+          bullets.push(negatives[1] ? `Improve: ${negatives[1].label} (${negatives[1].count})` : "Improve: Win next shift");
+        }
+
+        const card = document.createElement("div");
+        card.className = "reportCard";
+        card.innerHTML = `
+          <div class="top">
+            <div><strong>#${p.number} ${p.name}</strong>
+              <div class="mono" style="color:var(--muted); font-size:.80rem;">
+                Score: ${format1(s)} • Poss: ${p.defPoss}
+              </div>
+            </div>
+            <div class="grade">${grade}</div>
+          </div>
+          <ul class="bullets">
+            <li>${bullets[0]}</li>
+            <li>${bullets[1]}</li>
+            <li>${bullets[2]}</li>
+          </ul>
+        `;
+        cards.appendChild(card);
+      }
+
+      container.innerHTML = "";
+      const title = document.createElement("div");
+      title.className = "pill";
+      title.style.display = "inline-block";
+      title.style.marginTop = "10px";
+      title.textContent = "Report Cards (F → A+)";
+      container.appendChild(title);
+      container.appendChild(cards);
+    }
+
+    function summarizeTopPlayer(p){
+      const positives = driverList(p, "pos");
+      const negatives = driverList(p, "neg");
+      const bits = [];
+      if (positives[0]) bits.push(`${positives[0].count}× ${positives[0].label}`);
+      if (positives[1]) bits.push(`${positives[1].count}× ${positives[1].label}`);
+      const lead = bits.length ? `Driven by ${bits.join(", ")}.` : "Solid impact with consistent effort.";
+      const improve = negatives[0] ? ` Clean-up: ${negatives[0].count}× ${negatives[0].label}.` : " Clean sheet: no negatives recorded.";
+      return lead + improve;
+    }
+
+    function getActionCountForPdf(p, key){
+      if (key === "boxout_reb_combo") return p.c.boxout_reb ?? 0;
+      if (key === "defl_steal_combo") return p.c.defl_steal ?? 0;
+      return p.c[key] ?? 0;
+    }
+
+    function exportPdf(){
+      const rows = buildReportRows();
+      const top3 = rows.slice(0,3);
+      const stamp = new Date().toLocaleString();
+
+      const negKeys = [
+        "blowby","laterotation","weakcloseout","noboxout","secondchance","secondchance_score","jogback","poorcomm","foul","gamble","gamble_score"
+      ];
+      const posKeys = [
+        "boxout","rebound","block","boxout_reb_combo","deflection","defl_steal_combo","steal","steal_score","goodrotation","sprintback","onball","charge","dive"
+      ];
+
+      const html = `
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<title>HEART AND DRIVE EFFICIENCY - Report</title>
+<style>
+  body{ font-family: Arial, sans-serif; padding: 18px; color:#111; }
+  h1{ margin:0 0 4px; }
+  .muted{ color:#555; font-size:12px; margin-bottom: 12px; }
+  .top3{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
+  .top3 h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
+  .player{ margin-bottom:10px; }
+  .player strong{ display:block; }
+
+  .teamBox{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
+  .teamBox h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
+  .teamGrid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; font-size:12px; }
+  .teamItem{ border:1px solid #eee; border-radius:8px; padding:8px; }
+  .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  table{ width:100%; border-collapse:collapse; font-size:11px; margin-top: 10px; }
+  th, td{ border-bottom:1px solid #eee; text-align:left; padding:6px 6px; vertical-align: top; }
+  th{ background:#fafafa; font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
+  .nowrap{ white-space:nowrap; }
+
+  .keyGrid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; margin-top: 10px; font-size: 11px; }
+  .keyItem{ border:1px solid #eee; border-radius:8px; padding:8px; }
+  .keyItem strong{ display:inline-block; min-width: 44px; }
+  .sectionTitle{ margin-top: 16px; font-size: 12px; letter-spacing:.08em; text-transform: uppercase; color:#333; }
+</style></head>
+<body>
+  <h1>HEART AND DRIVE EFFICIENCY</h1>
+  <div class="muted">Generated: ${stamp} • Score = actions only • Possessions = volume</div>
+
+  <div class="teamBox">
+    <h2>Team Tracking (Team Only)</h2>
+    <div class="teamGrid">
+      <div class="teamItem"><div><strong>Off Poss</strong></div><div class="mono">Us ${team.offPossUs} • Opp ${team.offPossOpp} • Diff ${diff(team.offPossUs,team.offPossOpp)}</div></div>
+      <div class="teamItem"><div><strong>Turnovers (Battle)</strong></div><div class="mono">Us ${team.toUs} • Opp ${team.toOpp} • Battle ${diff(team.toOpp,team.toUs)}</div></div>
+      <div class="teamItem"><div><strong>OREB</strong></div><div class="mono">Us ${team.orebUs} • Opp ${team.orebOpp} • Diff ${diff(team.orebUs,team.orebOpp)}</div></div>
+      <div class="teamItem"><div><strong>FTA</strong></div><div class="mono">Us ${team.ftaUs} • Opp ${team.ftaOpp} • Diff ${diff(team.ftaUs,team.ftaOpp)}</div></div>
+      <div class="teamItem"><div><strong>3PA (Us)</strong></div><div class="mono">Us ${team.tpaUs}</div></div>
+    </div>
+  </div>
+
+  <div class="top3">
+    <h2>Top 3 Players (by Score)</h2>
+    ${top3.map(p => `
+      <div class="player">
+        <strong>#${p.number} ${p.name} — Score ${Math.round(score(p)*10)/10} (${gradeFor(score(p))})</strong>
+        <div style="font-size:12px;">${summarizeTopPlayer(p)}</div>
+      </div>
+    `).join("")}
+  </div>
+
+  <div class="sectionTitle">Summary</div>
+  <table>
+    <thead>
+      <tr>
+        <th class="nowrap">#</th>
+        <th>Player</th>
+        <th class="mono nowrap">Poss</th>
+        <th class="mono nowrap">Score</th>
+        <th class="mono nowrap">Score/10</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(p => {
+        const sp10 = scorePer10(p);
+        return `
+          <tr>
+            <td class="mono nowrap">${p.number}</td>
+            <td>${p.name}</td>
+            <td class="mono nowrap">${p.defPoss}</td>
+            <td class="mono nowrap">${Math.round(score(p)*10)/10}</td>
+            <td class="mono nowrap">${sp10 === null ? "-" : (Math.round(sp10*10)/10)}</td>
+          </tr>
+        `;
+      }).join("")}
+    </tbody>
+  </table>
+
+  <div class="sectionTitle">Full Action Report (Counts)</div>
+  <table>
+    <thead>
+      <tr>
+        <th class="nowrap">#</th>
+        <th>Player</th>
+        <th class="mono nowrap">Poss</th>
+        <th class="mono nowrap">Score</th>
+        ${negKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
+        ${posKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(p => `
+        <tr>
+          <td class="mono nowrap">${p.number}</td>
+          <td>${p.name}</td>
+          <td class="mono nowrap">${p.defPoss}</td>
+          <td class="mono nowrap">${Math.round(score(p)*10)/10}</td>
+          ${negKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
+          ${posKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
+        </tr>
+      `).join("")}
+    </tbody>
+  </table>
+
+  <div class="sectionTitle">Abbreviation Key</div>
+  <div class="keyGrid">
+    ${negKeys.map(k => `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${NEG_ACTIONS.find(a=>a.key===k)?.label ?? k}</div>`).join("")}
+    <div class="keyItem"><strong class="mono">BR</strong> Box+Reb (+2)</div>
+    <div class="keyItem"><strong class="mono">DS</strong> Defl+Steal (+2)</div>
+    ${["boxout","rebound","block","deflection","steal","steal_score","goodrotation","sprintback","onball","charge","dive"].map(k => {
+      const lbl = POS_ACTIONS.find(a=>a.key===k)?.label ?? k;
+      return `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${lbl}</div>`;
+    }).join("")}
+  </div>
+
+  <div class="sectionTitle">Legend</div>
+  <ul style="font-size:11px; color:#444;">
+    <li>Score = ActionScore only (no possession bonus)</li>
+    <li>Score/10 = (Score ÷ Possessions) × 10</li>
+    <li>Grades: B- starts at 5+ (good overall)</li>
+    <li>TO Battle = Opp Turnovers − Us Turnovers (Positive = we are winning)</li>
+  </ul>
+</body></html>`;
+
+      const w = window.open("", "_blank");
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      setTimeout(() => w.print(), 250);
+    }
+
+    document.getElementById("openReport").addEventListener("click", () => {
+      buildReportTable();
+      document.getElementById("cardsArea").innerHTML = "";
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden", "false");
+    });
+
+    document.getElementById("btnCloseReport").addEventListener("click", () => {
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden", "true");
+    });
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay){
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    document.getElementById("btnReportCards").addEventListener("click", buildReportCards);
+    document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
+
+    // Init
+    let currentTab = "def";
+    loadState();
+    renderActionGrids();
+    renderAll();
+
+    function setTab(tab){
+      currentTab = tab;
+      document.querySelectorAll(".tabBtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      const el = document.getElementById(`screen-${tab}`);
+      if (el) el.classList.add("active");
+      saveState();
+    }
+
+    document.getElementById("topTabs").addEventListener("click", (e) => {
+      const btn = e.target.closest(".tabBtn");
+      if (!btn) return;
+      setTab(btn.dataset.tab);
+    });
+
+    // Restore tab after load
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw){
+        const state = JSON.parse(raw);
+        if (state && state.currentTab) setTab(state.currentTab);
+      }
+    } catch(e){}
+  </script>
 </body>
 </html>
