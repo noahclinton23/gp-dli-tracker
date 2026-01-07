@@ -533,6 +533,12 @@
 
       <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
+      <!-- NEW: quick team turnover buttons -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0;">
+        <button class="teamBtn teamMinus" id="toUsBtn">TURNOVER – US</button>
+        <button class="teamBtn teamPlus" id="toOppBtn">TURNOVER – OPP</button>
+      </div>
+
       <button class="btn" id="undoBtn" style="width:100%; margin-bottom:6px;">UNDO LAST STAT</button>
       <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:6px;">CLEAR ALL STATS</button>
 
@@ -753,7 +759,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hde_v10_autosave";
+    const STORAGE_KEY = "hde_v11_autosave";
 
     // TEAM ONLY counters
     const team = {
@@ -913,6 +919,17 @@
       return false;
     }
 
+    // ===== Tabs =====
+    let currentTab = "def";
+    function setTab(tab){
+      currentTab = tab;
+      document.querySelectorAll(".tabBtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      const el = document.getElementById(`screen-${tab}`);
+      if (el) el.classList.add("active");
+      saveState();
+    }
+
     // Autosave
     function saveState(){
       try{
@@ -920,7 +937,7 @@
           v: 1,
           activePlayerId,
           selectedIds: Array.from(selectedSet),
-          currentTab: currentTab,
+          currentTab,
           team: { ...team },
           roster: roster.map(p => ({
             id: p.id,
@@ -1134,6 +1151,25 @@
       toast(`Poss +1 for ${inPlayers.length} IN`);
     });
 
+    // NEW: quick team turnover buttons (team only)
+    document.getElementById("toUsBtn").addEventListener("click", () => {
+      const before = team.toUs;
+      team.toUs += 1;
+      historyStack.push({ type:"team", key:"toUs", before, after: team.toUs });
+      renderTeam();
+      saveState();
+      toast("Turnover – US");
+    });
+
+    document.getElementById("toOppBtn").addEventListener("click", () => {
+      const before = team.toOpp;
+      team.toOpp += 1;
+      historyStack.push({ type:"team", key:"toOpp", before, after: team.toOpp });
+      renderTeam();
+      saveState();
+      toast("Turnover – OPP");
+    });
+
     function findAction(actionKey){
       return [...NEG_ACTIONS, ...POS_ACTIONS].find(a => a.key === actionKey) || null;
     }
@@ -1169,7 +1205,7 @@
       applyAction(btn.dataset.action);
     });
 
-    // TEAM buttons (+/-)
+    // TEAM buttons (+/-) on team tabs
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("button[data-team][data-delta]");
       if(!btn) return;
@@ -1257,18 +1293,6 @@
       renderAll();
       toast("Cleared.");
     });
-
-    // ===== Tabs =====
-    let currentTab = "def";
-
-    function setTab(tab){
-      currentTab = tab;
-      document.querySelectorAll(".tabBtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      const el = document.getElementById(`screen-${tab}`);
-      if (el) el.classList.add("active");
-      saveState();
-    }
 
     document.getElementById("topTabs").addEventListener("click", (e) => {
       const btn = e.target.closest(".tabBtn");
@@ -1579,34 +1603,10 @@
     document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
 
     // Init
-    let currentTab = "def";
     loadState();
     renderActionGrids();
     renderAll();
-
-    function setTab(tab){
-      currentTab = tab;
-      document.querySelectorAll(".tabBtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      const el = document.getElementById(`screen-${tab}`);
-      if (el) el.classList.add("active");
-      saveState();
-    }
-
-    document.getElementById("topTabs").addEventListener("click", (e) => {
-      const btn = e.target.closest(".tabBtn");
-      if (!btn) return;
-      setTab(btn.dataset.tab);
-    });
-
-    // Restore tab after load
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw){
-        const state = JSON.parse(raw);
-        if (state && state.currentTab) setTab(state.currentTab);
-      }
-    } catch(e){}
+    setTab(currentTab);
   </script>
 </body>
 </html>
