@@ -54,4 +54,243 @@
       border: 1px solid var(--border);
       background: var(--panel);
       border-radius: 14px;
-      padding
+      padding: 12px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+      position: relative;
+    }
+
+    .topRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 1.15rem;
+      letter-spacing: .02em;
+    }
+    .sub{
+      margin: 4px 0 0;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    /* Small yellow report tab top-right */
+    .reportTab{
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--yellowTab);
+      color: var(--yellowText);
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-weight: 900;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      cursor: pointer;
+      user-select:none;
+    }
+
+    /* Big orange defensive possession button */
+    .defPossBtn{
+      width: 100%;
+      background: linear-gradient(180deg, var(--orange2), var(--orange));
+      color: #111827;
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 14px;
+      padding: 14px 14px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 1.0rem;
+      cursor: pointer;
+      user-select: none;
+      margin: 10px 0 10px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+    }
+    .defPossBtn:active{ transform: translateY(1px); }
+
+    /* Quick-sub chips */
+    .quickSubBar{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 0 10px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .chip{
+      display:flex;
+      align-items:center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.6);
+      font-size: .85rem;
+      cursor: pointer;
+      user-select:none;
+      white-space: nowrap;
+      transition: background .08s ease, border-color .08s ease, box-shadow .08s ease;
+    }
+    .chip:hover{ background: rgba(148,163,184,0.08); }
+
+    .chip .num{ font-weight: 900; font-variant-numeric: tabular-nums; opacity: .95; }
+
+    .chip.inGame{
+      background: var(--inBlueBg);
+      border-color: var(--inBlueBorder);
+      color: var(--inBlueText);
+    }
+
+    .chip.selected{
+      box-shadow: 0 0 0 2px var(--selectedGlow);
+    }
+
+    .metaLine{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .pill{
+      font-size: .72rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(2,6,23,0.45);
+      white-space: nowrap;
+    }
+
+    .panelRow{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .sectionCard{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel2);
+      overflow:hidden;
+    }
+
+    .sectionHeader{
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(2,6,23,0.55);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sectionHeader h2{
+      margin:0;
+      font-size: .88rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .actionGrid{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+    }
+
+    .actionBtn{
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.45);
+      color: var(--text);
+      padding: 10px 10px;
+      font-weight: 850;
+      font-size: .86rem;
+      cursor: pointer;
+      user-select:none;
+      min-width: 165px;
+      text-align:center;
+      line-height: 1.15;
+    }
+    .actionBtn:active{ transform: translateY(1px); }
+
+    .actionBtn.neg{
+      background: var(--negBg);
+      border-color: var(--negBorder);
+    }
+    .actionBtn.pos{
+      background: var(--posBg);
+      border-color: var(--posBorder);
+    }
+
+    /* Live quick glance table */
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(31,41,55,0.75);
+      text-align:left;
+      vertical-align: middle;
+    }
+    th{
+      font-sizeA: 0;
+      font-size: .74rem;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(2,6,23,0.35);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr.inGameRow{ background: rgba(59, 130, 246, 0.10); }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Modal overlay for report */
+    .overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display:none;
+      align-items:flex-start;
+      justify-content:center;
+      padding: 12px;
+      z-index: 9999;
+    }
+    .overlay.show{ display:flex; }
+
+    .modal{
+      width: 100%;
+      max-width: 1100px;
+      background: rgba(2,6,23,0.92);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      overflow:hidden;
+    }
+    .modalHeader{
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justi
