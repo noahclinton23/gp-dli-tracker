@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>HEART AND DRIVE EFFICIENCY</title>
 
-  <!-- Allow pinch zoom, but block double-tap zoom via JS -->
+  <!-- Allow pinch zoom. We'll block double-tap zoom with JS (but you won't need double-tap anymore). -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
 
   <style>
@@ -39,7 +39,12 @@
     }
 
     *{ box-sizing:border-box; }
-    html, body { touch-action: manipulation; }
+
+    /* Default: reduce accidental browser gestures */
+    html, body {
+      touch-action: manipulation;
+      overscroll-behavior: none;
+    }
 
     body{
       margin:0;
@@ -58,6 +63,9 @@
       padding: 8px;
       box-shadow: 0 18px 40px rgba(0,0,0,0.45);
       position: relative;
+
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     h1{
@@ -123,6 +131,7 @@
       user-select: none;
       margin: 6px 0 6px;
       box-shadow: 0 10px 22px rgba(0,0,0,0.30);
+      touch-action: manipulation;
     }
     .defPossBtn:active{ transform: translateY(1px); }
 
@@ -135,31 +144,6 @@
     }
     @media (min-width: 430px){
       .rosterGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    }
-    @media (orientation: landscape){
-      body{ padding: 4px; }
-      .app{ padding: 6px; border-radius: 12px; }
-
-      .sub{ font-size: .68rem; }
-      .metaLine{ margin: 6px 0 4px; gap: 4px; }
-
-      .defPossBtn{ padding: 8px 10px; font-size: .82rem; margin: 4px 0 4px; border-radius: 12px; }
-
-      .rosterGrid{ grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; margin-top: 6px; margin-bottom: 6px; }
-      .playerTile{ padding: 6px 6px; min-height: 40px; }
-      .playerTile .num{ font-size: .78rem; }
-      .playerTile .name{ font-size: .70rem; }
-      .playerTile .status{ font-size: .62rem; }
-
-      .sectionCard{ margin-top: 6px; }
-      .sectionHeader{ padding: 6px 8px; }
-      .sectionHeader h2{ font-size: .76rem; }
-
-      .actionGrid{ grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 8px; gap: 6px; }
-      .actionBtn{ padding: 7px 6px; font-size: .74rem; min-height: 38px; border-radius: 10px; }
-
-      th, td{ padding: 6px 6px; }
-      table{ font-size: .78rem; }
     }
 
     .playerTile{
@@ -179,7 +163,6 @@
       overflow:hidden;
 
       touch-action: manipulation;
-      -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
 
@@ -267,6 +250,7 @@
       text-align:center;
       line-height: 1.15;
       min-height: 42px;
+      touch-action: manipulation;
     }
     .actionBtn:active{ transform: translateY(1px); }
     .actionBtn.neg{ background: var(--negBg); border-color: var(--negBorder); }
@@ -303,6 +287,7 @@
       font-weight: 900;
       font-size: .78rem;
       user-select:none;
+      touch-action: manipulation;
     }
     .btnYellow{
       background: rgba(251,191,36,0.95);
@@ -408,6 +393,62 @@
       font-size: .84rem;
       line-height: 1.35;
     }
+
+    /* LANDSCAPE: show all buttons (neg+pos) at once by compressing + adding columns */
+    @media (orientation: landscape){
+      body{ padding: 4px; }
+
+      .app{
+        padding: 6px;
+        border-radius: 12px;
+        /* keep the main app from growing too tall */
+        max-height: calc(100vh - 8px);
+        overflow: hidden;
+      }
+
+      .sub{ font-size: .68rem; }
+      .metaLine{ margin: 6px 0 4px; gap: 4px; }
+
+      .defPossBtn{ padding: 8px 10px; font-size: .82rem; margin: 4px 0 4px; border-radius: 12px; }
+
+      .rosterGrid{
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 5px;
+        margin-top: 6px;
+        margin-bottom: 6px;
+      }
+
+      .playerTile{ padding: 6px 6px; min-height: 38px; border-radius: 10px; }
+      .playerTile .num{ font-size: .78rem; }
+      .playerTile .name{ font-size: .70rem; }
+      .playerTile .status{ font-size: .62rem; }
+
+      .sectionCard{ margin-top: 6px; }
+      .sectionHeader{ padding: 6px 8px; }
+      .sectionHeader h2{ font-size: .76rem; }
+
+      /* KEY CHANGE: more columns, smaller buttons so ALL show without scrolling */
+      .actionGrid{
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        padding: 8px;
+        gap: 6px;
+      }
+      .actionBtn{
+        padding: 6px 5px;
+        font-size: .66rem;
+        min-height: 32px;
+        border-radius: 10px;
+      }
+
+      /* Live stats can scroll internally if needed, but buttons stay visible */
+      .liveWrap{
+        max-height: 22vh;
+        overflow: auto;
+      }
+
+      th, td{ padding: 6px 6px; }
+      table{ font-size: .78rem; }
+    }
   </style>
 </head>
 
@@ -418,7 +459,7 @@
     <div>
       <h1>HEART AND DRIVE EFFICIENCY</h1>
       <div class="sub">
-        Single tap a player = <strong>select/highlight</strong>. Double tap = <strong>sub in/out</strong> (max 5).
+        Tap player = <strong>select/highlight</strong>. <strong>TRIPLE tap</strong> = <strong>sub in/out</strong> (max 5). (No double-tap needed.)
       </div>
     </div>
 
@@ -456,7 +497,7 @@
         <h2>Live Stats</h2>
         <span class="pill">Score + Score/10 + Poss</span>
       </div>
-      <div style="padding: 8px 10px;">
+      <div class="liveWrap" style="padding: 8px 10px;">
         <table>
           <thead>
             <tr>
@@ -513,7 +554,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hde_v4_autosave";
+    const STORAGE_KEY = "hde_v5_autosave";
 
     const roster = [
       { number: 0,  name: "Roger Matute" },
@@ -567,7 +608,6 @@
     }));
 
     const ACTION_ABBR = {
-      // Negatives
       blowby: "BB",
       laterotation: "LR",
       weakcloseout: "WC",
@@ -580,7 +620,6 @@
       gamble: "G",
       gamble_score: "GS",
 
-      // Positives
       boxout: "BO",
       rebound: "REB",
       block: "BLK",
@@ -702,9 +741,6 @@
         }
       } catch(e){}
     }
-    function clearSavedState(){
-      try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
-    }
 
     // Render
     function renderRosterGrid(){
@@ -781,10 +817,6 @@
       renderLiveTable();
     }
 
-    // Tap logic (single select, double sub)
-    const DOUBLE_TAP_MS = 320;
-    let lastTap = { id: null, t: 0 };
-
     function selectPlayer(id){
       selectedPlayerId = id;
       renderRosterGrid();
@@ -808,6 +840,17 @@
       saveState();
     }
 
+    // ====== TRIPLE TAP LOGIC ======
+    // Tap once: select immediately
+    // Triple tap (same player within window): toggle sub
+    const TAP_WINDOW_MS = 650;
+
+    const tapState = {
+      id: null,
+      count: 0,
+      lastTime: 0
+    };
+
     document.getElementById("rosterGrid").addEventListener("pointerup", (e) => {
       const tile = e.target.closest(".playerTile");
       if(!tile) return;
@@ -815,26 +858,39 @@
       const id = parseInt(tile.dataset.id, 10);
       const now = Date.now();
 
-      const isDouble = (lastTap.id === id) && (now - lastTap.t <= DOUBLE_TAP_MS);
+      // Always select on any tap (fast)
+      selectPlayer(id);
 
-      if (isDouble){
-        toggleSub(id);
-        lastTap.id = null;
-        lastTap.t = 0;
+      // Update triple-tap state
+      if (tapState.id === id && (now - tapState.lastTime) <= TAP_WINDOW_MS){
+        tapState.count += 1;
       } else {
-        selectPlayer(id);
-        lastTap.id = id;
-        lastTap.t = now;
+        tapState.id = id;
+        tapState.count = 1;
+      }
+      tapState.lastTime = now;
+
+      if (tapState.count >= 3){
+        toggleSub(id);
+        tapState.id = null;
+        tapState.count = 0;
+        tapState.lastTime = 0;
       }
     });
 
-    // PINCH-ONLY zoom: block double-tap zoom (pinch still works)
-    let lastTouchEndTime = 0;
-    document.addEventListener("touchend", (e) => {
+    // ===== PINCH-ONLY ZOOM (stronger double-tap zoom block) =====
+    // This targets the classic Safari double-tap zoom without blocking pinch.
+    let lastTouchTime = 0;
+    function blockDoubleTapZoom(e){
       const now = Date.now();
-      if (now - lastTouchEndTime <= 300) e.preventDefault();
-      lastTouchEndTime = now;
-    }, { passive: false });
+      if (now - lastTouchTime <= 300){
+        e.preventDefault();
+      }
+      lastTouchTime = now;
+    }
+    // Use both touchstart and touchend for stronger coverage
+    document.addEventListener("touchstart", blockDoubleTapZoom, { passive: false });
+    document.addEventListener("touchend", blockDoubleTapZoom, { passive: false });
 
     // Defensive possession button (NO score impact)
     document.getElementById("defPossBtn").addEventListener("click", () => {
@@ -846,7 +902,6 @@
 
       for (const p of inPlayers) p.defPoss += 1;
 
-      // record for undo
       historyStack.push({
         type: "poss",
         playerIds: inPlayers.map(p => p.id),
@@ -872,7 +927,6 @@
       const a = findAction(actionKey);
       if (!a) return;
 
-      // record for undo
       historyStack.push({
         type: "action",
         playerId: p.id,
@@ -966,7 +1020,6 @@
       }
       selectedPlayerId = null;
 
-      // clear autosave + undo history
       try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
       historyStack.length = 0;
 
