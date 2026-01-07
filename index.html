@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>HEART AND DRIVE EFFICIENCY</title>
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
   <style>
     :root{
@@ -16,11 +14,11 @@
       --panel: rgba(2,6,23,0.76);
       --panel2: rgba(15,23,42,0.80);
 
-      --inBlueBg: rgba(59, 130, 246, 0.22);
-      --inBlueBorder: rgba(59, 130, 246, 0.58);
+      --inBlueBg: rgba(59,130,246,0.22);
+      --inBlueBorder: rgba(59,130,246,0.58);
       --inBlueText: #dbeafe;
 
-      --selectedGlow: rgba(34, 197, 94, 0.62);
+      --selectedGlow: rgba(34,197,94,0.62);
 
       --negBg: rgba(239,68,68,0.11);
       --negBorder: rgba(239,68,68,0.32);
@@ -39,7 +37,7 @@
     }
 
     *{ box-sizing:border-box; }
-    html, body{ touch-action: manipulation; }
+    html, body { touch-action: manipulation; }
 
     body{
       margin:0;
@@ -72,7 +70,6 @@
       line-height: 1.25;
     }
 
-    /* Small yellow report tab top-right */
     .reportTab{
       position: absolute;
       top: 8px;
@@ -89,7 +86,6 @@
       user-select:none;
     }
 
-    /* Controls row */
     .metaLine{
       display:flex;
       justify-content:space-between;
@@ -110,7 +106,6 @@
       white-space: nowrap;
     }
 
-    /* Big orange defensive possession button */
     .defPossBtn{
       width: 100%;
       background: linear-gradient(180deg, var(--orange2), var(--orange));
@@ -129,7 +124,6 @@
     }
     .defPossBtn:active{ transform: translateY(1px); }
 
-    /* Roster GRID (no scrolling through names) */
     .rosterGrid{
       display:grid;
       gap: 6px;
@@ -140,7 +134,6 @@
     @media (min-width: 430px){
       .rosterGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
-    /* Landscape: show more columns so roster takes less vertical space */
     @media (orientation: landscape){
       body{ padding: 6px; }
       .app{ padding: 6px; }
@@ -163,8 +156,10 @@
       transition: background .08s ease, border-color .08s ease, box-shadow .08s ease;
       overflow:hidden;
 
-      /* KEY: stop iOS double-tap zoom on player tiles */
+      /* Stops iOS double-tap zoom */
       touch-action: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .playerTile .topline{
@@ -204,7 +199,6 @@
       box-shadow: 0 0 0 2px var(--selectedGlow);
     }
 
-    /* Cards */
     .sectionCard{
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -229,7 +223,6 @@
       text-transform: uppercase;
     }
 
-    /* Action grids in 2-3 columns (responsive) */
     .actionGrid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -239,7 +232,6 @@
     @media (min-width: 430px){
       .actionGrid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
-    /* Landscape: more columns to reduce scrolling */
     @media (orientation: landscape){
       .actionGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 8px; gap: 7px; }
       .sectionCard{ margin-top: 6px; }
@@ -261,21 +253,10 @@
     }
     .actionBtn:active{ transform: translateY(1px); }
 
-    .actionBtn.neg{
-      background: var(--negBg);
-      border-color: var(--negBorder);
-    }
-    .actionBtn.pos{
-      background: var(--posBg);
-      border-color: var(--posBorder);
-    }
+    .actionBtn.neg{ background: var(--negBg); border-color: var(--negBorder); }
+    .actionBtn.pos{ background: var(--posBg); border-color: var(--posBorder); }
 
-    /* Live stats table (NO internal scroll box) */
-    table{
-      width: 100%;
-      border-collapse: collapse;
-      font-size: .82rem;
-    }
+    table{ width: 100%; border-collapse: collapse; font-size: .82rem; }
     th, td{
       padding: 7px 7px;
       border-bottom: 1px solid rgba(31,41,55,0.75);
@@ -289,14 +270,59 @@
       color: var(--muted);
       background: rgba(2,6,23,0.35);
     }
-    tr.inGameRow{ background: rgba(59, 130, 246, 0.10); }
+    tr.inGameRow{ background: rgba(59,130,246,0.10); }
 
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-variant-numeric: tabular-nums;
     }
 
-    /* Modal overlay for report */
+    .btn{
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(15,23,42,0.85);
+      color: var(--text);
+      padding: 8px 10px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: .78rem;
+      user-select:none;
+    }
+    .btnYellow{
+      background: rgba(251,191,36,0.95);
+      color: #111827;
+      border-color: rgba(0,0,0,0.25);
+    }
+    .btnDanger{
+      background: rgba(239,68,68,0.92);
+      color:#111827;
+      border-color: rgba(0,0,0,0.25);
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      background: var(--toastBg);
+      border: 1px solid var(--toastBorder);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: .82rem;
+      color: var(--text);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .15s ease;
+      z-index: 10000;
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{ opacity: 1; }
+
+    /* Report modal */
     .overlay{
       position: fixed;
       inset: 0;
@@ -308,7 +334,6 @@
       z-index: 9999;
     }
     .overlay.show{ display:flex; }
-
     .modal{
       width: 100%;
       max-width: 1100px;
@@ -338,28 +363,6 @@
       padding: 10px;
       max-height: 78vh;
       overflow:auto;
-    }
-
-    .btn{
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.85);
-      color: var(--text);
-      padding: 8px 10px;
-      cursor:pointer;
-      font-weight: 900;
-      font-size: .78rem;
-      user-select:none;
-    }
-    .btnYellow{
-      background: rgba(251,191,36,0.95);
-      color: #111827;
-      border-color: rgba(0,0,0,0.25);
-    }
-    .btnDanger{
-      background: rgba(239,68,68,0.92);
-      color:#111827;
-      border-color: rgba(0,0,0,0.25);
     }
 
     .cardsGrid{
@@ -392,30 +395,6 @@
       font-size: .84rem;
       line-height: 1.35;
     }
-
-    /* Toast */
-    .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 16px;
-      background: var(--toastBg);
-      border: 1px solid var(--toastBorder);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: .82rem;
-      color: var(--text);
-      box-shadow: 0 12px 26px rgba(0,0,0,0.55);
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .15s ease;
-      z-index: 10000;
-      max-width: 92vw;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .toast.show{ opacity: 1; }
   </style>
 </head>
 
@@ -433,19 +412,15 @@
     <div class="metaLine">
       <div class="pill">Selected: <span id="selectedLabel" class="mono">None</span></div>
       <div class="pill">IN: <span id="inCount">0</span>/5</div>
-      <div class="pill">Score = actions only • Possessions = volume</div>
+      <div class="pill">Score = actions only • Poss = volume</div>
     </div>
 
-    <!-- Roster grid -->
     <div class="rosterGrid" id="rosterGrid"></div>
 
-    <!-- Big orange defensive possession button -->
     <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
-    <!-- Clear all stats -->
     <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:6px;">CLEAR ALL STATS</button>
 
-    <!-- Negatives -->
     <section class="sectionCard">
       <div class="sectionHeader">
         <h2>Negatives</h2>
@@ -454,7 +429,6 @@
       <div class="actionGrid" id="negGrid"></div>
     </section>
 
-    <!-- Positives -->
     <section class="sectionCard">
       <div class="sectionHeader">
         <h2>Positives</h2>
@@ -463,7 +437,6 @@
       <div class="actionGrid" id="posGrid"></div>
     </section>
 
-    <!-- Live stats -->
     <section class="sectionCard">
       <div class="sectionHeader">
         <h2>Live Stats</h2>
@@ -487,7 +460,6 @@
     </section>
   </div>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <!-- Report modal -->
@@ -513,7 +485,7 @@
                 <th>#</th>
                 <th>Player</th>
                 <th class="mono">Poss</th>
-                <th class="mono">ActionScore</th>
+                <th class="mono">Score</th>
                 <th class="mono">Score/10</th>
               </tr>
             </thead>
@@ -527,11 +499,8 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hde_v1_autosave";
+    const STORAGE_KEY = "hde_v2_autosave";
 
-    // ==========================
-    // Roster data
-    // ==========================
     const roster = [
       { number: 0,  name: "Roger Matute" },
       { number: 1,  name: "Devon Winder" },
@@ -574,18 +543,15 @@
         steal_score: 0,
         goodrotation: 0,
         sprintback: 0,
+        onball: 0,     // NEW
         charge: 0,
         dive: 0,
-        onball: 0,   // NEW: Good On-Ball Defense +1
 
         rebound: 0
       },
       actionScore: 0
     }));
 
-    // ==========================
-    // Actions
-    // ==========================
     const NEG_ACTIONS = [
       { key: "blowby", label: "Blow By", pts: -2, inc: ["blowby"] },
       { key: "laterotation", label: "Late Rotation", pts: -1, inc: ["laterotation"] },
@@ -614,12 +580,8 @@
       { key: "dive", label: "Dive", pts: +2, inc: ["dive"] }
     ];
 
-    // ==========================
-    // State
-    // ==========================
     let selectedPlayerId = null;
 
-    // Toast
     const toastEl = document.getElementById("toast");
     let toastTimer = null;
     function toast(msg){
@@ -629,15 +591,12 @@
       toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1100);
     }
 
-    // ==========================
-    // Helpers
-    // ==========================
     function getPlayer(id){ return roster.find(p => p.id === id) || null; }
-    function actionOnlyScore(p){ return p.actionScore; } // Score is actions only
+    function score(p){ return p.actionScore; } // Score = actions only
 
     function scorePer10(p){
       if (p.defPoss <= 0) return null;
-      return (actionOnlyScore(p) / p.defPoss) * 10;
+      return (score(p) / p.defPoss) * 10;
     }
 
     function format1(n){
@@ -645,27 +604,21 @@
       return (Math.abs(rounded % 1) > 0) ? rounded.toFixed(1) : String(rounded);
     }
 
-    function hasAnyStats(p){
-      if (p.defPoss > 0) return true;
-      if (p.actionScore !== 0) return true;
-      for (const k in p.c){
-        if (p.c[k] !== 0) return true;
-      }
-      return false;
-    }
-
     function shortName(full){
       const parts = String(full).trim().split(/\s+/);
       return parts.length ? parts[parts.length - 1] : full;
     }
 
-    function countIn(){
-      return roster.filter(p => p.inGame).length;
+    function countIn(){ return roster.filter(p => p.inGame).length; }
+
+    function hasAnyStats(p){
+      if (p.defPoss > 0) return true;
+      if (p.actionScore !== 0) return true;
+      for (const k in p.c){ if (p.c[k] !== 0) return true; }
+      return false;
     }
 
-    // ==========================
     // Autosave
-    // ==========================
     function saveState(){
       try{
         const state = {
@@ -680,7 +633,7 @@
           }))
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (err) {}
+      } catch(e){}
     }
 
     function loadState(){
@@ -704,16 +657,14 @@
             }
           }
         }
-      } catch (err) {}
+      } catch(e){}
     }
 
     function clearSavedState(){
       try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
     }
 
-    // ==========================
     // Render
-    // ==========================
     function renderRosterGrid(){
       const grid = document.getElementById("rosterGrid");
       grid.innerHTML = "";
@@ -752,6 +703,7 @@
         b.textContent = `${a.label} ${format1(a.pts)}`;
         neg.appendChild(b);
       }
+
       for(const a of POS_ACTIONS){
         const b = document.createElement("button");
         b.className = "actionBtn pos";
@@ -776,7 +728,7 @@
           <td>${p.name}</td>
           <td class="mono">${p.inGame ? "IN" : "OUT"}</td>
           <td class="mono">${p.defPoss}</td>
-          <td class="mono">${format1(actionOnlyScore(p))}</td>
+          <td class="mono">${format1(score(p))}</td>
           <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
         `;
         tbody.appendChild(tr);
@@ -788,10 +740,7 @@
       renderLiveTable();
     }
 
-    // ==========================
-    // Player tap behavior:
-    // single tap = select, double tap = sub in/out
-    // ==========================
+    // Player tap logic (single select, double sub)
     const DOUBLE_TAP_MS = 320;
     let lastTap = { id: null, t: 0 };
 
@@ -803,7 +752,7 @@
 
     function toggleSub(id){
       const p = getPlayer(id);
-      if(!p) return;
+      if (!p) return;
 
       if (!p.inGame){
         if (countIn() >= 5){
@@ -814,7 +763,6 @@
       } else {
         p.inGame = false;
       }
-
       renderAll();
       saveState();
     }
@@ -839,14 +787,12 @@
       }
     });
 
-    // KEY: prevent iOS Safari double-tap zoom on player tiles
+    // Stop iOS zoom only on tiles
     document.getElementById("rosterGrid").addEventListener("touchend", (e) => {
       if (e.target.closest(".playerTile")) e.preventDefault();
     }, { passive: false });
 
-    // ==========================
     // Defensive possession button (NO score impact)
-    // ==========================
     document.getElementById("defPossBtn").addEventListener("click", () => {
       const inPlayers = roster.filter(p => p.inGame);
       if (inPlayers.length === 0){
@@ -854,34 +800,30 @@
         return;
       }
       for (const p of inPlayers) p.defPoss += 1;
-
       renderLiveTable();
       saveState();
       toast(`Poss +1 for ${inPlayers.length} IN`);
     });
 
-    // ==========================
     // Apply actions to selected player
-    // ==========================
     function findAction(actionKey){
       return [...NEG_ACTIONS, ...POS_ACTIONS].find(a => a.key === actionKey) || null;
     }
 
     function applyAction(actionKey){
       const p = selectedPlayerId ? getPlayer(selectedPlayerId) : null;
-      if(!p){
+      if (!p){
         toast("Select a player first.");
         return;
       }
       const a = findAction(actionKey);
-      if(!a) return;
+      if (!a) return;
 
       for(const k of a.inc){
         if (p.c[k] === undefined) p.c[k] = 0;
         p.c[k] += 1;
       }
 
-      // track combo usage (optional)
       if (actionKey === "boxout_reb_combo") p.c.boxout_reb += 1;
       if (actionKey === "defl_steal_combo") p.c.defl_steal += 1;
 
@@ -904,10 +846,8 @@
       applyAction(btn.dataset.action);
     });
 
-    // ==========================
-    // Clear all stats (only reset path) + confirm
-    // ==========================
-    function clearAllStats(){
+    // Clear all stats (confirm)
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
       const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
       if(!ok) return;
 
@@ -922,35 +862,15 @@
       clearSavedState();
       renderAll();
       toast("Cleared.");
-    }
+    });
 
-    document.getElementById("clearAllBtn").addEventListener("click", clearAllStats);
-
-    // ==========================
-    // REPORT modal + export PDF + report cards
-    // ==========================
+    // ===== Report modal + PDF + report cards =====
     const overlay = document.getElementById("reportOverlay");
-    document.getElementById("openReport").addEventListener("click", () => {
-      buildReportTable();
-      document.getElementById("cardsArea").innerHTML = "";
-      overlay.classList.add("show");
-      overlay.setAttribute("aria-hidden", "false");
-    });
-    document.getElementById("btnCloseReport").addEventListener("click", () => {
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden", "true");
-    });
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay){
-        overlay.classList.remove("show");
-        overlay.setAttribute("aria-hidden", "true");
-      }
-    });
 
     function buildReportRows(){
       return roster
         .filter(p => hasAnyStats(p))
-        .sort((a,b) => (actionOnlyScore(b) - actionOnlyScore(a)) || (b.defPoss - a.defPoss) || (a.number - b.number));
+        .sort((a,b) => (score(b) - score(a)) || (b.defPoss - a.defPoss) || (a.number - b.number));
     }
 
     function buildReportTable(){
@@ -965,24 +885,24 @@
           <td class="mono">${p.number}</td>
           <td>${p.name}</td>
           <td class="mono">${p.defPoss}</td>
-          <td class="mono">${format1(actionOnlyScore(p))}</td>
+          <td class="mono">${format1(score(p))}</td>
           <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
         `;
         body.appendChild(tr);
       }
     }
 
-    function gradeFor(score){
-      if (score >= 15) return "A+";
-      if (score >= 12) return "A";
-      if (score >= 10) return "A-";
-      if (score >= 8)  return "B+";
-      if (score >= 6)  return "B";
-      if (score >= 5)  return "B-";
-      if (score >= 3)  return "C+";
-      if (score >= 1)  return "C";
-      if (score >= 0)  return "C-";
-      if (score >= -2) return "D";
+    function gradeFor(s){
+      if (s >= 15) return "A+";
+      if (s >= 12) return "A";
+      if (s >= 10) return "A-";
+      if (s >= 8)  return "B+";
+      if (s >= 6)  return "B";
+      if (s >= 5)  return "B-";
+      if (s >= 3)  return "C+";
+      if (s >= 1)  return "C";
+      if (s >= 0)  return "C-";
+      if (s >= -2) return "D";
       return "F";
     }
 
@@ -997,7 +917,6 @@
         if (type === "pos" && total > 0) list.push({ label:a.label, count:cnt, points:total });
         if (type === "neg" && total < 0) list.push({ label:a.label, count:cnt, points:total });
       }
-
       if (type === "pos"){
         if ((p.c.boxout_reb ?? 0) > 0) list.push({ label:"Box+Reb", count:p.c.boxout_reb, points:p.c.boxout_reb*2 });
         if ((p.c.defl_steal ?? 0) > 0) list.push({ label:"Defl+Steal", count:p.c.defl_steal, points:p.c.defl_steal*2 });
@@ -1015,26 +934,22 @@
       cards.className = "cardsGrid";
 
       for(const p of rows){
-        const score = actionOnlyScore(p);
-        const grade = gradeFor(score);
+        const s = score(p);
+        const grade = gradeFor(s);
 
         const positives = driverList(p, "pos");
         const negatives = driverList(p, "neg");
 
         const bullets = [];
-        if (score >= 5){
-          if (positives[0]) bullets.push(`Did well: ${positives[0].label} (${positives[0].count})`);
-          if (positives[1]) bullets.push(`Did well: ${positives[1].label} (${positives[1].count})`);
-          if (negatives[0]) bullets.push(`Improve: ${negatives[0].label} (${negatives[0].count})`);
-          else bullets.push(`Improve: Keep it clean (no negatives recorded)`);
+        if (s >= 5){
+          bullets.push(positives[0] ? `Did well: ${positives[0].label} (${positives[0].count})` : "Did well: Hustle impact");
+          bullets.push(positives[1] ? `Did well: ${positives[1].label} (${positives[1].count})` : "Did well: Consistent effort");
+          bullets.push(negatives[0] ? `Improve: ${negatives[0].label} (${negatives[0].count})` : "Improve: Keep it clean (no negatives)");
         } else {
-          if (positives[0]) bullets.push(`Did well: ${positives[0].label} (${positives[0].count})`);
-          else bullets.push(`Did well: Find 1 hustle play early (charge/dive/sprint back)`);
-          if (negatives[0]) bullets.push(`Improve: ${negatives[0].label} (${negatives[0].count})`);
-          if (negatives[1]) bullets.push(`Improve: ${negatives[1].label} (${negatives[1].count})`);
-          else bullets.push(`Improve: Reduce repeat mistakes next shift`);
+          bullets.push(positives[0] ? `Did well: ${positives[0].label} (${positives[0].count})` : "Did well: Find 1 hustle play early");
+          bullets.push(negatives[0] ? `Improve: ${negatives[0].label} (${negatives[0].count})` : "Improve: Fewer breakdowns");
+          bullets.push(negatives[1] ? `Improve: ${negatives[1].label} (${negatives[1].count})` : "Improve: Win next shift");
         }
-        while (bullets.length < 3) bullets.push("Focus: Consistency shift-to-shift");
 
         const card = document.createElement("div");
         card.className = "reportCard";
@@ -1042,7 +957,7 @@
           <div class="top">
             <div><strong>#${p.number} ${p.name}</strong>
               <div class="mono" style="color:var(--muted); font-size:.80rem;">
-                Score: ${format1(score)} • Poss: ${p.defPoss}
+                Score: ${format1(s)} • Poss: ${p.defPoss}
               </div>
             </div>
             <div class="grade">${grade}</div>
@@ -1066,52 +981,41 @@
       container.appendChild(cards);
     }
 
-    document.getElementById("btnReportCards").addEventListener("click", buildReportCards);
-
     function summarizeTopPlayer(p){
       const positives = driverList(p, "pos");
       const negatives = driverList(p, "neg");
-
       const bits = [];
       if (positives[0]) bits.push(`${positives[0].count}× ${positives[0].label}`);
       if (positives[1]) bits.push(`${positives[1].count}× ${positives[1].label}`);
-
-      let improve = "";
-      if (negatives[0]) improve = `Clean-up: ${negatives[0].count}× ${negatives[0].label}`;
-      else improve = "Clean sheet: no negatives recorded.";
-
-      const lead = bits.length ? `Driven by ${bits.join(", ")}.` : "Steady impact with consistent effort.";
-      return `${lead} ${improve}`;
+      const lead = bits.length ? `Driven by ${bits.join(", ")}.` : "Solid impact with consistent effort.";
+      const improve = negatives[0] ? ` Clean-up: ${negatives[0].count}× ${negatives[0].label}.` : " Clean sheet: no negatives recorded.";
+      return lead + improve;
     }
 
     function exportPdf(){
       const rows = buildReportRows();
       const top3 = rows.slice(0,3);
-      const now = new Date();
-      const stamp = now.toLocaleString();
+      const stamp = new Date().toLocaleString();
 
       const html = `
 <!doctype html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>HEART AND DRIVE EFFICIENCY - Report</title>
-  <style>
-    body{ font-family: Arial, sans-serif; padding: 18px; color:#111; }
-    h1{ margin:0 0 4px; }
-    .muted{ color:#555; font-size:12px; margin-bottom: 12px; }
-    .top3{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
-    .top3 h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
-    .player{ margin-bottom:10px; }
-    .player strong{ display:block; }
-    table{ width:100%; border-collapse:collapse; font-size:12px; margin-top: 10px; }
-    th, td{ border-bottom:1px solid #eee; text-align:left; padding:6px 6px; }
-    th{ background:#fafafa; font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
-    .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; }
-    .legend{ margin-top:14px; font-size:11px; color:#444; }
-    .legend li{ margin:2px 0; }
-  </style>
-</head>
+<html><head><meta charset="utf-8"/>
+<title>HEART AND DRIVE EFFICIENCY - Report</title>
+<style>
+  body{ font-family: Arial, sans-serif; padding: 18px; color:#111; }
+  h1{ margin:0 0 4px; }
+  .muted{ color:#555; font-size:12px; margin-bottom: 12px; }
+  .top3{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
+  .top3 h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
+  .player{ margin-bottom:10px; }
+  .player strong{ display:block; }
+  table{ width:100%; border-collapse:collapse; font-size:12px; margin-top: 10px; }
+  th, td{ border-bottom:1px solid #eee; text-align:left; padding:6px 6px; }
+  th{ background:#fafafa; font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+  .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .legend{ margin-top:14px; font-size:11px; color:#444; }
+  .legend li{ margin:2px 0; }
+</style></head>
 <body>
   <h1>HEART AND DRIVE EFFICIENCY</h1>
   <div class="muted">Generated: ${stamp} • Score = actions only • Possessions = volume</div>
@@ -1120,7 +1024,7 @@
     <h2>Top 3 Players (by Score)</h2>
     ${top3.map(p => `
       <div class="player">
-        <strong>#${p.number} ${p.name} — Score ${format1(actionOnlyScore(p))} (${gradeFor(actionOnlyScore(p))})</strong>
+        <strong>#${p.number} ${p.name} — Score ${Math.round(score(p)*10)/10} (${gradeFor(score(p))})</strong>
         <div style="font-size:12px;">${summarizeTopPlayer(p)}</div>
       </div>
     `).join("")}
@@ -1144,8 +1048,8 @@
             <td class="mono">${p.number}</td>
             <td>${p.name}</td>
             <td class="mono">${p.defPoss}</td>
-            <td class="mono">${format1(actionOnlyScore(p))}</td>
-            <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
+            <td class="mono">${Math.round(score(p)*10)/10}</td>
+            <td class="mono">${sp10 === null ? "-" : (Math.round(sp10*10)/10)}</td>
           </tr>
         `;
       }).join("")}
@@ -1160,8 +1064,7 @@
       <li>Grades: B- starts at 5+ (good overall)</li>
     </ul>
   </div>
-</body>
-</html>`;
+</body></html>`;
 
       const w = window.open("", "_blank");
       w.document.open();
@@ -1171,42 +1074,18 @@
       setTimeout(() => w.print(), 250);
     }
 
-    document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
-
-    // ==========================
-    // Clear all stats
-    // ==========================
-    document.getElementById("clearAllBtn").addEventListener("click", () => {
-      const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
-      if(!ok) return;
-
-      for (const p of roster){
-        p.inGame = false;
-        p.defPoss = 0;
-        p.actionScore = 0;
-        for (const k in p.c) p.c[k] = 0;
-      }
-      selectedPlayerId = null;
-
-      clearSavedState();
-      renderAll();
-      toast("Cleared.");
-    });
-
-    // ==========================
-    // Report modal wiring
-    // ==========================
-    const overlay = document.getElementById("reportOverlay");
     document.getElementById("openReport").addEventListener("click", () => {
       buildReportTable();
       document.getElementById("cardsArea").innerHTML = "";
       overlay.classList.add("show");
       overlay.setAttribute("aria-hidden", "false");
     });
+
     document.getElementById("btnCloseReport").addEventListener("click", () => {
       overlay.classList.remove("show");
       overlay.setAttribute("aria-hidden", "true");
     });
+
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay){
         overlay.classList.remove("show");
@@ -1214,9 +1093,10 @@
       }
     });
 
-    // ==========================
+    document.getElementById("btnReportCards").addEventListener("click", buildReportCards);
+    document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
+
     // Init
-    // ==========================
     loadState();
     renderActionGrids();
     renderAll();
