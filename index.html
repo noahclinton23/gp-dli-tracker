@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <title>HEART AND DRIVE EFFICIENCY</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-  />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
   <style>
     :root{
@@ -15,29 +13,32 @@
       --text:#e5e7eb;
       --muted:#9ca3af;
 
-      --panel: rgba(2,6,23,0.70);
-      --panel2: rgba(15,23,42,0.75);
+      --panel: rgba(2,6,23,0.76);
+      --panel2: rgba(15,23,42,0.80);
 
       --inBlueBg: rgba(59, 130, 246, 0.22);
-      --inBlueBorder: rgba(59, 130, 246, 0.60);
+      --inBlueBorder: rgba(59, 130, 246, 0.58);
       --inBlueText: #dbeafe;
 
-      --selectedGlow: rgba(34, 197, 94, 0.55);
+      --selectedGlow: rgba(34, 197, 94, 0.62);
 
-      --negBg: rgba(239,68,68,0.12);
-      --negBorder: rgba(239,68,68,0.35);
+      --negBg: rgba(239,68,68,0.11);
+      --negBorder: rgba(239,68,68,0.32);
 
-      --posBg: rgba(34,197,94,0.12);
-      --posBorder: rgba(34,197,94,0.35);
+      --posBg: rgba(34,197,94,0.11);
+      --posBorder: rgba(34,197,94,0.32);
 
       --orange:#f59e0b;
       --orange2:#fbbf24;
+
       --yellowTab:#fbbf24;
       --yellowText:#111827;
+
+      --toastBg: rgba(2,6,23,0.92);
+      --toastBorder: rgba(148,163,184,0.30);
     }
 
     *{ box-sizing:border-box; }
-
     html, body{ touch-action: manipulation; }
 
     body{
@@ -45,38 +46,30 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: radial-gradient(circle at top, #0f172a, #050814 70%);
       color: var(--text);
-      padding: 12px;
+      padding: 10px;
     }
 
     .app{
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
       border: 1px solid var(--border);
       background: var(--panel);
       border-radius: 14px;
-      padding: 12px;
+      padding: 10px;
       box-shadow: 0 18px 40px rgba(0,0,0,0.45);
       position: relative;
     }
 
-    .topRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
     h1{
       margin:0;
-      font-size: 1.15rem;
+      font-size: 1.02rem;
       letter-spacing: .02em;
     }
     .sub{
-      margin: 4px 0 0;
-      font-size: .82rem;
+      margin-top: 4px;
+      font-size: .75rem;
       color: var(--muted);
+      line-height: 1.25;
     }
 
     /* Small yellow report tab top-right */
@@ -88,12 +81,33 @@
       color: var(--yellowText);
       border: 1px solid rgba(0,0,0,0.25);
       border-radius: 10px;
-      padding: 6px 10px;
-      font-weight: 900;
-      font-size: .78rem;
-      letter-spacing: .08em;
+      padding: 6px 9px;
+      font-weight: 950;
+      font-size: .72rem;
+      letter-spacing: .10em;
       cursor: pointer;
       user-select:none;
+    }
+
+    /* Controls row */
+    .metaLine{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 8px;
+      color: var(--muted);
+      font-size: .74rem;
+    }
+    .pill{
+      font-size: .70rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(2,6,23,0.45);
+      white-space: nowrap;
     }
 
     /* Big orange defensive possession button */
@@ -103,92 +117,94 @@
       color: #111827;
       border: 1px solid rgba(0,0,0,0.25);
       border-radius: 14px;
-      padding: 14px 14px;
+      padding: 10px 12px;
       font-weight: 950;
       letter-spacing: .08em;
       text-transform: uppercase;
-      font-size: 1.0rem;
+      font-size: .92rem;
       cursor: pointer;
       user-select: none;
-      margin: 10px 0 10px;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+      margin: 8px 0 8px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.30);
     }
     .defPossBtn:active{ transform: translateY(1px); }
 
-    /* Quick-sub chips */
-    .quickSubBar{
-      display:flex;
-      flex-wrap: wrap;
+    /* Roster GRID (no scrolling through names) */
+    .rosterGrid{
+      display:grid;
       gap: 6px;
-      padding: 8px 0 10px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-
-    .chip{
-      display:flex;
-      align-items:center;
-      gap: 6px;
-      padding: 8px 10px;
-      border-radius: 999px;
+    @media (min-width: 430px){
+      .rosterGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    .playerTile{
+      border-radius: 12px;
       border: 1px solid var(--border);
-      background: rgba(2,6,23,0.6);
-      font-size: .85rem;
+      background: rgba(2,6,23,0.55);
+      padding: 8px 8px;
       cursor: pointer;
       user-select:none;
-      white-space: nowrap;
+      line-height: 1.1;
+      min-height: 46px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap: 3px;
       transition: background .08s ease, border-color .08s ease, box-shadow .08s ease;
+      overflow:hidden;
     }
-    .chip:hover{ background: rgba(148,163,184,0.08); }
+    .playerTile:hover{ background: rgba(148,163,184,0.08); }
 
-    .chip .num{ font-weight: 900; font-variant-numeric: tabular-nums; opacity: .95; }
+    .playerTile .topline{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap: 6px;
+    }
+    .playerTile .num{
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      font-size: .86rem;
+    }
+    .playerTile .status{
+      font-size: .68rem;
+      color: var(--muted);
+      letter-spacing: .08em;
+      font-weight: 850;
+    }
+    .playerTile .name{
+      font-size: .78rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
 
-    .chip.inGame{
+    .playerTile.inGame{
       background: var(--inBlueBg);
       border-color: var(--inBlueBorder);
       color: var(--inBlueText);
     }
+    .playerTile.inGame .name{ color: var(--inBlueText); }
+    .playerTile.inGame .status{ color: rgba(219,234,254,0.9); }
 
-    .chip.selected{
+    .playerTile.selected{
       box-shadow: 0 0 0 2px var(--selectedGlow);
     }
 
-    .metaLine{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      color: var(--muted);
-      font-size: .82rem;
-    }
-
-    .pill{
-      font-size: .72rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      background: rgba(2,6,23,0.45);
-      white-space: nowrap;
-    }
-
-    .panelRow{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
+    /* Cards */
     .sectionCard{
       border: 1px solid var(--border);
       border-radius: 12px;
       background: var(--panel2);
       overflow:hidden;
+      margin-top: 10px;
     }
-
     .sectionHeader{
-      padding: 10px;
+      padding: 8px 10px;
       border-bottom: 1px solid var(--border);
       background: rgba(2,6,23,0.55);
       display:flex;
@@ -199,16 +215,20 @@
     }
     .sectionHeader h2{
       margin:0;
-      font-size: .88rem;
+      font-size: .84rem;
       letter-spacing: .12em;
       text-transform: uppercase;
     }
 
+    /* Action grids in 2-3 columns (responsive) */
     .actionGrid{
-      display:flex;
-      flex-wrap: wrap;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       padding: 10px;
+    }
+    @media (min-width: 430px){
+      .actionGrid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
 
     .actionBtn{
@@ -216,14 +236,14 @@
       border: 1px solid var(--border);
       background: rgba(2,6,23,0.45);
       color: var(--text);
-      padding: 10px 10px;
-      font-weight: 850;
-      font-size: .86rem;
+      padding: 10px 8px;
+      font-weight: 900;
+      font-size: .82rem;
       cursor: pointer;
       user-select:none;
-      min-width: 165px;
       text-align:center;
       line-height: 1.15;
+      min-height: 44px;
     }
     .actionBtn:active{ transform: translateY(1px); }
 
@@ -236,21 +256,20 @@
       border-color: var(--posBorder);
     }
 
-    /* Live quick glance table */
+    /* Live stats table (compact + internal scroll) */
     table{
       width: 100%;
       border-collapse: collapse;
-      font-size: .9rem;
+      font-size: .84rem;
     }
     th, td{
-      padding: 10px 10px;
+      padding: 8px 8px;
       border-bottom: 1px solid rgba(31,41,55,0.75);
       text-align:left;
       vertical-align: middle;
     }
     th{
-      font-sizeA: 0;
-      font-size: .74rem;
+      font-size: .70rem;
       letter-spacing: .10em;
       text-transform: uppercase;
       color: var(--muted);
@@ -264,6 +283,11 @@
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-variant-numeric: tabular-nums;
+    }
+
+    .tableWrap{
+      max-height: 32vh;
+      overflow:auto;
     }
 
     /* Modal overlay for report */
@@ -302,7 +326,7 @@
       margin:0;
       letter-spacing: .10em;
       text-transform: uppercase;
-      font-size: .9rem;
+      font-size: .88rem;
     }
     .modalBody{
       padding: 10px;
@@ -317,8 +341,8 @@
       color: var(--text);
       padding: 8px 10px;
       cursor:pointer;
-      font-weight: 850;
-      font-size: .82rem;
+      font-weight: 900;
+      font-size: .78rem;
       user-select:none;
     }
     .btnYellow{
@@ -334,7 +358,7 @@
 
     .cardsGrid{
       display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 10px;
       margin-top: 10px;
     }
@@ -353,20 +377,39 @@
     }
     .grade{
       font-weight: 950;
-      font-size: 1.15rem;
+      font-size: 1.10rem;
     }
     .bullets{
       margin: 0;
       padding-left: 18px;
       color: var(--muted);
-      font-size: .86rem;
+      font-size: .84rem;
       line-height: 1.35;
     }
 
-    /* Print view (PDF) */
-    @media print{
-      body{ background:white; color:black; }
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      background: var(--toastBg);
+      border: 1px solid var(--toastBorder);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: .82rem;
+      color: var(--text);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .15s ease;
+      z-index: 10000;
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
     }
+    .toast.show{ opacity: 1; }
   </style>
 </head>
 
@@ -374,70 +417,72 @@
   <div class="app" id="appRoot">
     <div class="reportTab" id="openReport">REPORT</div>
 
-    <div class="topRow">
-      <div>
-        <h1>HEART AND DRIVE EFFICIENCY</h1>
-        <div class="sub">Tap player to select. Double-tap player to sub in/out. Negatives above positives.</div>
+    <div>
+      <h1>HEART AND DRIVE EFFICIENCY</h1>
+      <div class="sub">
+        Tap player to <strong>select</strong> (stats go to selected). Double-tap player to <strong>sub in/out</strong> (max 5).
       </div>
     </div>
 
-    <!-- Player chips -->
-    <div class="quickSubBar" id="quickSubBar"></div>
-
     <div class="metaLine">
       <div class="pill">Selected: <span id="selectedLabel" class="mono">None</span></div>
-      <div class="pill"><span id="inCount">0</span> in game</div>
-      <div class="pill">Option B Bonus: <span class="mono">+0.2</span> per Def Poss</div>
+      <div class="pill">IN: <span id="inCount">0</span>/5</div>
+      <div class="pill">Option B: +<span class="mono" id="bonusLabel">0.2</span> per Def Poss</div>
     </div>
+
+    <!-- Roster grid -->
+    <div class="rosterGrid" id="rosterGrid"></div>
 
     <!-- Big orange defensive possession button -->
     <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
-    <div class="panelRow">
+    <!-- Clear all stats -->
+    <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:8px;">CLEAR ALL STATS</button>
 
-      <!-- Negatives -->
-      <section class="sectionCard">
-        <div class="sectionHeader">
-          <h2>Negatives</h2>
-          <span class="pill">Tap applies to selected player</span>
-        </div>
-        <div class="actionGrid" id="negGrid"></div>
-      </section>
+    <!-- Negatives -->
+    <section class="sectionCard">
+      <div class="sectionHeader">
+        <h2>Negatives</h2>
+        <span class="pill">Applies to selected player</span>
+      </div>
+      <div class="actionGrid" id="negGrid"></div>
+    </section>
 
-      <!-- Positives -->
-      <section class="sectionCard">
-        <div class="sectionHeader">
-          <h2>Positives</h2>
-          <span class="pill">Tap applies to selected player</span>
-        </div>
-        <div class="actionGrid" id="posGrid"></div>
-      </section>
+    <!-- Positives -->
+    <section class="sectionCard">
+      <div class="sectionHeader">
+        <h2>Positives</h2>
+        <span class="pill">Applies to selected player</span>
+      </div>
+      <div class="actionGrid" id="posGrid"></div>
+    </section>
 
-      <!-- Live quick glance -->
-      <section class="sectionCard">
-        <div class="sectionHeader">
-          <h2>Live Stats</h2>
-          <span class="pill">Score + Score/10 poss for everyone</span>
-        </div>
-        <div style="max-height: 40vh; overflow:auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Player</th>
-                <th>IN</th>
-                <th class="mono">DefPoss</th>
-                <th class="mono">Score</th>
-                <th class="mono">Score/10</th>
-              </tr>
-            </thead>
-            <tbody id="liveBody"></tbody>
-          </table>
-        </div>
-      </section>
-
-    </div>
+    <!-- Live stats -->
+    <section class="sectionCard">
+      <div class="sectionHeader">
+        <h2>Live Stats</h2>
+        <span class="pill">Score + Score/10 for everyone</span>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player</th>
+              <th>IN</th>
+              <th class="mono">DefPoss</th>
+              <th class="mono">Score</th>
+              <th class="mono">Score/10</th>
+            </tr>
+          </thead>
+          <tbody id="liveBody"></tbody>
+        </table>
+      </div>
+    </section>
   </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
   <!-- Report modal -->
   <div class="overlay" id="reportOverlay" aria-hidden="true">
@@ -478,12 +523,15 @@
 
   <script>
     // ==========================
-    // App constants (Option B)
+    // Option B constant
     // ==========================
-    const DEF_POSS_BONUS = 0.2; // Option B: add +0.2 per defensive possession
+    const DEF_POSS_BONUS = 0.2;
+
+    // LocalStorage autosave key
+    const STORAGE_KEY = "hde_v1_autosave";
 
     // ==========================
-    // Roster
+    // Roster data
     // ==========================
     const roster = [
       { number: 0,  name: "Roger Matute" },
@@ -506,7 +554,6 @@
       name: p.name,
       inGame: false,
       defPoss: 0,
-      // counts per tracked stat:
       c: {
         blowby: 0,
         laterotation: 0,
@@ -521,9 +568,9 @@
         gamble_score: 0,
 
         boxout: 0,
-        boxout_reb: 0, // tracking the combo usage (optional)
+        boxout_reb: 0,
         deflection: 0,
-        defl_steal: 0, // tracking combo usage (optional)
+        defl_steal: 0,
         steal: 0,
         steal_score: 0,
         goodrotation: 0,
@@ -531,24 +578,23 @@
         charge: 0,
         dive: 0,
 
-        rebound: 0 // used when "box out + rebound +2" is pressed
+        rebound: 0
       },
       actionScore: 0
     }));
 
     // ==========================
-    // Actions definition
-    // (label, points, and which counters to increment)
+    // Actions
     // ==========================
     const NEG_ACTIONS = [
       { key: "blowby", label: "Blow By", pts: -2, inc: ["blowby"] },
       { key: "laterotation", label: "Late Rotation", pts: -1, inc: ["laterotation"] },
       { key: "weakcloseout", label: "Weak Closeout", pts: -1, inc: ["weakcloseout"] },
       { key: "noboxout", label: "No Box Out", pts: -1, inc: ["noboxout"] },
-      { key: "secondchance", label: "Second Chance Allowed", pts: -1, inc: ["secondchance"] },
-      { key: "secondchance_score", label: "Second Chance → Score", pts: -2, inc: ["secondchance_score"] },
+      { key: "secondchance", label: "2nd Chance Allowed", pts: -1, inc: ["secondchance"] },
+      { key: "secondchance_score", label: "2nd Chance → Score", pts: -2, inc: ["secondchance_score"] },
       { key: "jogback", label: "Jog Back", pts: -1, inc: ["jogback"] },
-      { key: "poorcomm", label: "Poor Communication", pts: -1, inc: ["poorcomm"] },
+      { key: "poorcomm", label: "Poor Comm", pts: -1, inc: ["poorcomm"] },
       { key: "foul", label: "Foul", pts: -1.5, inc: ["foul"] },
       { key: "gamble", label: "Gamble", pts: -1, inc: ["gamble"] },
       { key: "gamble_score", label: "Gamble → Score", pts: -2, inc: ["gamble_score"] }
@@ -556,41 +602,44 @@
 
     const POS_ACTIONS = [
       { key: "boxout", label: "Box Out", pts: +1, inc: ["boxout"] },
-      { key: "boxout_reb_combo", label: "Box Out + Rebound", pts: +2, inc: ["boxout","rebound","boxout_reb"] },
+      { key: "boxout_reb_combo", label: "Box+Reb", pts: +2, inc: ["boxout","rebound","boxout_reb"] },
       { key: "deflection", label: "Deflection", pts: +1, inc: ["deflection"] },
-      { key: "defl_steal_combo", label: "Deflection + Steal", pts: +2, inc: ["deflection","steal","defl_steal"] },
+      { key: "defl_steal_combo", label: "Defl+Steal", pts: +2, inc: ["deflection","steal","defl_steal"] },
       { key: "steal", label: "Steal", pts: +1, inc: ["steal"] },
-      { key: "steal_score", label: "Steal → Score", pts: +3, inc: ["steal_score","steal"] },
+      { key: "steal_score", label: "Steal→Score", pts: +3, inc: ["steal_score","steal"] },
       { key: "goodrotation", label: "Good Rotation", pts: +1, inc: ["goodrotation"] },
       { key: "sprintback", label: "Sprint Back", pts: +1, inc: ["sprintback"] },
       { key: "charge", label: "Charge", pts: +2, inc: ["charge"] },
-      { key: "dive", label: "Dive on Loose Ball", pts: +2, inc: ["dive"] }
+      { key: "dive", label: "Dive", pts: +2, inc: ["dive"] }
     ];
 
     // ==========================
     // State
     // ==========================
     let selectedPlayerId = null;
-    let statsDirty = false;
 
-    function markDirty(){ statsDirty = true; }
+    // Double-tap detector
+    const tapState = { lastId: null, lastTime: 0 };
+
+    // Toast
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1100);
+    }
 
     // Prevent double-tap zoom (mobile)
-    let lastTap = 0;
+    let lastTapForZoom = 0;
     document.addEventListener("touchend", function (e) {
       const now = Date.now();
-      if (now - lastTap < 300) {
+      if (now - lastTapForZoom < 300) {
         e.preventDefault();
       }
-      lastTap = now;
+      lastTapForZoom = now;
     }, { passive: false });
-
-    // Refresh/close warning
-    window.addEventListener("beforeunload", function (e) {
-      if (!statsDirty) return;
-      e.preventDefault();
-      e.returnValue = "";
-    });
 
     // ==========================
     // Helpers
@@ -607,7 +656,6 @@
     }
 
     function format1(n){
-      // keep one decimal where needed (handles -1.5)
       const rounded = Math.round(n * 10) / 10;
       return (Math.abs(rounded % 1) > 0) ? rounded.toFixed(1) : String(rounded);
     }
@@ -621,31 +669,98 @@
       return false;
     }
 
-    // ==========================
-    // Render: Player chips
-    // ==========================
-    function renderChips(){
-      const bar = document.getElementById("quickSubBar");
-      bar.innerHTML = "";
+    function shortName(full){
+      // "Jayden Barton" -> "Barton", "Anjrew Goins" -> "Goins"
+      const parts = String(full).trim().split(/\s+/);
+      return parts.length ? parts[parts.length - 1] : full;
+    }
 
-      const sorted = [...roster].sort((a,b) => a.number - b.number);
-
-      for (const p of sorted){
-        const chip = document.createElement("div");
-        chip.className = "chip" + (p.inGame ? " inGame" : "") + (p.id === selectedPlayerId ? " selected" : "");
-        chip.dataset.id = String(p.id);
-        chip.innerHTML = `<span class="num">${p.number}</span> <span>${p.name}</span>`;
-        bar.appendChild(chip);
-      }
-
-      document.getElementById("inCount").textContent = String(roster.filter(x => x.inGame).length);
-      const sel = selectedPlayerId ? getPlayer(selectedPlayerId) : null;
-      document.getElementById("selectedLabel").textContent = sel ? `#${sel.number} ${sel.name}` : "None";
+    function countIn(){
+      return roster.filter(p => p.inGame).length;
     }
 
     // ==========================
-    // Render: Action grids
+    // Autosave
     // ==========================
+    function saveState(){
+      try{
+        const state = {
+          v: 1,
+          selectedPlayerId,
+          roster: roster.map(p => ({
+            id: p.id,
+            inGame: p.inGame,
+            defPoss: p.defPoss,
+            actionScore: p.actionScore,
+            c: p.c
+          }))
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        // If storage fails, silently ignore (private mode can block).
+      }
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (!state || state.v !== 1 || !Array.isArray(state.roster)) return;
+
+        selectedPlayerId = state.selectedPlayerId ?? null;
+
+        for (const s of state.roster){
+          const p = roster.find(x => x.id === s.id);
+          if (!p) continue;
+          p.inGame = !!s.inGame;
+          p.defPoss = Number(s.defPoss || 0);
+          p.actionScore = Number(s.actionScore || 0);
+          if (s.c && typeof s.c === "object"){
+            // Merge counters safely
+            for (const k in p.c){
+              if (s.c[k] !== undefined) p.c[k] = Number(s.c[k] || 0);
+            }
+          }
+        }
+      } catch (err) {
+        // ignore corrupt saves
+      }
+    }
+
+    function clearSavedState(){
+      try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
+    }
+
+    // ==========================
+    // Render
+    // ==========================
+    function renderRosterGrid(){
+      const grid = document.getElementById("rosterGrid");
+      grid.innerHTML = "";
+
+      const sorted = [...roster].sort((a,b) => a.number - b.number);
+      for (const p of sorted){
+        const tile = document.createElement("div");
+        tile.className = "playerTile" + (p.inGame ? " inGame" : "") + (p.id === selectedPlayerId ? " selected" : "");
+        tile.dataset.id = String(p.id);
+
+        tile.innerHTML = `
+          <div class="topline">
+            <div class="num">${p.number}</div>
+            <div class="status">${p.inGame ? "IN" : "OUT"}</div>
+          </div>
+          <div class="name">${shortName(p.name)}</div>
+        `;
+        grid.appendChild(tile);
+      }
+
+      document.getElementById("inCount").textContent = String(countIn());
+      const sel = selectedPlayerId ? getPlayer(selectedPlayerId) : null;
+      document.getElementById("selectedLabel").textContent = sel ? `#${sel.number} ${sel.name}` : "None";
+      document.getElementById("bonusLabel").textContent = format1(DEF_POSS_BONUS);
+    }
+
     function renderActionGrids(){
       const neg = document.getElementById("negGrid");
       const pos = document.getElementById("posGrid");
@@ -668,9 +783,6 @@
       }
     }
 
-    // ==========================
-    // Render: Live table
-    // ==========================
     function renderLiveTable(){
       const tbody = document.getElementById("liveBody");
       tbody.innerHTML = "";
@@ -694,94 +806,96 @@
     }
 
     function renderAll(){
-      renderChips();
+      renderRosterGrid();
       renderLiveTable();
     }
 
     // ==========================
-    // Interaction: tap = select, double-tap = sub toggle
-    // We implement reliable double-tap detection for both touch and mouse.
+    // Interaction: single tap select, double tap sub
     // ==========================
-    const tapState = { lastId: null, lastTime: 0 };
-
     function selectPlayer(id){
       selectedPlayerId = id;
-      renderChips();
+      renderRosterGrid();
+      saveState();
     }
 
     function toggleSub(id){
       const p = getPlayer(id);
       if(!p) return;
-      p.inGame = !p.inGame;
-      markDirty();
+
+      if (!p.inGame){
+        // trying to sub IN
+        if (countIn() >= 5){
+          toast("Max 5 IN. Sub someone OUT first.");
+          return;
+        }
+        p.inGame = true;
+      } else {
+        p.inGame = false;
+      }
+
       renderAll();
+      saveState();
     }
 
-    document.getElementById("quickSubBar").addEventListener("click", (e) => {
-      const chip = e.target.closest(".chip");
-      if(!chip) return;
-      const id = parseInt(chip.dataset.id, 10);
-
-      // Mouse double-click may work; but we handle it ourselves too.
+    function handleTapOnPlayer(id){
       const now = Date.now();
       if (tapState.lastId === id && (now - tapState.lastTime) < 320){
-        // treat as double tap/click
+        // double-tap -> sub toggle
         toggleSub(id);
         tapState.lastId = null;
         tapState.lastTime = 0;
         return;
       }
-
-      // single tap: select
+      // single tap -> select
       selectPlayer(id);
       tapState.lastId = id;
       tapState.lastTime = now;
+    }
+
+    document.getElementById("rosterGrid").addEventListener("click", (e) => {
+      const tile = e.target.closest(".playerTile");
+      if(!tile) return;
+      const id = parseInt(tile.dataset.id, 10);
+      handleTapOnPlayer(id);
     });
 
-    // Touchstart (helps some mobile browsers)
-    document.getElementById("quickSubBar").addEventListener("touchstart", (e) => {
-      const chip = e.target.closest(".chip");
-      if(!chip) return;
-      const id = parseInt(chip.dataset.id, 10);
-
-      const now = Date.now();
-      if (tapState.lastId === id && (now - tapState.lastTime) < 320){
-        toggleSub(id);
-        tapState.lastId = null;
-        tapState.lastTime = 0;
-        e.preventDefault();
-        return;
-      }
-      // single tap selects
-      selectPlayer(id);
-      tapState.lastId = id;
-      tapState.lastTime = now;
+    document.getElementById("rosterGrid").addEventListener("touchstart", (e) => {
+      const tile = e.target.closest(".playerTile");
+      if(!tile) return;
+      const id = parseInt(tile.dataset.id, 10);
+      handleTapOnPlayer(id);
     }, { passive: false });
 
     // ==========================
-    // Defensive possession button (orange)
-    // Adds +1 defPoss to everyone IN
+    // Defensive possession button
     // ==========================
     document.getElementById("defPossBtn").addEventListener("click", () => {
       const inPlayers = roster.filter(p => p.inGame);
-      if (inPlayers.length === 0) return;
-
-      for (const p of inPlayers){
-        p.defPoss += 1;
+      if (inPlayers.length === 0){
+        toast("No players IN.");
+        return;
       }
-      markDirty();
+      for (const p of inPlayers) p.defPoss += 1;
       renderLiveTable();
+      saveState();
+      toast(`Def Poss +1 for ${inPlayers.length} IN`);
     });
 
     // ==========================
-    // Action button press
-    // Applies to selected player
+    // Apply actions to selected player
     // ==========================
+    function findAction(actionKey){
+      return [...NEG_ACTIONS, ...POS_ACTIONS].find(a => a.key === actionKey) || null;
+    }
+
     function applyAction(actionKey){
       const p = selectedPlayerId ? getPlayer(selectedPlayerId) : null;
-      if(!p) return;
-
-      const a = [...NEG_ACTIONS, ...POS_ACTIONS].find(x => x.key === actionKey);
+      if(!p){
+        toast("Select a player first.");
+        return;
+      }
+      const a = findAction(actionKey);
       if(!a) return;
 
       // increment counters
@@ -789,11 +903,16 @@
         if (p.c[k] === undefined) p.c[k] = 0;
         p.c[k] += 1;
       }
-      // score impact
+
+      // combo usage keys are stored separately for reporting clarity
+      if (actionKey === "boxout_reb_combo") p.c.boxout_reb += 1;
+      if (actionKey === "defl_steal_combo") p.c.defl_steal += 1;
+
       p.actionScore += a.pts;
 
-      markDirty();
       renderLiveTable();
+      saveState();
+      toast(`#${p.number} ${shortName(p.name)}: ${a.label} (${format1(a.pts)})`);
     }
 
     document.getElementById("negGrid").addEventListener("click", (e) => {
@@ -809,31 +928,49 @@
     });
 
     // ==========================
-    // REPORT modal logic
+    // Clear all stats (only reset path) + confirm
+    // ==========================
+    function clearAllStats(){
+      const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
+      if(!ok) return;
+
+      for (const p of roster){
+        p.inGame = false;
+        p.defPoss = 0;
+        p.actionScore = 0;
+        for (const k in p.c) p.c[k] = 0;
+      }
+      selectedPlayerId = null;
+
+      clearSavedState();
+      renderAll();
+      toast("Cleared.");
+    }
+
+    document.getElementById("clearAllBtn").addEventListener("click", clearAllStats);
+
+    // ==========================
+    // REPORT modal + export PDF + report cards
     // ==========================
     const overlay = document.getElementById("reportOverlay");
-    const openReport = document.getElementById("openReport");
-    const closeReport = document.getElementById("btnCloseReport");
-
-    function openReportModal(){
+    document.getElementById("openReport").addEventListener("click", () => {
       buildReportTable();
       document.getElementById("cardsArea").innerHTML = "";
       overlay.classList.add("show");
       overlay.setAttribute("aria-hidden", "false");
-    }
-    function closeReportModal(){
+    });
+    document.getElementById("btnCloseReport").addEventListener("click", () => {
       overlay.classList.remove("show");
       overlay.setAttribute("aria-hidden", "true");
-    }
-
-    openReport.addEventListener("click", openReportModal);
-    closeReport.addEventListener("click", closeReportModal);
+    });
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeReportModal();
+      if (e.target === overlay){
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden", "true");
+      }
     });
 
     function buildReportRows(){
-      // only players who recorded stats/poss
       return roster
         .filter(p => hasAnyStats(p))
         .sort((a,b) => (totalScore(b) - totalScore(a)) || (b.defPoss - a.defPoss) || (a.number - b.number));
@@ -859,11 +996,7 @@
       }
     }
 
-    // ==========================
-    // Report Cards (F -> A+)
-    // ==========================
     function gradeFor(score){
-      // anchored so >5 is "good overall"
       if (score >= 15) return "A+";
       if (score >= 12) return "A";
       if (score >= 10) return "A-";
@@ -877,82 +1010,25 @@
       return "F";
     }
 
-    function impactMap(){
-      // Points per occurrence for narrative ranking (matches button weights)
-      const map = new Map();
-      for (const a of NEG_ACTIONS) map.set(a.key, a.pts);
-      for (const a of POS_ACTIONS) map.set(a.key, a.pts);
-      return map;
-    }
-    const ACTION_POINTS = impactMap();
-
-    function topDrivers(p, type /* 'pos'|'neg' */){
-      // Return list of {label, count, points} sorted by impact magnitude
+    function driverList(p, type){
       const list = [];
+      const all = [...NEG_ACTIONS, ...POS_ACTIONS];
 
-      // We compute contributions by action button usage counts.
-      // Some counters are "combo tracking" and some are direct categories.
-      // We'll focus on meaningful real-world labels:
-      const labelMap = {
-        blowby: "Containment (Blow-bys)",
-        laterotation: "Rotations (Late)",
-        weakcloseout: "Closeouts (Weak)",
-        noboxout: "Rebounding (No box-out)",
-        secondchance: "Second chance allowed",
-        secondchance_score: "Second chance → score",
-        jogback: "Transition (Jog back)",
-        poorcomm: "Communication (Poor)",
-        foul: "Discipline (Fouls)",
-        gamble: "Decision-making (Gamble)",
-        gamble_score: "Gamble → score",
-
-        boxout: "Box-outs",
-        boxout_reb_combo: "Box out + rebound (finishing stops)",
-        deflection: "Deflections",
-        defl_steal_combo: "Deflection + steal (disruption)",
-        steal: "Steals",
-        steal_score: "Steal → score (conversion)",
-        goodrotation: "Good rotations",
-        sprintback: "Sprint back (transition)",
-        charge: "Charges",
-        dive: "Dives on loose balls"
-      };
-
-      // We use the action keys from button lists (not all raw counters)
-      const actions = [...NEG_ACTIONS, ...POS_ACTIONS];
-
-      for (const a of actions){
+      for (const a of all){
         const cnt = p.c[a.key] ?? 0;
         if (cnt <= 0) continue;
-        const ptsPer = a.pts;
-        const total = cnt * ptsPer;
-
-        if (type === "pos" && total > 0){
-          list.push({ label: a.label, count: cnt, points: total });
-        } else if (type === "neg" && total < 0){
-          list.push({ label: a.label, count: cnt, points: total });
-        }
+        const total = cnt * a.pts;
+        if (type === "pos" && total > 0) list.push({ label:a.label, count:cnt, points:total });
+        if (type === "neg" && total < 0) list.push({ label:a.label, count:cnt, points:total });
       }
 
-      // Special: combo tracking counters are stored differently (we stored combo usage in p.c.boxout_reb and p.c.defl_steal)
-      // But their button keys are "boxout_reb_combo" and "defl_steal_combo".
-      // We'll map those stored counters into those keys so they show up.
-      const comboFix = [
-        { key: "boxout_reb_combo", stored: "boxout_reb", label: "Box Out + Rebound", ptsPer: +2 },
-        { key: "defl_steal_combo", stored: "defl_steal", label: "Deflection + Steal", ptsPer: +2 }
-      ];
-      for (const c of comboFix){
-        const cnt = p.c[c.stored] ?? 0;
-        if (cnt <= 0) continue;
-        const total = cnt * c.ptsPer;
-        if (type === "pos" && total > 0){
-          list.push({ label: c.label, count: cnt, points: total });
-        }
+      // Include combo usage counts (stored as boxout_reb and defl_steal)
+      if (type === "pos"){
+        if ((p.c.boxout_reb ?? 0) > 0) list.push({ label:"Box+Reb", count:p.c.boxout_reb, points:p.c.boxout_reb*2 });
+        if ((p.c.defl_steal ?? 0) > 0) list.push({ label:"Defl+Steal", count:p.c.defl_steal, points:p.c.defl_steal*2 });
       }
 
-      // sort by absolute impact magnitude
       list.sort((a,b) => Math.abs(b.points) - Math.abs(a.points));
-
       return list;
     }
 
@@ -960,7 +1036,6 @@
       const container = document.getElementById("cardsArea");
       const rows = buildReportRows();
 
-      // Only players who recorded stats (rows already filtered)
       const cards = document.createElement("div");
       cards.className = "cardsGrid";
 
@@ -968,34 +1043,33 @@
         const score = totalScore(p);
         const grade = gradeFor(score);
 
-        const positives = topDrivers(p, "pos");
-        const negatives = topDrivers(p, "neg");
+        const positives = driverList(p, "pos");
+        const negatives = driverList(p, "neg");
 
-        // choose 3 bullet points
         const bullets = [];
         if (score >= 5){
-          // 2 strengths + 1 improve
           if (positives[0]) bullets.push(`Did well: ${positives[0].label} (${positives[0].count})`);
           if (positives[1]) bullets.push(`Did well: ${positives[1].label} (${positives[1].count})`);
           if (negatives[0]) bullets.push(`Improve: ${negatives[0].label} (${negatives[0].count})`);
           else bullets.push(`Improve: Keep it clean (no negatives recorded)`);
         } else {
-          // 1 strength + 2 improve
           if (positives[0]) bullets.push(`Did well: ${positives[0].label} (${positives[0].count})`);
           else bullets.push(`Did well: Find 1 hustle play early (charge/dive/sprint back)`);
           if (negatives[0]) bullets.push(`Improve: ${negatives[0].label} (${negatives[0].count})`);
           if (negatives[1]) bullets.push(`Improve: ${negatives[1].label} (${negatives[1].count})`);
-          else if (negatives[0]) bullets.push(`Improve: Reduce repeat mistakes next shift`);
+          else bullets.push(`Improve: Reduce repeat mistakes next shift`);
         }
-
-        // ensure exactly 3
         while (bullets.length < 3) bullets.push("Focus: Consistency shift-to-shift");
 
         const card = document.createElement("div");
         card.className = "reportCard";
         card.innerHTML = `
           <div class="top">
-            <div><strong>#${p.number} ${p.name}</strong><div class="mono" style="color:var(--muted); font-size:.82rem;">Score: ${format1(score)} • DefPoss: ${p.defPoss}</div></div>
+            <div><strong>#${p.number} ${p.name}</strong>
+              <div class="mono" style="color:var(--muted); font-size:.80rem;">
+                Score: ${format1(score)} • DefPoss: ${p.defPoss}
+              </div>
+            </div>
             <div class="grade">${grade}</div>
           </div>
           <ul class="bullets">
@@ -1019,14 +1093,9 @@
 
     document.getElementById("btnReportCards").addEventListener("click", buildReportCards);
 
-    // ==========================
-    // Export PDF (print-to-PDF)
-    // Includes Top 3 + short summaries
-    // ==========================
     function summarizeTopPlayer(p){
-      // Top 2 positives + 1 biggest negative (if any)
-      const positives = topDrivers(p, "pos");
-      const negatives = topDrivers(p, "neg");
+      const positives = driverList(p, "pos");
+      const negatives = driverList(p, "neg");
 
       const bits = [];
       if (positives[0]) bits.push(`${positives[0].count}× ${positives[0].label}`);
@@ -1043,11 +1112,9 @@
     function exportPdf(){
       const rows = buildReportRows();
       const top3 = rows.slice(0,3);
-
       const now = new Date();
       const stamp = now.toLocaleString();
 
-      // Build printable HTML
       const html = `
 <!doctype html>
 <html>
@@ -1127,8 +1194,6 @@
       w.document.open();
       w.document.write(html);
       w.document.close();
-
-      // Give the window a moment to render, then print
       w.focus();
       setTimeout(() => w.print(), 250);
     }
@@ -1136,8 +1201,9 @@
     document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
 
     // ==========================
-    // Init
+    // Init: load autosave, render
     // ==========================
+    loadState();
     renderActionGrids();
     renderAll();
   </script>
