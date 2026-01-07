@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>HEART AND DRIVE EFFICIENCY</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
 
   <style>
@@ -35,6 +34,10 @@
 
       --toastBg: rgba(2,6,23,0.92);
       --toastBorder: rgba(148,163,184,0.30);
+
+      --subInBg: rgba(34,197,94,0.92);
+      --subOutBg: rgba(239,68,68,0.92);
+      --darkText:#111827;
     }
 
     *{ box-sizing:border-box; }
@@ -66,11 +69,7 @@
       user-select: none;
     }
 
-    h1{
-      margin:0;
-      font-size: 1.00rem;
-      letter-spacing: .02em;
-    }
+    h1{ margin:0; font-size: 1.00rem; letter-spacing: .02em; }
     .sub{
       margin-top: 4px;
       font-size: .74rem;
@@ -94,6 +93,33 @@
       user-select:none;
     }
 
+    /* TOP APP TABS */
+    .topTabs{
+      display:flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 10px 0 8px;
+    }
+    .tabBtn{
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,0.45);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 950;
+      font-size: .72rem;
+      letter-spacing: .08em;
+      cursor:pointer;
+      user-select:none;
+      touch-action: manipulation;
+      white-space: nowrap;
+    }
+    .tabBtn.active{
+      background: rgba(251,191,36,0.95);
+      color:#111827;
+      border-color: rgba(0,0,0,0.25);
+    }
+
     .metaLine{
       display:flex;
       justify-content:space-between;
@@ -113,25 +139,6 @@
       background: rgba(2,6,23,0.45);
       white-space: nowrap;
     }
-
-    .defPossBtn{
-      width: 100%;
-      background: linear-gradient(180deg, var(--orange2), var(--orange));
-      color: #111827;
-      border: 1px solid rgba(0,0,0,0.25);
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-weight: 950;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: .90rem;
-      cursor: pointer;
-      user-select: none;
-      margin: 6px 0 6px;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.30);
-      touch-action: manipulation;
-    }
-    .defPossBtn:active{ transform: translateY(1px); }
 
     .rosterGrid{
       display:grid;
@@ -157,9 +164,7 @@
       flex-direction:column;
       justify-content:center;
       gap: 3px;
-      transition: background .08s ease, border-color .08s ease, box-shadow .08s ease;
       overflow:hidden;
-
       touch-action: manipulation;
       -webkit-touch-callout: none;
     }
@@ -200,6 +205,48 @@
     .playerTile.selected{
       box-shadow: 0 0 0 2px var(--selectedGlow);
     }
+
+    .subRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 6px 0 6px;
+    }
+    .subBtn{
+      border-radius: 14px;
+      padding: 12px 10px;
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-size: .86rem;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.25);
+      color: var(--darkText);
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .subBtn:active{ transform: translateY(1px); }
+    .subIn{ background: var(--subInBg); }
+    .subOut{ background: var(--subOutBg); }
+
+    .defPossBtn{
+      width: 100%;
+      background: linear-gradient(180deg, var(--orange2), var(--orange));
+      color: #111827;
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .90rem;
+      cursor: pointer;
+      user-select: none;
+      margin: 6px 0 6px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.30);
+      touch-action: manipulation;
+    }
+    .defPossBtn:active{ transform: translateY(1px); }
 
     .sectionCard{
       border: 1px solid var(--border);
@@ -321,6 +368,63 @@
     }
     .toast.show{ opacity: 1; }
 
+    /* Team tab widgets */
+    .teamGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px;
+    }
+    @media (min-width: 520px){
+      .teamGrid{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .teamCard{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(2,6,23,0.45);
+      padding: 10px;
+    }
+    .teamCard h3{
+      margin:0 0 8px;
+      font-size: .78rem;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .teamBig{
+      font-size: 1.8rem;
+      font-weight: 950;
+      letter-spacing: .03em;
+      margin: 4px 0 8px;
+    }
+    .teamControls{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .teamBtn{
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.25);
+      padding: 10px 8px;
+      font-weight: 950;
+      font-size: .85rem;
+      cursor:pointer;
+      user-select:none;
+      touch-action: manipulation;
+      color:#111827;
+    }
+    .teamPlus{ background: rgba(34,197,94,0.90); }
+    .teamMinus{ background: rgba(239,68,68,0.90); }
+    .teamBtn:active{ transform: translateY(1px); }
+    .diffLine{
+      margin-top: 8px;
+      font-size: .80rem;
+      color: var(--muted);
+    }
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* Report modal */
     .overlay{
       position: fixed;
       inset: 0;
@@ -390,59 +494,6 @@
       font-size: .84rem;
       line-height: 1.35;
     }
-
-    /* LANDSCAPE: show all neg+pos buttons at once */
-    @media (orientation: landscape){
-      body{ padding: 4px; }
-
-      .app{
-        padding: 6px;
-        border-radius: 12px;
-        max-height: calc(100vh - 8px);
-        overflow: hidden;
-      }
-
-      .sub{ font-size: .68rem; }
-      .metaLine{ margin: 6px 0 4px; gap: 4px; }
-
-      .defPossBtn{ padding: 8px 10px; font-size: .82rem; margin: 4px 0 4px; border-radius: 12px; }
-
-      .rosterGrid{
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 5px;
-        margin-top: 6px;
-        margin-bottom: 6px;
-      }
-
-      .playerTile{ padding: 6px 6px; min-height: 38px; border-radius: 10px; }
-      .playerTile .num{ font-size: .78rem; }
-      .playerTile .name{ font-size: .70rem; }
-      .playerTile .status{ font-size: .62rem; }
-
-      .sectionCard{ margin-top: 6px; }
-      .sectionHeader{ padding: 6px 8px; }
-      .sectionHeader h2{ font-size: .76rem; }
-
-      .actionGrid{
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        padding: 8px;
-        gap: 6px;
-      }
-      .actionBtn{
-        padding: 6px 5px;
-        font-size: .66rem;
-        min-height: 32px;
-        border-radius: 10px;
-      }
-
-      .liveWrap{
-        max-height: 22vh;
-        overflow: auto;
-      }
-
-      th, td{ padding: 6px 6px; }
-      table{ font-size: .78rem; }
-    }
   </style>
 </head>
 
@@ -453,60 +504,230 @@
     <div>
       <h1>HEART AND DRIVE EFFICIENCY</h1>
       <div class="sub">
-        Tap player = <strong>select/highlight</strong>. <strong>TRIPLE tap</strong> = <strong>sub in/out</strong> (max 5).
+        DEFENSE tab = individual player logging. Other tabs = TEAM ONLY counters (no player score impact).
       </div>
     </div>
 
-    <div class="metaLine">
-      <div class="pill">Selected: <span id="selectedLabel" class="mono">None</span></div>
-      <div class="pill">IN: <span id="inCount">0</span>/5</div>
-      <div class="pill">Score = actions only • Poss = volume</div>
+    <div class="topTabs" id="topTabs">
+      <button class="tabBtn active" data-tab="def">DEFENSE</button>
+      <button class="tabBtn" data-tab="off">OFF POSS / TO</button>
+      <button class="tabBtn" data-tab="oreb">OREB</button>
+      <button class="tabBtn" data-tab="fta">FTA</button>
+      <button class="tabBtn" data-tab="tpa">3PA (US)</button>
     </div>
 
-    <div class="rosterGrid" id="rosterGrid"></div>
-
-    <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
-
-    <button class="btn" id="undoBtn" style="width:100%; margin-bottom:6px;">UNDO LAST STAT</button>
-    <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:6px;">CLEAR ALL STATS</button>
-
-    <section class="sectionCard">
-      <div class="sectionHeader">
-        <h2>Negatives</h2>
-        <span class="pill">Applies to selected player</span>
+    <!-- DEFENSE SCREEN -->
+    <div class="screen active" id="screen-def">
+      <div class="metaLine">
+        <div class="pill">Active: <span id="activeLabel" class="mono">None</span></div>
+        <div class="pill">Selected: <span id="selCount" class="mono">0</span></div>
+        <div class="pill">IN: <span id="inCount">0</span>/5</div>
       </div>
-      <div class="actionGrid" id="negGrid"></div>
-    </section>
 
-    <section class="sectionCard">
-      <div class="sectionHeader">
-        <h2>Positives</h2>
-        <span class="pill">Applies to selected player</span>
-      </div>
-      <div class="actionGrid" id="posGrid"></div>
-    </section>
+      <div class="rosterGrid" id="rosterGrid"></div>
 
-    <section class="sectionCard">
-      <div class="sectionHeader">
-        <h2>Live Stats</h2>
-        <span class="pill">Score + Score/10 + Poss</span>
+      <div class="subRow">
+        <button class="subBtn subIn" id="subInBtn">SUB IN (Selected)</button>
+        <button class="subBtn subOut" id="subOutBtn">SUB OUT (Selected)</button>
       </div>
-      <div class="liveWrap" style="padding: 8px 10px;">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Player</th>
-              <th>IN</th>
-              <th class="mono">Poss</th>
-              <th class="mono">Score</th>
-              <th class="mono">Score/10</th>
-            </tr>
-          </thead>
-          <tbody id="liveBody"></tbody>
-        </table>
+
+      <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
+
+      <!-- TWO SEPARATE ALWAYS-VISIBLE TURNOVER BUTTONS -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0;">
+        <button class="btn btnDanger" id="toUsBtn" style="padding:14px 10px; font-size:1.0rem; font-weight:950;">
+          TO US +1 <span class="mono" id="toUsInline" style="margin-left:8px;">0</span>
+        </button>
+
+        <button class="btn btnYellow" id="toOppBtn" style="padding:14px 10px; font-size:1.0rem; font-weight:950;">
+          TO OPP +1 <span class="mono" id="toOppInline" style="margin-left:8px;">0</span>
+        </button>
       </div>
-    </section>
+
+      <div class="pill" style="display:inline-block; margin:0 0 6px;">
+        TO Battle (Opp − Us): <span class="mono" id="toBattleInline">0</span>
+      </div>
+
+      <button class="btn" id="undoBtn" style="width:100%; margin-bottom:6px;">UNDO LAST STAT</button>
+      <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:6px;">CLEAR ALL STATS</button>
+
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>Negatives</h2>
+          <span class="pill">Applies to ACTIVE player</span>
+        </div>
+        <div class="actionGrid" id="negGrid"></div>
+      </section>
+
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>Positives</h2>
+          <span class="pill">Applies to ACTIVE player</span>
+        </div>
+        <div class="actionGrid" id="posGrid"></div>
+      </section>
+
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>Live Stats</h2>
+          <span class="pill">Score + Score/10 + Poss</span>
+        </div>
+        <div style="padding: 8px 10px; overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>IN</th>
+                <th class="mono">Poss</th>
+                <th class="mono">Score</th>
+                <th class="mono">Score/10</th>
+              </tr>
+            </thead>
+            <tbody id="liveBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- TEAM SCREENS (TEAM ONLY) -->
+    <div class="screen" id="screen-off">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>OFF POSS / TO</h2>
+          <span class="pill">Off Poss Diff = Us − Opp • TO Battle = Opp − Us</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>Offensive Possessions (Us)</h3>
+            <div class="teamBig mono" id="offPossUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="offPossUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="offPossUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>Offensive Possessions (Opp)</h3>
+            <div class="teamBig mono" id="offPossOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="offPossOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="offPossOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>Off Poss Differential</h3>
+            <div class="teamBig mono" id="offPossDiff">0</div>
+            <div class="diffLine">Us − Opp</div>
+          </div>
+
+          <div class="teamCard">
+            <h3>Turnovers (Us)</h3>
+            <div class="teamBig mono" id="toUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="toUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="toUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>Turnovers (Opp)</h3>
+            <div class="teamBig mono" id="toOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="toOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="toOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>TO Battle</h3>
+            <div class="teamBig mono" id="toBattle">0</div>
+            <div class="diffLine">Opp − Us (Positive = Winning)</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="screen" id="screen-oreb">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>OFFENSIVE REBOUNDS</h2>
+          <span class="pill">Differential = Us − Opp</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>OREB (Us)</h3>
+            <div class="teamBig mono" id="orebUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="orebUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="orebUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>OREB (Opp)</h3>
+            <div class="teamBig mono" id="orebOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="orebOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="orebOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>OREB Differential</h3>
+            <div class="teamBig mono" id="orebDiff">0</div>
+            <div class="diffLine">Us − Opp</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="screen" id="screen-fta">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>FREE THROWS ATTEMPTED</h2>
+          <span class="pill">Differential = Us − Opp</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>FTA (Us)</h3>
+            <div class="teamBig mono" id="ftaUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="ftaUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="ftaUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>FTA (Opp)</h3>
+            <div class="teamBig mono" id="ftaOpp">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="ftaOpp" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="ftaOpp" data-delta="-1">-1</button>
+            </div>
+          </div>
+          <div class="teamCard">
+            <h3>FTA Differential</h3>
+            <div class="teamBig mono" id="ftaDiff">0</div>
+            <div class="diffLine">Us − Opp</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="screen" id="screen-tpa">
+      <section class="sectionCard">
+        <div class="sectionHeader">
+          <h2>3 POINTERS ATTEMPTED (US ONLY)</h2>
+          <span class="pill">Team Only</span>
+        </div>
+        <div class="teamGrid">
+          <div class="teamCard">
+            <h3>3PA (Us)</h3>
+            <div class="teamBig mono" id="tpaUs">0</div>
+            <div class="teamControls">
+              <button class="teamBtn teamPlus" data-team="tpaUs" data-delta="1">+1</button>
+              <button class="teamBtn teamMinus" data-team="tpaUs" data-delta="-1">-1</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
   </div>
 
   <div class="toast" id="toast"></div>
@@ -547,7 +768,16 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hde_v6_autosave";
+    const STORAGE_KEY = "hde_v11_autosave";
+
+    // TEAM ONLY counters
+    const team = {
+      offPossUs: 0, offPossOpp: 0,
+      toUs: 0, toOpp: 0,
+      orebUs: 0, orebOpp: 0,
+      ftaUs: 0, ftaOpp: 0,
+      tpaUs: 0
+    };
 
     const roster = [
       { number: 0,  name: "Roger Matute" },
@@ -658,8 +888,10 @@
       { key: "dive", label: "Dive", pts: +2, inc: ["dive"] }
     ];
 
-    let selectedPlayerId = null;
+    let activePlayerId = null;
+    const selectedSet = new Set();
 
+    // Undo stack supports: poss, action, team
     const historyStack = [];
 
     const toastEl = document.getElementById("toast");
@@ -670,6 +902,9 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1100);
     }
+
+    function clamp0(x){ return Math.max(0, Number(x) || 0); }
+    function diff(a,b){ return (Number(a)||0) - (Number(b)||0); }
 
     function getPlayer(id){ return roster.find(p => p.id === id) || null; }
     function score(p){ return p.actionScore; }
@@ -693,11 +928,26 @@
       return false;
     }
 
+    // ===== Tabs =====
+    let currentTab = "def";
+    function setTab(tab){
+      currentTab = tab;
+      document.querySelectorAll(".tabBtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      const el = document.getElementById(`screen-${tab}`);
+      if (el) el.classList.add("active");
+      saveState();
+    }
+
+    // Autosave
     function saveState(){
       try{
         const state = {
           v: 1,
-          selectedPlayerId,
+          activePlayerId,
+          selectedIds: Array.from(selectedSet),
+          currentTab,
+          team: { ...team },
           roster: roster.map(p => ({
             id: p.id,
             inGame: p.inGame,
@@ -716,17 +966,29 @@
         const state = JSON.parse(raw);
         if (!state || state.v !== 1 || !Array.isArray(state.roster)) return;
 
-        selectedPlayerId = state.selectedPlayerId ?? null;
+        activePlayerId = state.activePlayerId ?? null;
+        selectedSet.clear();
+        if (Array.isArray(state.selectedIds)){
+          for (const id of state.selectedIds) selectedSet.add(Number(id));
+        }
+
+        if (state.team && typeof state.team === "object"){
+          for (const k in team){
+            if (state.team[k] !== undefined) team[k] = clamp0(state.team[k]);
+          }
+        }
+
+        currentTab = state.currentTab || "def";
 
         for (const s of state.roster){
           const p = roster.find(x => x.id === s.id);
           if (!p) continue;
           p.inGame = !!s.inGame;
-          p.defPoss = Number(s.defPoss || 0);
+          p.defPoss = clamp0(s.defPoss);
           p.actionScore = Number(s.actionScore || 0);
           if (s.c && typeof s.c === "object"){
             for (const k in p.c){
-              if (s.c[k] !== undefined) p.c[k] = Number(s.c[k] || 0);
+              if (s.c[k] !== undefined) p.c[k] = clamp0(s.c[k]);
             }
           }
         }
@@ -740,7 +1002,11 @@
       const sorted = [...roster].sort((a,b) => a.number - b.number);
       for (const p of sorted){
         const tile = document.createElement("div");
-        tile.className = "playerTile" + (p.inGame ? " inGame" : "") + (p.id === selectedPlayerId ? " selected" : "");
+        const isSelected = selectedSet.has(p.id);
+        tile.className =
+          "playerTile" +
+          (p.inGame ? " inGame" : "") +
+          (isSelected ? " selected" : "");
         tile.dataset.id = String(p.id);
 
         tile.innerHTML = `
@@ -754,8 +1020,10 @@
       }
 
       document.getElementById("inCount").textContent = String(countIn());
-      const sel = selectedPlayerId ? getPlayer(selectedPlayerId) : null;
-      document.getElementById("selectedLabel").textContent = sel ? `#${sel.number} ${sel.name}` : "None";
+      document.getElementById("selCount").textContent = String(selectedSet.size);
+
+      const a = activePlayerId ? getPlayer(activePlayerId) : null;
+      document.getElementById("activeLabel").textContent = a ? `#${a.number} ${a.name}` : "None";
     }
 
     function renderActionGrids(){
@@ -802,81 +1070,122 @@
       }
     }
 
+    function renderTeam(){
+      document.getElementById("offPossUs").textContent = team.offPossUs;
+      document.getElementById("offPossOpp").textContent = team.offPossOpp;
+      document.getElementById("offPossDiff").textContent = diff(team.offPossUs, team.offPossOpp);
+
+      document.getElementById("toUs").textContent = team.toUs;
+      document.getElementById("toOpp").textContent = team.toOpp;
+
+      // Turnover battle: positive means WE are winning (they have more TOs)
+      const battle = diff(team.toOpp, team.toUs);
+      document.getElementById("toBattle").textContent = battle;
+
+      document.getElementById("orebUs").textContent = team.orebUs;
+      document.getElementById("orebOpp").textContent = team.orebOpp;
+      document.getElementById("orebDiff").textContent = diff(team.orebUs, team.orebOpp);
+
+      document.getElementById("ftaUs").textContent = team.ftaUs;
+      document.getElementById("ftaOpp").textContent = team.ftaOpp;
+      document.getElementById("ftaDiff").textContent = diff(team.ftaUs, team.ftaOpp);
+
+      document.getElementById("tpaUs").textContent = team.tpaUs;
+
+      // Inline counters on DEFENSE screen
+      const usInline = document.getElementById("toUsInline");
+      const oppInline = document.getElementById("toOppInline");
+      const battleInline = document.getElementById("toBattleInline");
+      if (usInline) usInline.textContent = team.toUs;
+      if (oppInline) oppInline.textContent = team.toOpp;
+      if (battleInline) battleInline.textContent = battle;
+    }
+
     function renderAll(){
       renderRosterGrid();
       renderLiveTable();
+      renderTeam();
     }
 
-    function selectPlayer(id){
-      selectedPlayerId = id;
+    function toggleSelectAndSetActive(id){
+      if (selectedSet.has(id)) selectedSet.delete(id);
+      else selectedSet.add(id);
+
+      activePlayerId = id;
       renderRosterGrid();
       saveState();
     }
 
-    function toggleSub(id){
-      const p = getPlayer(id);
-      if (!p) return;
+    function subInSelected(){
+      const selectedIds = Array.from(selectedSet);
+      if (selectedIds.length === 0){ toast("No players selected."); return; }
 
-      if (!p.inGame){
-        if (countIn() >= 5){
-          toast("Max 5 IN. Sub someone OUT first.");
-          return;
-        }
+      let inCountNow = countIn();
+      for (const id of selectedIds){
+        const p = getPlayer(id);
+        if (!p) continue;
+        if (p.inGame) continue;
+        if (inCountNow >= 5){ toast("Max 5 IN."); break; }
         p.inGame = true;
-      } else {
+        inCountNow += 1;
+      }
+      renderAll();
+      saveState();
+      toast("Sub in applied.");
+    }
+
+    function subOutSelected(){
+      const selectedIds = Array.from(selectedSet);
+      if (selectedIds.length === 0){ toast("No players selected."); return; }
+      for (const id of selectedIds){
+        const p = getPlayer(id);
+        if (!p) continue;
         p.inGame = false;
       }
       renderAll();
       saveState();
+      toast("Sub out applied.");
     }
-
-    // TRIPLE TAP
-    const TAP_WINDOW_MS = 650;
-    const tapState = { id: null, count: 0, lastTime: 0 };
 
     document.getElementById("rosterGrid").addEventListener("pointerup", (e) => {
       const tile = e.target.closest(".playerTile");
       if(!tile) return;
-
       const id = parseInt(tile.dataset.id, 10);
-      const now = Date.now();
-
-      selectPlayer(id);
-
-      if (tapState.id === id && (now - tapState.lastTime) <= TAP_WINDOW_MS){
-        tapState.count += 1;
-      } else {
-        tapState.id = id;
-        tapState.count = 1;
-      }
-      tapState.lastTime = now;
-
-      if (tapState.count >= 3){
-        toggleSub(id);
-        tapState.id = null;
-        tapState.count = 0;
-        tapState.lastTime = 0;
-      }
+      toggleSelectAndSetActive(id);
     });
+
+    document.getElementById("subInBtn").addEventListener("click", subInSelected);
+    document.getElementById("subOutBtn").addEventListener("click", subOutSelected);
 
     document.getElementById("defPossBtn").addEventListener("click", () => {
       const inPlayers = roster.filter(p => p.inGame);
-      if (inPlayers.length === 0){
-        toast("No players IN.");
-        return;
-      }
-
+      if (inPlayers.length === 0){ toast("No players IN."); return; }
       for (const p of inPlayers) p.defPoss += 1;
 
-      historyStack.push({
-        type: "poss",
-        playerIds: inPlayers.map(p => p.id),
-        delta: 1
-      });
+      historyStack.push({ type: "poss", playerIds: inPlayers.map(p => p.id), delta: 1 });
 
       renderLiveTable();
       saveState();
       toast(`Poss +1 for ${inPlayers.length} IN`);
+    });
+
+    // Two separate turnover buttons (TEAM ONLY)
+    document.getElementById("toUsBtn").addEventListener("click", () => {
+      const before = team.toUs;
+      team.toUs += 1;
+      historyStack.push({ type:"team", key:"toUs", before, after: team.toUs });
+      renderTeam();
+      saveState();
+      toast("TO US +1");
+    });
+
+    document.getElementById("toOppBtn").addEventListener("click", () => {
+      const before = team.toOpp;
+      team.toOpp += 1;
+      historyStack.push({ type:"team", key:"toOpp", before, after: team.toOpp });
+      renderTeam();
+      saveState();
+      toast("TO OPP +1");
     });
 
     function findAction(actionKey){
@@ -884,27 +1193,14 @@
     }
 
     function applyAction(actionKey){
-      const p = selectedPlayerId ? getPlayer(selectedPlayerId) : null;
-      if (!p){
-        toast("Select a player first.");
-        return;
-      }
+      const p = activePlayerId ? getPlayer(activePlayerId) : null;
+      if (!p){ toast("Tap a player to set ACTIVE."); return; }
       const a = findAction(actionKey);
       if (!a) return;
 
-      historyStack.push({
-        type: "action",
-        playerId: p.id,
-        pts: a.pts,
-        incKeys: [...a.inc],
-        actionKey
-      });
+      historyStack.push({ type: "action", playerId: p.id, pts: a.pts, incKeys: [...a.inc], actionKey });
 
-      for(const k of a.inc){
-        if (p.c[k] === undefined) p.c[k] = 0;
-        p.c[k] += 1;
-      }
-
+      for(const k of a.inc){ p.c[k] = (p.c[k] || 0) + 1; }
       if (actionKey === "boxout_reb_combo") p.c.boxout_reb += 1;
       if (actionKey === "defl_steal_combo") p.c.defl_steal += 1;
 
@@ -927,12 +1223,28 @@
       applyAction(btn.dataset.action);
     });
 
+    // TEAM buttons (+/-) on team tabs
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-team][data-delta]");
+      if(!btn) return;
+
+      const key = btn.dataset.team;
+      const delta = Number(btn.dataset.delta || 0);
+      if (!(key in team)) return;
+
+      const before = team[key];
+      team[key] = clamp0(team[key] + delta);
+
+      historyStack.push({ type: "team", key, before, after: team[key] });
+
+      renderTeam();
+      saveState();
+      toast(`${key}: ${before} → ${team[key]}`);
+    });
+
     document.getElementById("undoBtn").addEventListener("click", () => {
       const last = historyStack.pop();
-      if (!last){
-        toast("Nothing to undo.");
-        return;
-      }
+      if (!last){ toast("Nothing to undo."); return; }
 
       if (last.type === "poss"){
         for (const id of last.playerIds){
@@ -948,13 +1260,10 @@
 
       if (last.type === "action"){
         const p = getPlayer(last.playerId);
-        if (!p){
-          toast("Undo failed (player missing).");
-          return;
-        }
+        if (!p){ toast("Undo failed (player missing)."); return; }
 
         for (const k of last.incKeys || []){
-          if (p.c[k] !== undefined) p.c[k] = Math.max(0, (p.c[k] || 0) - 1);
+          p.c[k] = Math.max(0, (p.c[k] || 0) - 1);
         }
 
         if (last.actionKey === "boxout_reb_combo") p.c.boxout_reb = Math.max(0, (p.c.boxout_reb || 0) - 1);
@@ -966,6 +1275,16 @@
         saveState();
         toast(`Undid last stat for #${p.number}.`);
         return;
+      }
+
+      if (last.type === "team"){
+        if (last.key in team){
+          team[last.key] = clamp0(last.before);
+          renderTeam();
+          saveState();
+          toast(`Undid ${last.key}.`);
+          return;
+        }
       }
 
       toast("Nothing to undo.");
@@ -981,7 +1300,10 @@
         p.actionScore = 0;
         for (const k in p.c) p.c[k] = 0;
       }
-      selectedPlayerId = null;
+      activePlayerId = null;
+      selectedSet.clear();
+
+      for (const k in team) team[k] = 0;
 
       try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
       historyStack.length = 0;
@@ -990,7 +1312,13 @@
       toast("Cleared.");
     });
 
-    // ===== Report modal + PDF + report cards (unchanged) =====
+    document.getElementById("topTabs").addEventListener("click", (e) => {
+      const btn = e.target.closest(".tabBtn");
+      if (!btn) return;
+      setTab(btn.dataset.tab);
+    });
+
+    // ===== Report modal + PDF + report cards =====
     const overlay = document.getElementById("reportOverlay");
 
     function buildReportRows(){
@@ -1148,10 +1476,15 @@
   .player{ margin-bottom:10px; }
   .player strong{ display:block; }
 
+  .teamBox{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
+  .teamBox h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
+  .teamGrid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; font-size:12px; }
+  .teamItem{ border:1px solid #eee; border-radius:8px; padding:8px; }
+  .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
   table{ width:100%; border-collapse:collapse; font-size:11px; margin-top: 10px; }
   th, td{ border-bottom:1px solid #eee; text-align:left; padding:6px 6px; vertical-align: top; }
   th{ background:#fafafa; font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
-  .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
   .nowrap{ white-space:nowrap; }
 
   .keyGrid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; margin-top: 10px; font-size: 11px; }
@@ -1162,6 +1495,17 @@
 <body>
   <h1>HEART AND DRIVE EFFICIENCY</h1>
   <div class="muted">Generated: ${stamp} • Score = actions only • Possessions = volume</div>
+
+  <div class="teamBox">
+    <h2>Team Tracking (Team Only)</h2>
+    <div class="teamGrid">
+      <div class="teamItem"><div><strong>Off Poss</strong></div><div class="mono">Us ${team.offPossUs} • Opp ${team.offPossOpp} • Diff ${diff(team.offPossUs,team.offPossOpp)}</div></div>
+      <div class="teamItem"><div><strong>Turnovers (Battle)</strong></div><div class="mono">Us ${team.toUs} • Opp ${team.toOpp} • Battle ${diff(team.toOpp,team.toUs)}</div></div>
+      <div class="teamItem"><div><strong>OREB</strong></div><div class="mono">Us ${team.orebUs} • Opp ${team.orebOpp} • Diff ${diff(team.orebUs,team.orebOpp)}</div></div>
+      <div class="teamItem"><div><strong>FTA</strong></div><div class="mono">Us ${team.ftaUs} • Opp ${team.ftaOpp} • Diff ${diff(team.ftaUs,team.ftaOpp)}</div></div>
+      <div class="teamItem"><div><strong>3PA (Us)</strong></div><div class="mono">Us ${team.tpaUs}</div></div>
+    </div>
+  </div>
 
   <div class="top3">
     <h2>Top 3 Players (by Score)</h2>
@@ -1242,6 +1586,7 @@
     <li>Score = ActionScore only (no possession bonus)</li>
     <li>Score/10 = (Score ÷ Possessions) × 10</li>
     <li>Grades: B- starts at 5+ (good overall)</li>
+    <li>TO Battle = Opp Turnovers − Us Turnovers (Positive = we are winning)</li>
   </ul>
 </body></html>`;
 
@@ -1279,6 +1624,7 @@
     loadState();
     renderActionGrids();
     renderAll();
+    setTab(currentTab);
   </script>
 </body>
 </html>
