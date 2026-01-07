@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>HEART AND DRIVE EFFICIENCY</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+  <!-- Allow pinch zoom, but block double-tap zoom via JS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
 
   <style>
     :root{
@@ -135,9 +137,29 @@
       .rosterGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
     @media (orientation: landscape){
-      body{ padding: 6px; }
-      .app{ padding: 6px; }
-      .rosterGrid{ grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      body{ padding: 4px; }
+      .app{ padding: 6px; border-radius: 12px; }
+
+      .sub{ font-size: .68rem; }
+      .metaLine{ margin: 6px 0 4px; gap: 4px; }
+
+      .defPossBtn{ padding: 8px 10px; font-size: .82rem; margin: 4px 0 4px; border-radius: 12px; }
+
+      .rosterGrid{ grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; margin-top: 6px; margin-bottom: 6px; }
+      .playerTile{ padding: 6px 6px; min-height: 40px; }
+      .playerTile .num{ font-size: .78rem; }
+      .playerTile .name{ font-size: .70rem; }
+      .playerTile .status{ font-size: .62rem; }
+
+      .sectionCard{ margin-top: 6px; }
+      .sectionHeader{ padding: 6px 8px; }
+      .sectionHeader h2{ font-size: .76rem; }
+
+      .actionGrid{ grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 8px; gap: 6px; }
+      .actionBtn{ padding: 7px 6px; font-size: .74rem; min-height: 38px; border-radius: 10px; }
+
+      th, td{ padding: 6px 6px; }
+      table{ font-size: .78rem; }
     }
 
     .playerTile{
@@ -156,8 +178,7 @@
       transition: background .08s ease, border-color .08s ease, box-shadow .08s ease;
       overflow:hidden;
 
-      /* Stops iOS double-tap zoom */
-      touch-action: none;
+      touch-action: manipulation;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
@@ -232,10 +253,6 @@
     @media (min-width: 430px){
       .actionGrid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
-    @media (orientation: landscape){
-      .actionGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 8px; gap: 7px; }
-      .sectionCard{ margin-top: 6px; }
-    }
 
     .actionBtn{
       border-radius: 12px;
@@ -252,7 +269,6 @@
       min-height: 42px;
     }
     .actionBtn:active{ transform: translateY(1px); }
-
     .actionBtn.neg{ background: var(--negBg); border-color: var(--negBorder); }
     .actionBtn.pos{ background: var(--posBg); border-color: var(--posBorder); }
 
@@ -384,10 +400,7 @@
       gap: 8px;
       margin-bottom: 8px;
     }
-    .grade{
-      font-weight: 950;
-      font-size: 1.10rem;
-    }
+    .grade{ font-weight: 950; font-size: 1.10rem; }
     .bullets{
       margin: 0;
       padding-left: 18px;
@@ -419,6 +432,7 @@
 
     <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
+    <button class="btn" id="undoBtn" style="width:100%; margin-bottom:6px;">UNDO LAST STAT</button>
     <button class="btn btnDanger" id="clearAllBtn" style="width:100%; margin-bottom:6px;">CLEAR ALL STATS</button>
 
     <section class="sectionCard">
@@ -499,7 +513,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hde_v2_autosave";
+    const STORAGE_KEY = "hde_v4_autosave";
 
     const roster = [
       { number: 0,  name: "Roger Matute" },
@@ -543,14 +557,44 @@
         steal_score: 0,
         goodrotation: 0,
         sprintback: 0,
-        onball: 0,     // NEW
+        onball: 0,
+        block: 0,
+        rebound: 0,
         charge: 0,
-        dive: 0,
-
-        rebound: 0
+        dive: 0
       },
       actionScore: 0
     }));
+
+    const ACTION_ABBR = {
+      // Negatives
+      blowby: "BB",
+      laterotation: "LR",
+      weakcloseout: "WC",
+      noboxout: "NBO",
+      secondchance: "2CA",
+      secondchance_score: "2CS",
+      jogback: "JB",
+      poorcomm: "PC",
+      foul: "F",
+      gamble: "G",
+      gamble_score: "GS",
+
+      // Positives
+      boxout: "BO",
+      rebound: "REB",
+      block: "BLK",
+      boxout_reb_combo: "BR",
+      deflection: "DFL",
+      defl_steal_combo: "DS",
+      steal: "STL",
+      steal_score: "STS",
+      goodrotation: "GR",
+      sprintback: "SB",
+      onball: "OBD",
+      charge: "CHG",
+      dive: "DIVE"
+    };
 
     const NEG_ACTIONS = [
       { key: "blowby", label: "Blow By", pts: -2, inc: ["blowby"] },
@@ -568,6 +612,8 @@
 
     const POS_ACTIONS = [
       { key: "boxout", label: "Box Out", pts: +1, inc: ["boxout"] },
+      { key: "rebound", label: "Rebound", pts: +1, inc: ["rebound"] },
+      { key: "block", label: "Block", pts: +1, inc: ["block"] },
       { key: "boxout_reb_combo", label: "Box+Reb", pts: +2, inc: ["boxout","rebound","boxout_reb"] },
       { key: "deflection", label: "Deflection", pts: +1, inc: ["deflection"] },
       { key: "defl_steal_combo", label: "Defl+Steal", pts: +2, inc: ["deflection","steal","defl_steal"] },
@@ -575,12 +621,15 @@
       { key: "steal_score", label: "Steal→Score", pts: +3, inc: ["steal_score","steal"] },
       { key: "goodrotation", label: "Good Rotation", pts: +1, inc: ["goodrotation"] },
       { key: "sprintback", label: "Sprint Back", pts: +1, inc: ["sprintback"] },
-      { key: "onball", label: "Good On-Ball D", pts: +1, inc: ["onball"] }, // NEW
+      { key: "onball", label: "Good On-Ball D", pts: +1, inc: ["onball"] },
       { key: "charge", label: "Charge", pts: +2, inc: ["charge"] },
       { key: "dive", label: "Dive", pts: +2, inc: ["dive"] }
     ];
 
     let selectedPlayerId = null;
+
+    // Undo stack (not autosaved on purpose)
+    const historyStack = [];
 
     const toastEl = document.getElementById("toast");
     let toastTimer = null;
@@ -593,24 +642,19 @@
 
     function getPlayer(id){ return roster.find(p => p.id === id) || null; }
     function score(p){ return p.actionScore; } // Score = actions only
-
     function scorePer10(p){
       if (p.defPoss <= 0) return null;
       return (score(p) / p.defPoss) * 10;
     }
-
     function format1(n){
       const rounded = Math.round(n * 10) / 10;
       return (Math.abs(rounded % 1) > 0) ? rounded.toFixed(1) : String(rounded);
     }
-
     function shortName(full){
       const parts = String(full).trim().split(/\s+/);
       return parts.length ? parts[parts.length - 1] : full;
     }
-
     function countIn(){ return roster.filter(p => p.inGame).length; }
-
     function hasAnyStats(p){
       if (p.defPoss > 0) return true;
       if (p.actionScore !== 0) return true;
@@ -635,7 +679,6 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch(e){}
     }
-
     function loadState(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -659,7 +702,6 @@
         }
       } catch(e){}
     }
-
     function clearSavedState(){
       try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
     }
@@ -703,7 +745,6 @@
         b.textContent = `${a.label} ${format1(a.pts)}`;
         neg.appendChild(b);
       }
-
       for(const a of POS_ACTIONS){
         const b = document.createElement("button");
         b.className = "actionBtn pos";
@@ -740,7 +781,7 @@
       renderLiveTable();
     }
 
-    // Player tap logic (single select, double sub)
+    // Tap logic (single select, double sub)
     const DOUBLE_TAP_MS = 320;
     let lastTap = { id: null, t: 0 };
 
@@ -787,9 +828,12 @@
       }
     });
 
-    // Stop iOS zoom only on tiles
-    document.getElementById("rosterGrid").addEventListener("touchend", (e) => {
-      if (e.target.closest(".playerTile")) e.preventDefault();
+    // PINCH-ONLY zoom: block double-tap zoom (pinch still works)
+    let lastTouchEndTime = 0;
+    document.addEventListener("touchend", (e) => {
+      const now = Date.now();
+      if (now - lastTouchEndTime <= 300) e.preventDefault();
+      lastTouchEndTime = now;
     }, { passive: false });
 
     // Defensive possession button (NO score impact)
@@ -799,7 +843,16 @@
         toast("No players IN.");
         return;
       }
+
       for (const p of inPlayers) p.defPoss += 1;
+
+      // record for undo
+      historyStack.push({
+        type: "poss",
+        playerIds: inPlayers.map(p => p.id),
+        delta: 1
+      });
+
       renderLiveTable();
       saveState();
       toast(`Poss +1 for ${inPlayers.length} IN`);
@@ -818,6 +871,15 @@
       }
       const a = findAction(actionKey);
       if (!a) return;
+
+      // record for undo
+      historyStack.push({
+        type: "action",
+        playerId: p.id,
+        pts: a.pts,
+        incKeys: [...a.inc],
+        actionKey
+      });
 
       for(const k of a.inc){
         if (p.c[k] === undefined) p.c[k] = 0;
@@ -846,6 +908,51 @@
       applyAction(btn.dataset.action);
     });
 
+    // Undo button
+    document.getElementById("undoBtn").addEventListener("click", () => {
+      const last = historyStack.pop();
+      if (!last){
+        toast("Nothing to undo.");
+        return;
+      }
+
+      if (last.type === "poss"){
+        for (const id of last.playerIds){
+          const p = getPlayer(id);
+          if (!p) continue;
+          p.defPoss = Math.max(0, p.defPoss - (last.delta || 1));
+        }
+        renderLiveTable();
+        saveState();
+        toast("Undid possession.");
+        return;
+      }
+
+      if (last.type === "action"){
+        const p = getPlayer(last.playerId);
+        if (!p){
+          toast("Undo failed (player missing).");
+          return;
+        }
+
+        for (const k of last.incKeys || []){
+          if (p.c[k] !== undefined) p.c[k] = Math.max(0, (p.c[k] || 0) - 1);
+        }
+
+        if (last.actionKey === "boxout_reb_combo") p.c.boxout_reb = Math.max(0, (p.c.boxout_reb || 0) - 1);
+        if (last.actionKey === "defl_steal_combo") p.c.defl_steal = Math.max(0, (p.c.defl_steal || 0) - 1);
+
+        p.actionScore = (p.actionScore || 0) - (last.pts || 0);
+
+        renderLiveTable();
+        saveState();
+        toast(`Undid last stat for #${p.number}.`);
+        return;
+      }
+
+      toast("Nothing to undo.");
+    });
+
     // Clear all stats (confirm)
     document.getElementById("clearAllBtn").addEventListener("click", () => {
       const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
@@ -859,7 +966,10 @@
       }
       selectedPlayerId = null;
 
-      clearSavedState();
+      // clear autosave + undo history
+      try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
+      historyStack.length = 0;
+
       renderAll();
       toast("Cleared.");
     });
@@ -911,15 +1021,14 @@
       const all = [...NEG_ACTIONS, ...POS_ACTIONS];
 
       for (const a of all){
-        const cnt = p.c[a.key] ?? 0;
+        let cnt = p.c[a.key] ?? 0;
+        if (a.key === "boxout_reb_combo") cnt = p.c.boxout_reb ?? 0;
+        if (a.key === "defl_steal_combo") cnt = p.c.defl_steal ?? 0;
         if (cnt <= 0) continue;
+
         const total = cnt * a.pts;
         if (type === "pos" && total > 0) list.push({ label:a.label, count:cnt, points:total });
         if (type === "neg" && total < 0) list.push({ label:a.label, count:cnt, points:total });
-      }
-      if (type === "pos"){
-        if ((p.c.boxout_reb ?? 0) > 0) list.push({ label:"Box+Reb", count:p.c.boxout_reb, points:p.c.boxout_reb*2 });
-        if ((p.c.defl_steal ?? 0) > 0) list.push({ label:"Defl+Steal", count:p.c.defl_steal, points:p.c.defl_steal*2 });
       }
 
       list.sort((a,b) => Math.abs(b.points) - Math.abs(a.points));
@@ -992,10 +1101,23 @@
       return lead + improve;
     }
 
+    function getActionCountForPdf(p, key){
+      if (key === "boxout_reb_combo") return p.c.boxout_reb ?? 0;
+      if (key === "defl_steal_combo") return p.c.defl_steal ?? 0;
+      return p.c[key] ?? 0;
+    }
+
     function exportPdf(){
       const rows = buildReportRows();
       const top3 = rows.slice(0,3);
       const stamp = new Date().toLocaleString();
+
+      const negKeys = [
+        "blowby","laterotation","weakcloseout","noboxout","secondchance","secondchance_score","jogback","poorcomm","foul","gamble","gamble_score"
+      ];
+      const posKeys = [
+        "boxout","rebound","block","boxout_reb_combo","deflection","defl_steal_combo","steal","steal_score","goodrotation","sprintback","onball","charge","dive"
+      ];
 
       const html = `
 <!doctype html>
@@ -1009,12 +1131,17 @@
   .top3 h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
   .player{ margin-bottom:10px; }
   .player strong{ display:block; }
-  table{ width:100%; border-collapse:collapse; font-size:12px; margin-top: 10px; }
-  th, td{ border-bottom:1px solid #eee; text-align:left; padding:6px 6px; }
-  th{ background:#fafafa; font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
-  .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; }
-  .legend{ margin-top:14px; font-size:11px; color:#444; }
-  .legend li{ margin:2px 0; }
+
+  table{ width:100%; border-collapse:collapse; font-size:11px; margin-top: 10px; }
+  th, td{ border-bottom:1px solid #eee; text-align:left; padding:6px 6px; vertical-align: top; }
+  th{ background:#fafafa; font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
+  .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .nowrap{ white-space:nowrap; }
+
+  .keyGrid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; margin-top: 10px; font-size: 11px; }
+  .keyItem{ border:1px solid #eee; border-radius:8px; padding:8px; }
+  .keyItem strong{ display:inline-block; min-width: 44px; }
+  .sectionTitle{ margin-top: 16px; font-size: 12px; letter-spacing:.08em; text-transform: uppercase; color:#333; }
 </style></head>
 <body>
   <h1>HEART AND DRIVE EFFICIENCY</h1>
@@ -1030,14 +1157,15 @@
     `).join("")}
   </div>
 
+  <div class="sectionTitle">Summary</div>
   <table>
     <thead>
       <tr>
-        <th>#</th>
+        <th class="nowrap">#</th>
         <th>Player</th>
-        <th class="mono">Poss</th>
-        <th class="mono">Score</th>
-        <th class="mono">Score/10</th>
+        <th class="mono nowrap">Poss</th>
+        <th class="mono nowrap">Score</th>
+        <th class="mono nowrap">Score/10</th>
       </tr>
     </thead>
     <tbody>
@@ -1045,25 +1173,60 @@
         const sp10 = scorePer10(p);
         return `
           <tr>
-            <td class="mono">${p.number}</td>
+            <td class="mono nowrap">${p.number}</td>
             <td>${p.name}</td>
-            <td class="mono">${p.defPoss}</td>
-            <td class="mono">${Math.round(score(p)*10)/10}</td>
-            <td class="mono">${sp10 === null ? "-" : (Math.round(sp10*10)/10)}</td>
+            <td class="mono nowrap">${p.defPoss}</td>
+            <td class="mono nowrap">${Math.round(score(p)*10)/10}</td>
+            <td class="mono nowrap">${sp10 === null ? "-" : (Math.round(sp10*10)/10)}</td>
           </tr>
         `;
       }).join("")}
     </tbody>
   </table>
 
-  <div class="legend">
-    <strong>Legend</strong>
-    <ul>
-      <li>Score = ActionScore only (no possession bonus)</li>
-      <li>Score/10 = (Score ÷ Possessions) × 10</li>
-      <li>Grades: B- starts at 5+ (good overall)</li>
-    </ul>
+  <div class="sectionTitle">Full Action Report (Counts)</div>
+  <table>
+    <thead>
+      <tr>
+        <th class="nowrap">#</th>
+        <th>Player</th>
+        <th class="mono nowrap">Poss</th>
+        <th class="mono nowrap">Score</th>
+        ${negKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
+        ${posKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(p => `
+        <tr>
+          <td class="mono nowrap">${p.number}</td>
+          <td>${p.name}</td>
+          <td class="mono nowrap">${p.defPoss}</td>
+          <td class="mono nowrap">${Math.round(score(p)*10)/10}</td>
+          ${negKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
+          ${posKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
+        </tr>
+      `).join("")}
+    </tbody>
+  </table>
+
+  <div class="sectionTitle">Abbreviation Key</div>
+  <div class="keyGrid">
+    ${negKeys.map(k => `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${NEG_ACTIONS.find(a=>a.key===k)?.label ?? k}</div>`).join("")}
+    <div class="keyItem"><strong class="mono">BR</strong> Box+Reb (+2)</div>
+    <div class="keyItem"><strong class="mono">DS</strong> Defl+Steal (+2)</div>
+    ${["boxout","rebound","block","deflection","steal","steal_score","goodrotation","sprintback","onball","charge","dive"].map(k => {
+      const lbl = POS_ACTIONS.find(a=>a.key===k)?.label ?? k;
+      return `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${lbl}</div>`;
+    }).join("")}
   </div>
+
+  <div class="sectionTitle">Legend</div>
+  <ul style="font-size:11px; color:#444;">
+    <li>Score = ActionScore only (no possession bonus)</li>
+    <li>Score/10 = (Score ÷ Possessions) × 10</li>
+    <li>Grades: B- starts at 5+ (good overall)</li>
+  </ul>
 </body></html>`;
 
       const w = window.open("", "_blank");
