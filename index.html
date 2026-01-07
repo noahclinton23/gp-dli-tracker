@@ -140,6 +140,7 @@
     @media (min-width: 430px){
       .rosterGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
+
     .playerTile{
       border-radius: 12px;
       border: 1px solid var(--border);
@@ -155,6 +156,7 @@
       gap: 3px;
       transition: background .08s ease, border-color .08s ease, box-shadow .08s ease;
       overflow:hidden;
+      touch-action: manipulation; /* helps iOS pointer handling */
     }
     .playerTile:hover{ background: rgba(148,163,184,0.08); }
 
@@ -393,8 +395,8 @@
       left: 50%;
       transform: translateX(-50%);
       bottom: 16px;
-      background: var(--toastBg);
-      border: 1px solid var(--toastBorder);
+      background: rgba(2,6,23,0.92);
+      border: 1px solid rgba(148,163,184,0.30);
       border-radius: 999px;
       padding: 10px 14px;
       font-size: .82rem;
@@ -420,7 +422,7 @@
     <div>
       <h1>HEART AND DRIVE EFFICIENCY</h1>
       <div class="sub">
-        Tap player to <strong>select</strong> (stats go to selected). Double-tap player to <strong>sub in/out</strong> (max 5).
+        Single tap a player = <strong>select/highlight</strong>. Double tap = <strong>sub in/out</strong> (max 5).
       </div>
     </div>
 
@@ -526,8 +528,6 @@
     // Option B constant
     // ==========================
     const DEF_POSS_BONUS = 0.2;
-
-    // LocalStorage autosave key
     const STORAGE_KEY = "hde_v1_autosave";
 
     // ==========================
@@ -618,9 +618,6 @@
     // ==========================
     let selectedPlayerId = null;
 
-    // Double-tap detector
-    const tapState = { lastId: null, lastTime: 0 };
-
     // Toast
     const toastEl = document.getElementById("toast");
     let toastTimer = null;
@@ -635,9 +632,7 @@
     let lastTapForZoom = 0;
     document.addEventListener("touchend", function (e) {
       const now = Date.now();
-      if (now - lastTapForZoom < 300) {
-        e.preventDefault();
-      }
+      if (now - lastTapForZoom < 300) e.preventDefault();
       lastTapForZoom = now;
     }, { passive: false });
 
@@ -670,7 +665,6 @@
     }
 
     function shortName(full){
-      // "Jayden Barton" -> "Barton", "Anjrew Goins" -> "Goins"
       const parts = String(full).trim().split(/\s+/);
       return parts.length ? parts[parts.length - 1] : full;
     }
@@ -696,9 +690,7 @@
           }))
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (err) {
-        // If storage fails, silently ignore (private mode can block).
-      }
+      } catch (err) {}
     }
 
     function loadState(){
@@ -717,15 +709,12 @@
           p.defPoss = Number(s.defPoss || 0);
           p.actionScore = Number(s.actionScore || 0);
           if (s.c && typeof s.c === "object"){
-            // Merge counters safely
             for (const k in p.c){
               if (s.c[k] !== undefined) p.c[k] = Number(s.c[k] || 0);
             }
           }
         }
-      } catch (err) {
-        // ignore corrupt saves
-      }
+      } catch (err) {}
     }
 
     function clearSavedState(){
@@ -811,8 +800,13 @@
     }
 
     // ==========================
-    // Interaction: single tap select, double tap sub
+    // Player tap behavior:
+    // single tap = select, double tap = sub in/out
+    // implemented with ONE event (pointerup) so iPhone doesn't double-fire
     // ==========================
+    const DOUBLE_TAP_MS = 320;
+    let lastTap = { id: null, t: 0 };
+
     function selectPlayer(id){
       selectedPlayerId = id;
       renderRosterGrid();
@@ -824,7 +818,6 @@
       if(!p) return;
 
       if (!p.inGame){
-        // trying to sub IN
         if (countIn() >= 5){
           toast("Max 5 IN. Sub someone OUT first.");
           return;
@@ -838,34 +831,25 @@
       saveState();
     }
 
-    function handleTapOnPlayer(id){
+    document.getElementById("rosterGrid").addEventListener("pointerup", (e) => {
+      const tile = e.target.closest(".playerTile");
+      if(!tile) return;
+
+      const id = parseInt(tile.dataset.id, 10);
       const now = Date.now();
-      if (tapState.lastId === id && (now - tapState.lastTime) < 320){
-        // double-tap -> sub toggle
-        toggleSub(id);
-        tapState.lastId = null;
-        tapState.lastTime = 0;
-        return;
+
+      const isDouble = (lastTap.id === id) && (now - lastTap.t <= DOUBLE_TAP_MS);
+
+      if (isDouble){
+        toggleSub(id); // double tap = sub
+        lastTap.id = null;
+        lastTap.t = 0;
+      } else {
+        selectPlayer(id); // single tap = select
+        lastTap.id = id;
+        lastTap.t = now;
       }
-      // single tap -> select
-      selectPlayer(id);
-      tapState.lastId = id;
-      tapState.lastTime = now;
-    }
-
-    document.getElementById("rosterGrid").addEventListener("click", (e) => {
-      const tile = e.target.closest(".playerTile");
-      if(!tile) return;
-      const id = parseInt(tile.dataset.id, 10);
-      handleTapOnPlayer(id);
     });
-
-    document.getElementById("rosterGrid").addEventListener("touchstart", (e) => {
-      const tile = e.target.closest(".playerTile");
-      if(!tile) return;
-      const id = parseInt(tile.dataset.id, 10);
-      handleTapOnPlayer(id);
-    }, { passive: false });
 
     // ==========================
     // Defensive possession button
@@ -898,13 +882,12 @@
       const a = findAction(actionKey);
       if(!a) return;
 
-      // increment counters
       for(const k of a.inc){
         if (p.c[k] === undefined) p.c[k] = 0;
         p.c[k] += 1;
       }
 
-      // combo usage keys are stored separately for reporting clarity
+      // track combo usage (optional)
       if (actionKey === "boxout_reb_combo") p.c.boxout_reb += 1;
       if (actionKey === "defl_steal_combo") p.c.defl_steal += 1;
 
@@ -1022,7 +1005,6 @@
         if (type === "neg" && total < 0) list.push({ label:a.label, count:cnt, points:total });
       }
 
-      // Include combo usage counts (stored as boxout_reb and defl_steal)
       if (type === "pos"){
         if ((p.c.boxout_reb ?? 0) > 0) list.push({ label:"Box+Reb", count:p.c.boxout_reb, points:p.c.boxout_reb*2 });
         if ((p.c.defl_steal ?? 0) > 0) list.push({ label:"Defl+Steal", count:p.c.defl_steal, points:p.c.defl_steal*2 });
@@ -1201,7 +1183,7 @@
     document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
 
     // ==========================
-    // Init: load autosave, render
+    // Load autosave + init render
     // ==========================
     loadState();
     renderActionGrids();
