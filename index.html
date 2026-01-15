@@ -77,12 +77,19 @@
       line-height: 1.25;
     }
 
-    .reportTab{
+    .topRight{
       position: absolute;
       top: 8px;
       right: 8px;
-      background: var(--yellowTab);
-      color: var(--yellowText);
+      display:flex;
+      gap: 6px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+      max-width: 60%;
+    }
+
+    .pillBtn{
       border: 1px solid rgba(0,0,0,0.25);
       border-radius: 10px;
       padding: 6px 9px;
@@ -91,33 +98,16 @@
       letter-spacing: .10em;
       cursor: pointer;
       user-select:none;
-    }
-
-    /* TOP APP TABS */
-    .topTabs{
-      display:flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin: 10px 0 8px;
-    }
-    .tabBtn{
-      border: 1px solid var(--border);
-      background: rgba(2,6,23,0.45);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-weight: 950;
-      font-size: .72rem;
-      letter-spacing: .08em;
-      cursor:pointer;
-      user-select:none;
-      touch-action: manipulation;
       white-space: nowrap;
     }
-    .tabBtn.active{
-      background: rgba(251,191,36,0.95);
-      color:#111827;
-      border-color: rgba(0,0,0,0.25);
+    .pillBtn.yellow{
+      background: var(--yellowTab);
+      color: var(--yellowText);
+    }
+    .pillBtn.dark{
+      background: rgba(2,6,23,0.55);
+      color: var(--text);
+      border-color: var(--border);
     }
 
     .metaLine{
@@ -368,63 +358,7 @@
     }
     .toast.show{ opacity: 1; }
 
-    /* Team tab widgets */
-    .teamGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 10px;
-    }
-    @media (min-width: 520px){
-      .teamGrid{ grid-template-columns: 1fr 1fr 1fr; }
-    }
-    .teamCard{
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: rgba(2,6,23,0.45);
-      padding: 10px;
-    }
-    .teamCard h3{
-      margin:0 0 8px;
-      font-size: .78rem;
-      letter-spacing:.10em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .teamBig{
-      font-size: 1.8rem;
-      font-weight: 950;
-      letter-spacing: .03em;
-      margin: 4px 0 8px;
-    }
-    .teamControls{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .teamBtn{
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.25);
-      padding: 10px 8px;
-      font-weight: 950;
-      font-size: .85rem;
-      cursor:pointer;
-      user-select:none;
-      touch-action: manipulation;
-      color:#111827;
-    }
-    .teamPlus{ background: rgba(34,197,94,0.90); }
-    .teamMinus{ background: rgba(239,68,68,0.90); }
-    .teamBtn:active{ transform: translateY(1px); }
-    .diffLine{
-      margin-top: 8px;
-      font-size: .80rem;
-      color: var(--muted);
-    }
-    .screen{ display:none; }
-    .screen.active{ display:block; }
-
-    /* Report modal */
+    /* Modals */
     .overlay{
       position: fixed;
       inset: 0;
@@ -487,6 +421,7 @@
       margin-bottom: 8px;
     }
     .grade{ font-weight: 950; font-size: 1.10rem; }
+
     .bullets{
       margin: 0;
       padding-left: 18px;
@@ -494,31 +429,105 @@
       font-size: .84rem;
       line-height: 1.35;
     }
+
+    .miniBox{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15,23,42,0.55);
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .miniBox h4{
+      margin:0 0 8px;
+      font-size: .78rem;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .miniGrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 8px;
+      font-size: .84rem;
+    }
+    @media(min-width: 680px){
+      .miniGrid{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+    }
+    .miniItem{
+      border: 1px solid rgba(31,41,55,0.75);
+      border-radius: 10px;
+      padding: 8px;
+      background: rgba(2,6,23,0.45);
+    }
+
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media(min-width: 860px){
+      .twoCol{ grid-template-columns: 1.1fr 0.9fr; }
+    }
+    .detailsCard{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15,23,42,0.55);
+      padding: 10px;
+    }
+    .detailsTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .detailsTop .name{
+      font-weight: 950;
+      letter-spacing: .02em;
+    }
+    .smallMuted{
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.25;
+    }
+    .chipRow{
+      display:flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .chip{
+      border: 1px solid rgba(31,41,55,0.75);
+      background: rgba(2,6,23,0.45);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: .76rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
   </style>
 </head>
 
 <body>
   <div class="app" id="appRoot">
-    <div class="reportTab" id="openReport">REPORT</div>
+    <div class="topRight">
+      <button class="pillBtn dark" id="btnMode">MODE: STATS</button>
+      <button class="pillBtn dark" id="openLive">LIVE SHEET</button>
+      <button class="pillBtn yellow" id="openReport">REPORT</button>
+    </div>
 
     <div>
       <h1>HEART AND DRIVE EFFICIENCY</h1>
       <div class="sub">
-        DEFENSE tab = individual player logging. Other tabs = TEAM ONLY counters (no player score impact).
+        STATS mode = single-select for logging (auto-unselect after a stat). SUB mode = multi-select for subs.
       </div>
     </div>
 
-    <div class="topTabs" id="topTabs">
-      <button class="tabBtn active" data-tab="def">DEFENSE</button>
-      <button class="tabBtn" data-tab="off">OFF POSS / TO</button>
-      <button class="tabBtn" data-tab="oreb">OREB</button>
-      <button class="tabBtn" data-tab="fta">FTA</button>
-      <button class="tabBtn" data-tab="tpa">3PA (US)</button>
-    </div>
-
-    <!-- DEFENSE SCREEN -->
-    <div class="screen active" id="screen-def">
+    <!-- MAIN (ONLY) SCREEN -->
+    <div id="screen-def">
       <div class="metaLine">
+        <div class="pill">Mode: <span id="modeLabel" class="mono">STATS</span></div>
         <div class="pill">Active: <span id="activeLabel" class="mono">None</span></div>
         <div class="pill">Selected: <span id="selCount" class="mono">0</span></div>
         <div class="pill">IN: <span id="inCount">0</span>/5</div>
@@ -533,7 +542,7 @@
 
       <button class="defPossBtn" id="defPossBtn">DEFENSIVE POSSESSION +1 (ALL IN)</button>
 
-      <!-- TWO SEPARATE ALWAYS-VISIBLE TURNOVER BUTTONS -->
+      <!-- TURNOVERS (TEAM ONLY) -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0;">
         <button class="btn btnDanger" id="toUsBtn" style="padding:14px 10px; font-size:1.0rem; font-weight:950;">
           TO US +1 <span class="mono" id="toUsInline" style="margin-left:8px;">0</span>
@@ -544,8 +553,23 @@
         </button>
       </div>
 
-      <div class="pill" style="display:inline-block; margin:0 0 6px;">
+      <div class="pill" style="display:inline-block; margin:0 0 10px;">
         TO Battle (Opp − Us): <span class="mono" id="toBattleInline">0</span>
+      </div>
+
+      <!-- FTA DIFFERENTIAL (TEAM ONLY) -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0;">
+        <button class="btn" id="ftaUsBtn" style="padding:14px 10px; font-size:1.0rem; font-weight:950;">
+          FTA US +1 <span class="mono" id="ftaUsInline" style="margin-left:8px;">0</span>
+        </button>
+
+        <button class="btn" id="ftaOppBtn" style="padding:14px 10px; font-size:1.0rem; font-weight:950;">
+          FTA OPP +1 <span class="mono" id="ftaOppInline" style="margin-left:8px;">0</span>
+        </button>
+      </div>
+
+      <div class="pill" style="display:inline-block; margin:0 0 6px;">
+        FTA Differential (Us − Opp): <span class="mono" id="ftaDiffInline">0</span>
       </div>
 
       <button class="btn" id="undoBtn" style="width:100%; margin-bottom:6px;">UNDO LAST STAT</button>
@@ -554,7 +578,7 @@
       <section class="sectionCard">
         <div class="sectionHeader">
           <h2>Negatives</h2>
-          <span class="pill">Applies to ACTIVE player</span>
+          <span class="pill">Applies to ACTIVE player (STATS mode)</span>
         </div>
         <div class="actionGrid" id="negGrid"></div>
       </section>
@@ -562,7 +586,7 @@
       <section class="sectionCard">
         <div class="sectionHeader">
           <h2>Positives</h2>
-          <span class="pill">Applies to ACTIVE player</span>
+          <span class="pill">Applies to ACTIVE player (STATS mode)</span>
         </div>
         <div class="actionGrid" id="posGrid"></div>
       </section>
@@ -570,7 +594,7 @@
       <section class="sectionCard">
         <div class="sectionHeader">
           <h2>Live Stats</h2>
-          <span class="pill">Score + Score/10 + Poss</span>
+          <span class="pill">Score + Grade + Score/10 + Poss</span>
         </div>
         <div style="padding: 8px 10px; overflow:auto;">
           <table>
@@ -581,7 +605,9 @@
                 <th>IN</th>
                 <th class="mono">Poss</th>
                 <th class="mono">Score</th>
+                <th class="mono">Grade</th>
                 <th class="mono">Score/10</th>
+                <th class="mono">OnFloor</th>
               </tr>
             </thead>
             <tbody id="liveBody"></tbody>
@@ -589,149 +615,11 @@
         </div>
       </section>
     </div>
-
-    <!-- TEAM SCREENS (TEAM ONLY) -->
-    <div class="screen" id="screen-off">
-      <section class="sectionCard">
-        <div class="sectionHeader">
-          <h2>OFF POSS / TO</h2>
-          <span class="pill">Off Poss Diff = Us − Opp • TO Battle = Opp − Us</span>
-        </div>
-        <div class="teamGrid">
-          <div class="teamCard">
-            <h3>Offensive Possessions (Us)</h3>
-            <div class="teamBig mono" id="offPossUs">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="offPossUs" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="offPossUs" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>Offensive Possessions (Opp)</h3>
-            <div class="teamBig mono" id="offPossOpp">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="offPossOpp" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="offPossOpp" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>Off Poss Differential</h3>
-            <div class="teamBig mono" id="offPossDiff">0</div>
-            <div class="diffLine">Us − Opp</div>
-          </div>
-
-          <div class="teamCard">
-            <h3>Turnovers (Us)</h3>
-            <div class="teamBig mono" id="toUs">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="toUs" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="toUs" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>Turnovers (Opp)</h3>
-            <div class="teamBig mono" id="toOpp">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="toOpp" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="toOpp" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>TO Battle</h3>
-            <div class="teamBig mono" id="toBattle">0</div>
-            <div class="diffLine">Opp − Us (Positive = Winning)</div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div class="screen" id="screen-oreb">
-      <section class="sectionCard">
-        <div class="sectionHeader">
-          <h2>OFFENSIVE REBOUNDS</h2>
-          <span class="pill">Differential = Us − Opp</span>
-        </div>
-        <div class="teamGrid">
-          <div class="teamCard">
-            <h3>OREB (Us)</h3>
-            <div class="teamBig mono" id="orebUs">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="orebUs" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="orebUs" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>OREB (Opp)</h3>
-            <div class="teamBig mono" id="orebOpp">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="orebOpp" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="orebOpp" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>OREB Differential</h3>
-            <div class="teamBig mono" id="orebDiff">0</div>
-            <div class="diffLine">Us − Opp</div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div class="screen" id="screen-fta">
-      <section class="sectionCard">
-        <div class="sectionHeader">
-          <h2>FREE THROWS ATTEMPTED</h2>
-          <span class="pill">Differential = Us − Opp</span>
-        </div>
-        <div class="teamGrid">
-          <div class="teamCard">
-            <h3>FTA (Us)</h3>
-            <div class="teamBig mono" id="ftaUs">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="ftaUs" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="ftaUs" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>FTA (Opp)</h3>
-            <div class="teamBig mono" id="ftaOpp">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="ftaOpp" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="ftaOpp" data-delta="-1">-1</button>
-            </div>
-          </div>
-          <div class="teamCard">
-            <h3>FTA Differential</h3>
-            <div class="teamBig mono" id="ftaDiff">0</div>
-            <div class="diffLine">Us − Opp</div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div class="screen" id="screen-tpa">
-      <section class="sectionCard">
-        <div class="sectionHeader">
-          <h2>3 POINTERS ATTEMPTED (US ONLY)</h2>
-          <span class="pill">Team Only</span>
-        </div>
-        <div class="teamGrid">
-          <div class="teamCard">
-            <h3>3PA (Us)</h3>
-            <div class="teamBig mono" id="tpaUs">0</div>
-            <div class="teamControls">
-              <button class="teamBtn teamPlus" data-team="tpaUs" data-delta="1">+1</button>
-              <button class="teamBtn teamMinus" data-team="tpaUs" data-delta="-1">-1</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
   </div>
 
   <div class="toast" id="toast"></div>
 
+  <!-- REPORT MODAL -->
   <div class="overlay" id="reportOverlay" aria-hidden="true">
     <div class="modal">
       <div class="modalHeader">
@@ -743,8 +631,30 @@
         </div>
       </div>
       <div class="modalBody">
+        <div class="miniBox">
+          <h4>Team & Lineups</h4>
+          <div class="miniGrid">
+            <div class="miniItem">
+              <div class="smallMuted">TO Battle (Opp − Us)</div>
+              <div class="mono" id="repToBattle">0</div>
+            </div>
+            <div class="miniItem">
+              <div class="smallMuted">FTA Diff (Us − Opp)</div>
+              <div class="mono" id="repFtaDiff">0</div>
+            </div>
+            <div class="miniItem">
+              <div class="smallMuted">Best Lineup Net</div>
+              <div class="mono" id="repBestLineupNet">—</div>
+            </div>
+            <div class="miniItem">
+              <div class="smallMuted">Best Lineup</div>
+              <div class="mono" id="repBestLineupNames">—</div>
+            </div>
+          </div>
+        </div>
+
         <div class="pill" style="display:inline-block; margin-bottom:10px;">
-          Clean list includes players who recorded stats or possessions.
+          List includes players who recorded stats or possessions.
         </div>
 
         <div style="max-height: 45vh; overflow:auto;">
@@ -755,7 +665,10 @@
                 <th>Player</th>
                 <th class="mono">Poss</th>
                 <th class="mono">Score</th>
+                <th class="mono">Grade</th>
                 <th class="mono">Score/10</th>
+                <th class="mono">OnFloor</th>
+                <th>Quick Notes</th>
               </tr>
             </thead>
             <tbody id="reportBody"></tbody>
@@ -767,17 +680,97 @@
     </div>
   </div>
 
-  <script>
-    const STORAGE_KEY = "hde_v11_autosave";
+  <!-- LIVE SHEET MODAL -->
+  <div class="overlay" id="liveOverlay" aria-hidden="true">
+    <div class="modal">
+      <div class="modalHeader">
+        <h3>Live Stat Sheet</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btnDanger" id="btnCloseLive">CLOSE</button>
+        </div>
+      </div>
+      <div class="modalBody">
+        <div class="miniBox">
+          <h4>Quick Snapshot</h4>
+          <div class="miniGrid">
+            <div class="miniItem">
+              <div class="smallMuted">TO Battle (Opp − Us)</div>
+              <div class="mono" id="liveToBattle">0</div>
+            </div>
+            <div class="miniItem">
+              <div class="smallMuted">FTA Diff (Us − Opp)</div>
+              <div class="mono" id="liveFtaDiff">0</div>
+            </div>
+            <div class="miniItem">
+              <div class="smallMuted">Best Lineup Net (so far)</div>
+              <div class="mono" id="liveBestLineupNet">—</div>
+            </div>
+            <div class="miniItem">
+              <div class="smallMuted">Best Lineup</div>
+              <div class="mono" id="liveBestLineupNames">—</div>
+            </div>
+          </div>
+        </div>
 
-    // TEAM ONLY counters
+        <div class="twoCol">
+          <div class="detailsCard">
+            <div class="smallMuted" style="margin-bottom:8px;">Tap a player row to see exactly what they’ve logged.</div>
+            <div style="overflow:auto; max-height: 46vh;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Player</th>
+                    <th class="mono">Poss</th>
+                    <th class="mono">Score</th>
+                    <th class="mono">Grade</th>
+                    <th class="mono">OnFloor</th>
+                  </tr>
+                </thead>
+                <tbody id="liveSheetBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="detailsCard" id="playerDetails">
+            <div class="detailsTop">
+              <div>
+                <div class="name" id="detName">Select a player</div>
+                <div class="smallMuted" id="detLine">—</div>
+                <div class="chipRow" id="detChips"></div>
+              </div>
+              <div class="mono" style="font-weight:950; font-size:1.05rem;" id="detGrade">—</div>
+            </div>
+
+            <div class="smallMuted" style="margin: 8px 0 6px;">Quick Summary</div>
+            <div id="detSummary" style="font-size:.90rem; line-height:1.35;">—</div>
+
+            <div class="smallMuted" style="margin: 10px 0 6px;">Negatives (counts)</div>
+            <div id="detNeg" style="font-size:.88rem; line-height:1.35;">—</div>
+
+            <div class="smallMuted" style="margin: 10px 0 6px;">Positives (counts)</div>
+            <div id="detPos" style="font-size:.88rem; line-height:1.35;">—</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "hde_v12_autosave";
+
+    // Team-only counters (kept only what you still use)
     const team = {
-      offPossUs: 0, offPossOpp: 0,
-      toUs: 0, toOpp: 0,
-      orebUs: 0, orebOpp: 0,
-      ftaUs: 0, ftaOpp: 0,
-      tpaUs: 0
+      toUs: 0,
+      toOpp: 0,
+      ftaUs: 0,
+      ftaOpp: 0
     };
+
+    // Lineup tracking (auto from logged positives/negatives)
+    // lineupKey -> { net, good, bad, ids:[playerIds] }
+    const lineupMap = {};
 
     const roster = [
       { number: 0,  name: "Roger Matute" },
@@ -800,6 +793,7 @@
       name: p.name,
       inGame: false,
       defPoss: 0,
+      floorImpact: 0, // +/- from being on floor with logged events (+.1 / -.1)
       c: {
         blowby: 0,
         laterotation: 0,
@@ -891,7 +885,10 @@
     let activePlayerId = null;
     const selectedSet = new Set();
 
-    // Undo stack supports: poss, action, team
+    // Mode: "stats" single select + auto clear, "subs" multi select for subs
+    let mode = "stats";
+
+    // Undo stack supports: poss, action, team, lineup
     const historyStack = [];
 
     const toastEl = document.getElementById("toast");
@@ -924,77 +921,120 @@
     function hasAnyStats(p){
       if (p.defPoss > 0) return true;
       if (p.actionScore !== 0) return true;
+      if (Math.abs(p.floorImpact) > 0.0001) return true;
       for (const k in p.c){ if (p.c[k] !== 0) return true; }
       return false;
     }
 
-    // ===== Tabs =====
-    let currentTab = "def";
-    function setTab(tab){
-      currentTab = tab;
-      document.querySelectorAll(".tabBtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      const el = document.getElementById(`screen-${tab}`);
-      if (el) el.classList.add("active");
-      saveState();
+    function gradeFor(s){
+      if (s >= 15) return "A+";
+      if (s >= 12) return "A";
+      if (s >= 10) return "A-";
+      if (s >= 8)  return "B+";
+      if (s >= 6)  return "B";
+      if (s >= 5)  return "B-";
+      if (s >= 3)  return "C+";
+      if (s >= 1)  return "C";
+      if (s >= 0)  return "C-";
+      if (s >= -2) return "D";
+      return "F";
     }
 
-    // Autosave
-    function saveState(){
-      try{
-        const state = {
-          v: 1,
-          activePlayerId,
-          selectedIds: Array.from(selectedSet),
-          currentTab,
-          team: { ...team },
-          roster: roster.map(p => ({
-            id: p.id,
-            inGame: p.inGame,
-            defPoss: p.defPoss,
-            actionScore: p.actionScore,
-            c: p.c
-          }))
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch(e){}
-    }
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const state = JSON.parse(raw);
-        if (!state || state.v !== 1 || !Array.isArray(state.roster)) return;
-
-        activePlayerId = state.activePlayerId ?? null;
-        selectedSet.clear();
-        if (Array.isArray(state.selectedIds)){
-          for (const id of state.selectedIds) selectedSet.add(Number(id));
-        }
-
-        if (state.team && typeof state.team === "object"){
-          for (const k in team){
-            if (state.team[k] !== undefined) team[k] = clamp0(state.team[k]);
-          }
-        }
-
-        currentTab = state.currentTab || "def";
-
-        for (const s of state.roster){
-          const p = roster.find(x => x.id === s.id);
-          if (!p) continue;
-          p.inGame = !!s.inGame;
-          p.defPoss = clamp0(s.defPoss);
-          p.actionScore = Number(s.actionScore || 0);
-          if (s.c && typeof s.c === "object"){
-            for (const k in p.c){
-              if (s.c[k] !== undefined) p.c[k] = clamp0(s.c[k]);
-            }
-          }
-        }
-      } catch(e){}
+    function gradeForPlayer(p){
+      if (!p || p.defPoss <= 0) return "—";
+      return gradeFor(score(p));
     }
 
+    function actionDef(key){
+      return [...NEG_ACTIONS, ...POS_ACTIONS].find(a => a.key === key) || null;
+    }
+
+    function driverList(p, type){
+      const list = [];
+      const all = [...NEG_ACTIONS, ...POS_ACTIONS];
+
+      for (const a of all){
+        let cnt = p.c[a.key] ?? 0;
+        if (a.key === "boxout_reb_combo") cnt = p.c.boxout_reb ?? 0;
+        if (a.key === "defl_steal_combo") cnt = p.c.defl_steal ?? 0;
+        if (cnt <= 0) continue;
+
+        const total = cnt * a.pts;
+        if (type === "pos" && total > 0) list.push({ label:a.label, count:cnt, points:total });
+        if (type === "neg" && total < 0) list.push({ label:a.label, count:cnt, points:total });
+      }
+
+      list.sort((a,b) => Math.abs(b.points) - Math.abs(a.points));
+      return list;
+    }
+
+    function quickNotes(p){
+      if (p.defPoss <= 0) return "—";
+      const positives = driverList(p, "pos");
+      const negatives = driverList(p, "neg");
+
+      const did = positives.slice(0,2).map(x => `${x.label} (${x.count})`).join(", ");
+      const imp = negatives.slice(0,2).map(x => `${x.label} (${x.count})`).join(", ");
+
+      const didLine = did ? `Did well: ${did}` : "Did well: Find 1 hustle play early";
+      const impLine = imp ? `Improve: ${imp}` : "Improve: Clean sheet — keep it up";
+      return `${didLine} • ${impLine}`;
+    }
+
+    // ===== Lineup helpers =====
+    function getCurrentLineupIds(){
+      return roster.filter(p => p.inGame).map(p => p.id).sort((a,b) => a-b);
+    }
+    function lineupKeyFromIds(ids){
+      const nums = ids.map(id => getPlayer(id)?.number).filter(n => n !== undefined).sort((a,b)=>a-b);
+      return nums.join("-");
+    }
+    function applyLineupEvent(delta){
+      // Only if exactly 5 are IN
+      const ids = getCurrentLineupIds();
+      if (ids.length !== 5) return null;
+
+      const key = lineupKeyFromIds(ids);
+      if (!key) return null;
+
+      if (!lineupMap[key]){
+        lineupMap[key] = { net: 0, good: 0, bad: 0, ids: [...ids] };
+      }
+
+      const before = { ...lineupMap[key] };
+      lineupMap[key].net = (lineupMap[key].net || 0) + delta;
+      if (delta > 0) lineupMap[key].good += 1;
+      if (delta < 0) lineupMap[key].bad += 1;
+
+      historyStack.push({ type:"lineup", key, before, after: { ...lineupMap[key] } });
+      return key;
+    }
+
+    function bestLineup(){
+      const keys = Object.keys(lineupMap);
+      if (keys.length === 0) return null;
+      let bestK = keys[0];
+      for (const k of keys){
+        const a = lineupMap[k];
+        const b = lineupMap[bestK];
+        if (!b || (a.net > b.net) || (a.net === b.net && (a.good - a.bad) > (b.good - b.bad))){
+          bestK = k;
+        }
+      }
+      return { key: bestK, ...lineupMap[bestK] };
+    }
+
+    function lineupNamesFromKey(key){
+      if (!key) return "—";
+      const nums = key.split("-").map(x => Number(x)).filter(n => !Number.isNaN(n));
+      const names = nums.map(n => {
+        const p = roster.find(r => r.number === n);
+        return p ? `#${p.number} ${shortName(p.name)}` : `#${n}`;
+      });
+      return names.join(", ");
+    }
+
+    // ===== Rendering =====
     function renderRosterGrid(){
       const grid = document.getElementById("rosterGrid");
       grid.innerHTML = "";
@@ -1021,6 +1061,7 @@
 
       document.getElementById("inCount").textContent = String(countIn());
       document.getElementById("selCount").textContent = String(selectedSet.size);
+      document.getElementById("modeLabel").textContent = (mode === "stats" ? "STATS" : "SUBS");
 
       const a = activePlayerId ? getPlayer(activePlayerId) : null;
       document.getElementById("activeLabel").textContent = a ? `#${a.number} ${a.name}` : "None";
@@ -1058,47 +1099,32 @@
         if (p.inGame) tr.classList.add("inGameRow");
 
         const sp10 = scorePer10(p);
+        const grd = gradeForPlayer(p);
+
         tr.innerHTML = `
           <td class="mono">${p.number}</td>
           <td>${p.name}</td>
           <td class="mono">${p.inGame ? "IN" : "OUT"}</td>
           <td class="mono">${p.defPoss}</td>
           <td class="mono">${format1(score(p))}</td>
+          <td class="mono">${grd}</td>
           <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
+          <td class="mono">${format1(p.floorImpact)}</td>
         `;
         tbody.appendChild(tr);
       }
     }
 
     function renderTeam(){
-      document.getElementById("offPossUs").textContent = team.offPossUs;
-      document.getElementById("offPossOpp").textContent = team.offPossOpp;
-      document.getElementById("offPossDiff").textContent = diff(team.offPossUs, team.offPossOpp);
+      // TO
+      document.getElementById("toUsInline").textContent = team.toUs;
+      document.getElementById("toOppInline").textContent = team.toOpp;
+      document.getElementById("toBattleInline").textContent = diff(team.toOpp, team.toUs);
 
-      document.getElementById("toUs").textContent = team.toUs;
-      document.getElementById("toOpp").textContent = team.toOpp;
-
-      // Turnover battle: positive means WE are winning (they have more TOs)
-      const battle = diff(team.toOpp, team.toUs);
-      document.getElementById("toBattle").textContent = battle;
-
-      document.getElementById("orebUs").textContent = team.orebUs;
-      document.getElementById("orebOpp").textContent = team.orebOpp;
-      document.getElementById("orebDiff").textContent = diff(team.orebUs, team.orebOpp);
-
-      document.getElementById("ftaUs").textContent = team.ftaUs;
-      document.getElementById("ftaOpp").textContent = team.ftaOpp;
-      document.getElementById("ftaDiff").textContent = diff(team.ftaUs, team.ftaOpp);
-
-      document.getElementById("tpaUs").textContent = team.tpaUs;
-
-      // Inline counters on DEFENSE screen
-      const usInline = document.getElementById("toUsInline");
-      const oppInline = document.getElementById("toOppInline");
-      const battleInline = document.getElementById("toBattleInline");
-      if (usInline) usInline.textContent = team.toUs;
-      if (oppInline) oppInline.textContent = team.toOpp;
-      if (battleInline) battleInline.textContent = battle;
+      // FTA
+      document.getElementById("ftaUsInline").textContent = team.ftaUs;
+      document.getElementById("ftaOppInline").textContent = team.ftaOpp;
+      document.getElementById("ftaDiffInline").textContent = diff(team.ftaUs, team.ftaOpp);
     }
 
     function renderAll(){
@@ -1107,10 +1133,26 @@
       renderTeam();
     }
 
-    function toggleSelectAndSetActive(id){
+    // ===== Selection logic =====
+    function handlePlayerTap(id){
+      if (mode === "stats"){
+        // single-select: tap selects only one; tap again clears
+        if (selectedSet.has(id)){
+          selectedSet.clear();
+          activePlayerId = null;
+        } else {
+          selectedSet.clear();
+          selectedSet.add(id);
+          activePlayerId = id;
+        }
+        renderRosterGrid();
+        saveState();
+        return;
+      }
+
+      // subs mode: multi-select allowed, active follows last tap
       if (selectedSet.has(id)) selectedSet.delete(id);
       else selectedSet.add(id);
-
       activePlayerId = id;
       renderRosterGrid();
       saveState();
@@ -1147,57 +1189,104 @@
       toast("Sub out applied.");
     }
 
-    document.getElementById("rosterGrid").addEventListener("pointerup", (e) => {
-      const tile = e.target.closest(".playerTile");
-      if(!tile) return;
-      const id = parseInt(tile.dataset.id, 10);
-      toggleSelectAndSetActive(id);
-    });
+    // ===== Autosave =====
+    function saveState(){
+      try{
+        const state = {
+          v: 12,
+          activePlayerId,
+          selectedIds: Array.from(selectedSet),
+          mode,
+          team: { ...team },
+          lineupMap,
+          roster: roster.map(p => ({
+            id: p.id,
+            inGame: p.inGame,
+            defPoss: p.defPoss,
+            actionScore: p.actionScore,
+            floorImpact: p.floorImpact,
+            c: p.c
+          }))
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch(e){}
+    }
 
-    document.getElementById("subInBtn").addEventListener("click", subInSelected);
-    document.getElementById("subOutBtn").addEventListener("click", subOutSelected);
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (!state || state.v !== 12 || !Array.isArray(state.roster)) return;
 
-    document.getElementById("defPossBtn").addEventListener("click", () => {
-      const inPlayers = roster.filter(p => p.inGame);
-      if (inPlayers.length === 0){ toast("No players IN."); return; }
-      for (const p of inPlayers) p.defPoss += 1;
+        activePlayerId = state.activePlayerId ?? null;
 
-      historyStack.push({ type: "poss", playerIds: inPlayers.map(p => p.id), delta: 1 });
+        selectedSet.clear();
+        if (Array.isArray(state.selectedIds)){
+          for (const id of state.selectedIds) selectedSet.add(Number(id));
+        }
 
-      renderLiveTable();
-      saveState();
-      toast(`Poss +1 for ${inPlayers.length} IN`);
-    });
+        mode = state.mode === "subs" ? "subs" : "stats";
 
-    // Two separate turnover buttons (TEAM ONLY)
-    document.getElementById("toUsBtn").addEventListener("click", () => {
-      const before = team.toUs;
-      team.toUs += 1;
-      historyStack.push({ type:"team", key:"toUs", before, after: team.toUs });
-      renderTeam();
-      saveState();
-      toast("TO US +1");
-    });
+        if (state.team && typeof state.team === "object"){
+          for (const k in team){
+            if (state.team[k] !== undefined) team[k] = clamp0(state.team[k]);
+          }
+        }
 
-    document.getElementById("toOppBtn").addEventListener("click", () => {
-      const before = team.toOpp;
-      team.toOpp += 1;
-      historyStack.push({ type:"team", key:"toOpp", before, after: team.toOpp });
-      renderTeam();
-      saveState();
-      toast("TO OPP +1");
-    });
+        // lineupMap
+        if (state.lineupMap && typeof state.lineupMap === "object"){
+          for (const k in state.lineupMap){
+            lineupMap[k] = state.lineupMap[k];
+          }
+        }
 
+        for (const s of state.roster){
+          const p = roster.find(x => x.id === s.id);
+          if (!p) continue;
+          p.inGame = !!s.inGame;
+          p.defPoss = clamp0(s.defPoss);
+          p.actionScore = Number(s.actionScore || 0);
+          p.floorImpact = Number(s.floorImpact || 0);
+          if (s.c && typeof s.c === "object"){
+            for (const k in p.c){
+              if (s.c[k] !== undefined) p.c[k] = clamp0(s.c[k]);
+            }
+          }
+        }
+      } catch(e){}
+    }
+
+    // ===== Action logging =====
     function findAction(actionKey){
       return [...NEG_ACTIONS, ...POS_ACTIONS].find(a => a.key === actionKey) || null;
     }
 
+    function applyOnFloorImpact(delta, excludeId){
+      // Apply +/- .1 to OTHER players who are IN (not the active)
+      const inPlayers = roster.filter(p => p.inGame && p.id !== excludeId);
+      if (inPlayers.length === 0) return [];
+      for (const p of inPlayers){
+        p.floorImpact = (p.floorImpact || 0) + delta;
+      }
+      return inPlayers.map(p => p.id);
+    }
+
     function applyAction(actionKey){
+      if (mode !== "stats"){
+        toast("Switch to STATS mode to log actions.");
+        return;
+      }
+
       const p = activePlayerId ? getPlayer(activePlayerId) : null;
       if (!p){ toast("Tap a player to set ACTIVE."); return; }
       const a = findAction(actionKey);
       if (!a) return;
 
+      const isPos = POS_ACTIONS.some(x => x.key === actionKey);
+      const isNeg = NEG_ACTIONS.some(x => x.key === actionKey);
+
+      // Log action (active player)
       historyStack.push({ type: "action", playerId: p.id, pts: a.pts, incKeys: [...a.inc], actionKey });
 
       for(const k of a.inc){ p.c[k] = (p.c[k] || 0) + 1; }
@@ -1206,121 +1295,32 @@
 
       p.actionScore += a.pts;
 
+      // On-floor impact + lineup net
+      // +0.1 for positive events, -0.1 for negative events
+      let floorDelta = 0;
+      if (isPos) floorDelta = +0.1;
+      if (isNeg) floorDelta = -0.1;
+
+      if (floorDelta !== 0){
+        const affectedIds = applyOnFloorImpact(floorDelta, p.id);
+        historyStack.push({ type:"floor", delta: floorDelta, playerIds: affectedIds });
+
+        // Lineup net (only when exactly 5 in)
+        applyLineupEvent(floorDelta);
+      }
+
       renderLiveTable();
+
+      // Auto-unselect after recording a stat (your request)
+      selectedSet.clear();
+      activePlayerId = null;
+      renderRosterGrid();
       saveState();
+
       toast(`#${p.number} ${shortName(p.name)}: ${a.label} (${format1(a.pts)})`);
     }
 
-    document.getElementById("negGrid").addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-action]");
-      if(!btn) return;
-      applyAction(btn.dataset.action);
-    });
-
-    document.getElementById("posGrid").addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-action]");
-      if(!btn) return;
-      applyAction(btn.dataset.action);
-    });
-
-    // TEAM buttons (+/-) on team tabs
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-team][data-delta]");
-      if(!btn) return;
-
-      const key = btn.dataset.team;
-      const delta = Number(btn.dataset.delta || 0);
-      if (!(key in team)) return;
-
-      const before = team[key];
-      team[key] = clamp0(team[key] + delta);
-
-      historyStack.push({ type: "team", key, before, after: team[key] });
-
-      renderTeam();
-      saveState();
-      toast(`${key}: ${before} → ${team[key]}`);
-    });
-
-    document.getElementById("undoBtn").addEventListener("click", () => {
-      const last = historyStack.pop();
-      if (!last){ toast("Nothing to undo."); return; }
-
-      if (last.type === "poss"){
-        for (const id of last.playerIds){
-          const p = getPlayer(id);
-          if (!p) continue;
-          p.defPoss = Math.max(0, p.defPoss - (last.delta || 1));
-        }
-        renderLiveTable();
-        saveState();
-        toast("Undid possession.");
-        return;
-      }
-
-      if (last.type === "action"){
-        const p = getPlayer(last.playerId);
-        if (!p){ toast("Undo failed (player missing)."); return; }
-
-        for (const k of last.incKeys || []){
-          p.c[k] = Math.max(0, (p.c[k] || 0) - 1);
-        }
-
-        if (last.actionKey === "boxout_reb_combo") p.c.boxout_reb = Math.max(0, (p.c.boxout_reb || 0) - 1);
-        if (last.actionKey === "defl_steal_combo") p.c.defl_steal = Math.max(0, (p.c.defl_steal || 0) - 1);
-
-        p.actionScore = (p.actionScore || 0) - (last.pts || 0);
-
-        renderLiveTable();
-        saveState();
-        toast(`Undid last stat for #${p.number}.`);
-        return;
-      }
-
-      if (last.type === "team"){
-        if (last.key in team){
-          team[last.key] = clamp0(last.before);
-          renderTeam();
-          saveState();
-          toast(`Undid ${last.key}.`);
-          return;
-        }
-      }
-
-      toast("Nothing to undo.");
-    });
-
-    document.getElementById("clearAllBtn").addEventListener("click", () => {
-      const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
-      if(!ok) return;
-
-      for (const p of roster){
-        p.inGame = false;
-        p.defPoss = 0;
-        p.actionScore = 0;
-        for (const k in p.c) p.c[k] = 0;
-      }
-      activePlayerId = null;
-      selectedSet.clear();
-
-      for (const k in team) team[k] = 0;
-
-      try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
-      historyStack.length = 0;
-
-      renderAll();
-      toast("Cleared.");
-    });
-
-    document.getElementById("topTabs").addEventListener("click", (e) => {
-      const btn = e.target.closest(".tabBtn");
-      if (!btn) return;
-      setTab(btn.dataset.tab);
-    });
-
-    // ===== Report modal + PDF + report cards =====
-    const overlay = document.getElementById("reportOverlay");
-
+    // ===== REPORT =====
     function buildReportRows(){
       return roster
         .filter(p => hasAnyStats(p))
@@ -1335,48 +1335,28 @@
       for(const p of rows){
         const tr = document.createElement("tr");
         const sp10 = scorePer10(p);
+        const grd = gradeForPlayer(p);
+
         tr.innerHTML = `
           <td class="mono">${p.number}</td>
           <td>${p.name}</td>
           <td class="mono">${p.defPoss}</td>
           <td class="mono">${format1(score(p))}</td>
+          <td class="mono">${grd}</td>
           <td class="mono">${sp10 === null ? "-" : format1(sp10)}</td>
+          <td class="mono">${format1(p.floorImpact)}</td>
+          <td>${p.defPoss > 0 ? quickNotes(p) : "—"}</td>
         `;
         body.appendChild(tr);
       }
-    }
 
-    function gradeFor(s){
-      if (s >= 15) return "A+";
-      if (s >= 12) return "A";
-      if (s >= 10) return "A-";
-      if (s >= 8)  return "B+";
-      if (s >= 6)  return "B";
-      if (s >= 5)  return "B-";
-      if (s >= 3)  return "C+";
-      if (s >= 1)  return "C";
-      if (s >= 0)  return "C-";
-      if (s >= -2) return "D";
-      return "F";
-    }
+      // Team + lineup header box
+      document.getElementById("repToBattle").textContent = diff(team.toOpp, team.toUs);
+      document.getElementById("repFtaDiff").textContent = diff(team.ftaUs, team.ftaOpp);
 
-    function driverList(p, type){
-      const list = [];
-      const all = [...NEG_ACTIONS, ...POS_ACTIONS];
-
-      for (const a of all){
-        let cnt = p.c[a.key] ?? 0;
-        if (a.key === "boxout_reb_combo") cnt = p.c.boxout_reb ?? 0;
-        if (a.key === "defl_steal_combo") cnt = p.c.defl_steal ?? 0;
-        if (cnt <= 0) continue;
-
-        const total = cnt * a.pts;
-        if (type === "pos" && total > 0) list.push({ label:a.label, count:cnt, points:total });
-        if (type === "neg" && total < 0) list.push({ label:a.label, count:cnt, points:total });
-      }
-
-      list.sort((a,b) => Math.abs(b.points) - Math.abs(a.points));
-      return list;
+      const best = bestLineup();
+      document.getElementById("repBestLineupNet").textContent = best ? format1(best.net) : "—";
+      document.getElementById("repBestLineupNames").textContent = best ? lineupNamesFromKey(best.key) : "—";
     }
 
     function buildReportCards(){
@@ -1387,6 +1367,8 @@
       cards.className = "cardsGrid";
 
       for(const p of rows){
+        if (p.defPoss <= 0) continue;
+
         const s = score(p);
         const grade = gradeFor(s);
 
@@ -1410,7 +1392,7 @@
           <div class="top">
             <div><strong>#${p.number} ${p.name}</strong>
               <div class="mono" style="color:var(--muted); font-size:.80rem;">
-                Score: ${format1(s)} • Poss: ${p.defPoss}
+                Score: ${format1(s)} • Poss: ${p.defPoss} • OnFloor: ${format1(p.floorImpact)}
               </div>
             </div>
             <div class="grade">${grade}</div>
@@ -1434,17 +1416,6 @@
       container.appendChild(cards);
     }
 
-    function summarizeTopPlayer(p){
-      const positives = driverList(p, "pos");
-      const negatives = driverList(p, "neg");
-      const bits = [];
-      if (positives[0]) bits.push(`${positives[0].count}× ${positives[0].label}`);
-      if (positives[1]) bits.push(`${positives[1].count}× ${positives[1].label}`);
-      const lead = bits.length ? `Driven by ${bits.join(", ")}.` : "Solid impact with consistent effort.";
-      const improve = negatives[0] ? ` Clean-up: ${negatives[0].count}× ${negatives[0].label}.` : " Clean sheet: no negatives recorded.";
-      return lead + improve;
-    }
-
     function getActionCountForPdf(p, key){
       if (key === "boxout_reb_combo") return p.c.boxout_reb ?? 0;
       if (key === "defl_steal_combo") return p.c.defl_steal ?? 0;
@@ -1452,9 +1423,12 @@
     }
 
     function exportPdf(){
-      const rows = buildReportRows();
+      const rows = buildReportRows().filter(p => p.defPoss > 0);
       const top3 = rows.slice(0,3);
       const stamp = new Date().toLocaleString();
+
+      const best = bestLineup();
+      const bestLine = best ? `${format1(best.net)} — ${lineupNamesFromKey(best.key)}` : "—";
 
       const negKeys = [
         "blowby","laterotation","weakcloseout","noboxout","secondchance","secondchance_score","jogback","poorcomm","foul","gamble","gamble_score"
@@ -1462,6 +1436,17 @@
       const posKeys = [
         "boxout","rebound","block","boxout_reb_combo","deflection","defl_steal_combo","steal","steal_score","goodrotation","sprintback","onball","charge","dive"
       ];
+
+      function summarizeTopPlayer(p){
+        const positives = driverList(p, "pos");
+        const negatives = driverList(p, "neg");
+        const bits = [];
+        if (positives[0]) bits.push(`${positives[0].count}× ${positives[0].label}`);
+        if (positives[1]) bits.push(`${positives[1].count}× ${positives[1].label}`);
+        const lead = bits.length ? `Driven by ${bits.join(", ")}.` : "Solid impact with consistent effort.";
+        const improve = negatives[0] ? ` Clean-up: ${negatives[0].count}× ${negatives[0].label}.` : " Clean sheet: no negatives recorded.";
+        return lead + improve;
+      }
 
       const html = `
 <!doctype html>
@@ -1471,15 +1456,8 @@
   body{ font-family: Arial, sans-serif; padding: 18px; color:#111; }
   h1{ margin:0 0 4px; }
   .muted{ color:#555; font-size:12px; margin-bottom: 12px; }
-  .top3{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
-  .top3 h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
-  .player{ margin-bottom:10px; }
-  .player strong{ display:block; }
-
-  .teamBox{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
-  .teamBox h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
-  .teamGrid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; font-size:12px; }
-  .teamItem{ border:1px solid #eee; border-radius:8px; padding:8px; }
+  .box{ border:1px solid #ddd; border-radius:10px; padding:12px; margin: 12px 0; }
+  .box h2{ margin:0 0 8px; font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
   .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
 
   table{ width:100%; border-collapse:collapse; font-size:11px; margin-top: 10px; }
@@ -1490,104 +1468,113 @@
   .keyGrid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; margin-top: 10px; font-size: 11px; }
   .keyItem{ border:1px solid #eee; border-radius:8px; padding:8px; }
   .keyItem strong{ display:inline-block; min-width: 44px; }
-  .sectionTitle{ margin-top: 16px; font-size: 12px; letter-spacing:.08em; text-transform: uppercase; color:#333; }
 </style></head>
 <body>
   <h1>HEART AND DRIVE EFFICIENCY</h1>
-  <div class="muted">Generated: ${stamp} • Score = actions only • Possessions = volume</div>
+  <div class="muted">Generated: ${stamp} • Score = actions only • Possessions = volume • OnFloor = +/- from being IN with logged events</div>
 
-  <div class="teamBox">
-    <h2>Team Tracking (Team Only)</h2>
-    <div class="teamGrid">
-      <div class="teamItem"><div><strong>Off Poss</strong></div><div class="mono">Us ${team.offPossUs} • Opp ${team.offPossOpp} • Diff ${diff(team.offPossUs,team.offPossOpp)}</div></div>
-      <div class="teamItem"><div><strong>Turnovers (Battle)</strong></div><div class="mono">Us ${team.toUs} • Opp ${team.toOpp} • Battle ${diff(team.toOpp,team.toUs)}</div></div>
-      <div class="teamItem"><div><strong>OREB</strong></div><div class="mono">Us ${team.orebUs} • Opp ${team.orebOpp} • Diff ${diff(team.orebUs,team.orebOpp)}</div></div>
-      <div class="teamItem"><div><strong>FTA</strong></div><div class="mono">Us ${team.ftaUs} • Opp ${team.ftaOpp} • Diff ${diff(team.ftaUs,team.ftaOpp)}</div></div>
-      <div class="teamItem"><div><strong>3PA (Us)</strong></div><div class="mono">Us ${team.tpaUs}</div></div>
+  <div class="box">
+    <h2>Team & Lineups</h2>
+    <div style="font-size:12px; line-height:1.35;">
+      <div><strong>Turnovers</strong> (Battle = Opp − Us): <span class="mono">${diff(team.toOpp, team.toUs)}</span> (Us ${team.toUs} • Opp ${team.toOpp})</div>
+      <div><strong>FTA Differential</strong> (Us − Opp): <span class="mono">${diff(team.ftaUs, team.ftaOpp)}</span> (Us ${team.ftaUs} • Opp ${team.ftaOpp})</div>
+      <div><strong>Best Lineup Net</strong>: <span class="mono">${bestLine}</span></div>
     </div>
   </div>
 
-  <div class="top3">
+  <div class="box">
     <h2>Top 3 Players (by Score)</h2>
     ${top3.map(p => `
-      <div class="player">
+      <div style="margin-bottom:10px;">
         <strong>#${p.number} ${p.name} — Score ${Math.round(score(p)*10)/10} (${gradeFor(score(p))})</strong>
         <div style="font-size:12px;">${summarizeTopPlayer(p)}</div>
       </div>
     `).join("")}
   </div>
 
-  <div class="sectionTitle">Summary</div>
-  <table>
-    <thead>
-      <tr>
-        <th class="nowrap">#</th>
-        <th>Player</th>
-        <th class="mono nowrap">Poss</th>
-        <th class="mono nowrap">Score</th>
-        <th class="mono nowrap">Score/10</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(p => {
-        const sp10 = scorePer10(p);
-        return `
+  <div class="box">
+    <h2>Summary</h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="nowrap">#</th>
+          <th>Player</th>
+          <th class="mono nowrap">Poss</th>
+          <th class="mono nowrap">Score</th>
+          <th class="mono nowrap">Grade</th>
+          <th class="mono nowrap">Score/10</th>
+          <th class="mono nowrap">OnFloor</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(p => {
+          const sp10 = scorePer10(p);
+          return `
+            <tr>
+              <td class="mono nowrap">${p.number}</td>
+              <td>${p.name}</td>
+              <td class="mono nowrap">${p.defPoss}</td>
+              <td class="mono nowrap">${Math.round(score(p)*10)/10}</td>
+              <td class="mono nowrap">${gradeForPlayer(p)}</td>
+              <td class="mono nowrap">${sp10 === null ? "-" : (Math.round(sp10*10)/10)}</td>
+              <td class="mono nowrap">${Math.round(p.floorImpact*10)/10}</td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box">
+    <h2>Full Action Report (Counts)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="nowrap">#</th>
+          <th>Player</th>
+          <th class="mono nowrap">Poss</th>
+          <th class="mono nowrap">Score</th>
+          ${negKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
+          ${posKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(p => `
           <tr>
             <td class="mono nowrap">${p.number}</td>
             <td>${p.name}</td>
             <td class="mono nowrap">${p.defPoss}</td>
             <td class="mono nowrap">${Math.round(score(p)*10)/10}</td>
-            <td class="mono nowrap">${sp10 === null ? "-" : (Math.round(sp10*10)/10)}</td>
+            ${negKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
+            ${posKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
           </tr>
-        `;
-      }).join("")}
-    </tbody>
-  </table>
+        `).join("")}
+      </tbody>
+    </table>
 
-  <div class="sectionTitle">Full Action Report (Counts)</div>
-  <table>
-    <thead>
-      <tr>
-        <th class="nowrap">#</th>
-        <th>Player</th>
-        <th class="mono nowrap">Poss</th>
-        <th class="mono nowrap">Score</th>
-        ${negKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
-        ${posKeys.map(k => `<th class="mono nowrap">${ACTION_ABBR[k]}</th>`).join("")}
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(p => `
-        <tr>
-          <td class="mono nowrap">${p.number}</td>
-          <td>${p.name}</td>
-          <td class="mono nowrap">${p.defPoss}</td>
-          <td class="mono nowrap">${Math.round(score(p)*10)/10}</td>
-          ${negKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
-          ${posKeys.map(k => `<td class="mono nowrap">${getActionCountForPdf(p,k)}</td>`).join("")}
-        </tr>
-      `).join("")}
-    </tbody>
-  </table>
-
-  <div class="sectionTitle">Abbreviation Key</div>
-  <div class="keyGrid">
-    ${negKeys.map(k => `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${NEG_ACTIONS.find(a=>a.key===k)?.label ?? k}</div>`).join("")}
-    <div class="keyItem"><strong class="mono">BR</strong> Box+Reb (+2)</div>
-    <div class="keyItem"><strong class="mono">DS</strong> Defl+Steal (+2)</div>
-    ${["boxout","rebound","block","deflection","steal","steal_score","goodrotation","sprintback","onball","charge","dive"].map(k => {
-      const lbl = POS_ACTIONS.find(a=>a.key===k)?.label ?? k;
-      return `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${lbl}</div>`;
-    }).join("")}
+    <div style="margin-top:10px; font-size:11px; color:#444;">
+      <div><strong>Legend</strong></div>
+      <ul style="margin-top:6px;">
+        <li>Score = ActionScore only (no possession bonus)</li>
+        <li>Score/10 = (Score ÷ Possessions) × 10</li>
+        <li>OnFloor = +/- 0.1 applied to other 4 players IN when a positive/negative is logged</li>
+        <li>TO Battle = Opp Turnovers − Us Turnovers (Positive = we are winning)</li>
+      </ul>
+    </div>
   </div>
 
-  <div class="sectionTitle">Legend</div>
-  <ul style="font-size:11px; color:#444;">
-    <li>Score = ActionScore only (no possession bonus)</li>
-    <li>Score/10 = (Score ÷ Possessions) × 10</li>
-    <li>Grades: B- starts at 5+ (good overall)</li>
-    <li>TO Battle = Opp Turnovers − Us Turnovers (Positive = we are winning)</li>
-  </ul>
+  <div class="box">
+    <h2>Abbreviation Key</h2>
+    <div class="keyGrid">
+      ${negKeys.map(k => `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${NEG_ACTIONS.find(a=>a.key===k)?.label ?? k}</div>`).join("")}
+      <div class="keyItem"><strong class="mono">BR</strong> Box+Reb (+2)</div>
+      <div class="keyItem"><strong class="mono">DS</strong> Defl+Steal (+2)</div>
+      ${["boxout","rebound","block","deflection","steal","steal_score","goodrotation","sprintback","onball","charge","dive"].map(k => {
+        const lbl = POS_ACTIONS.find(a=>a.key===k)?.label ?? k;
+        return `<div class="keyItem"><strong class="mono">${ACTION_ABBR[k]}</strong> ${lbl}</div>`;
+      }).join("")}
+    </div>
+  </div>
 </body></html>`;
 
       const w = window.open("", "_blank");
@@ -1598,33 +1585,330 @@
       setTimeout(() => w.print(), 250);
     }
 
+    // ===== LIVE SHEET =====
+    function renderLiveSheet(){
+      // Snapshot
+      document.getElementById("liveToBattle").textContent = diff(team.toOpp, team.toUs);
+      document.getElementById("liveFtaDiff").textContent = diff(team.ftaUs, team.ftaOpp);
+
+      const best = bestLineup();
+      document.getElementById("liveBestLineupNet").textContent = best ? format1(best.net) : "—";
+      document.getElementById("liveBestLineupNames").textContent = best ? lineupNamesFromKey(best.key) : "—";
+
+      // Table
+      const body = document.getElementById("liveSheetBody");
+      body.innerHTML = "";
+
+      const sorted = [...roster].sort((a,b) => a.number - b.number);
+      for (const p of sorted){
+        const tr = document.createElement("tr");
+        tr.style.cursor = "pointer";
+        tr.dataset.pid = String(p.id);
+
+        tr.innerHTML = `
+          <td class="mono">${p.number}</td>
+          <td>${p.name}</td>
+          <td class="mono">${p.defPoss}</td>
+          <td class="mono">${format1(score(p))}</td>
+          <td class="mono">${gradeForPlayer(p)}</td>
+          <td class="mono">${format1(p.floorImpact)}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }
+
+    function formatCountsForPlayer(p, which){
+      const defs = which === "neg" ? NEG_ACTIONS : POS_ACTIONS;
+      const items = [];
+
+      for (const a of defs){
+        let cnt = p.c[a.key] ?? 0;
+        if (a.key === "boxout_reb_combo") cnt = p.c.boxout_reb ?? 0;
+        if (a.key === "defl_steal_combo") cnt = p.c.defl_steal ?? 0;
+        if (cnt > 0) items.push({ label: a.label, count: cnt, pts: a.pts, key: a.key });
+      }
+
+      // sort by coaching relevance: highest count first, then magnitude of points
+      items.sort((a,b) => (b.count - a.count) || (Math.abs(b.pts) - Math.abs(a.pts)));
+
+      if (items.length === 0) return "—";
+      return items.slice(0, 10).map(x => `${x.label}: <span class="mono">${x.count}</span>`).join("<br/>");
+    }
+
+    function setDetails(pid){
+      const p = getPlayer(Number(pid));
+      if (!p) return;
+
+      document.getElementById("detName").textContent = `#${p.number} ${p.name}`;
+      document.getElementById("detLine").textContent =
+        `Poss: ${p.defPoss} • Score: ${format1(score(p))} • Score/10: ${p.defPoss>0 ? format1(scorePer10(p)) : "—"} • OnFloor: ${format1(p.floorImpact)}`;
+
+      document.getElementById("detGrade").textContent = gradeForPlayer(p);
+
+      // chips: top 2 positives + top 2 negatives
+      const chips = document.getElementById("detChips");
+      chips.innerHTML = "";
+      const pos = driverList(p, "pos").slice(0,2);
+      const neg = driverList(p, "neg").slice(0,2);
+
+      for (const x of pos){
+        const el = document.createElement("div");
+        el.className = "chip";
+        el.innerHTML = `+ ${x.label} <span class="mono">(${x.count})</span>`;
+        chips.appendChild(el);
+      }
+      for (const x of neg){
+        const el = document.createElement("div");
+        el.className = "chip";
+        el.innerHTML = `− ${x.label} <span class="mono">(${x.count})</span>`;
+        chips.appendChild(el);
+      }
+      if (chips.children.length === 0){
+        const el = document.createElement("div");
+        el.className = "chip";
+        el.textContent = "No logged actions yet";
+        chips.appendChild(el);
+      }
+
+      document.getElementById("detSummary").textContent = (p.defPoss > 0) ? quickNotes(p) : "No grade/summary until possessions are logged.";
+      document.getElementById("detNeg").innerHTML = formatCountsForPlayer(p, "neg");
+      document.getElementById("detPos").innerHTML = formatCountsForPlayer(p, "pos");
+    }
+
+    // ===== WIRING =====
+    document.getElementById("rosterGrid").addEventListener("pointerup", (e) => {
+      const tile = e.target.closest(".playerTile");
+      if(!tile) return;
+      const id = parseInt(tile.dataset.id, 10);
+      handlePlayerTap(id);
+    });
+
+    document.getElementById("subInBtn").addEventListener("click", subInSelected);
+    document.getElementById("subOutBtn").addEventListener("click", subOutSelected);
+
+    document.getElementById("defPossBtn").addEventListener("click", () => {
+      const inPlayers = roster.filter(p => p.inGame);
+      if (inPlayers.length === 0){ toast("No players IN."); return; }
+      for (const p of inPlayers) p.defPoss += 1;
+
+      historyStack.push({ type: "poss", playerIds: inPlayers.map(p => p.id), delta: 1 });
+
+      renderLiveTable();
+      saveState();
+      toast(`Poss +1 for ${inPlayers.length} IN`);
+    });
+
+    // TO buttons (team only)
+    document.getElementById("toUsBtn").addEventListener("click", () => {
+      const before = team.toUs;
+      team.toUs += 1;
+      historyStack.push({ type:"team", key:"toUs", before, after: team.toUs });
+      renderTeam();
+      saveState();
+      toast("TO US +1");
+    });
+
+    document.getElementById("toOppBtn").addEventListener("click", () => {
+      const before = team.toOpp;
+      team.toOpp += 1;
+      historyStack.push({ type:"team", key:"toOpp", before, after: team.toOpp });
+      renderTeam();
+      saveState();
+      toast("TO OPP +1");
+    });
+
+    // FTA buttons (team only)
+    document.getElementById("ftaUsBtn").addEventListener("click", () => {
+      const before = team.ftaUs;
+      team.ftaUs += 1;
+      historyStack.push({ type:"team", key:"ftaUs", before, after: team.ftaUs });
+      renderTeam();
+      saveState();
+      toast("FTA US +1");
+    });
+
+    document.getElementById("ftaOppBtn").addEventListener("click", () => {
+      const before = team.ftaOpp;
+      team.ftaOpp += 1;
+      historyStack.push({ type:"team", key:"ftaOpp", before, after: team.ftaOpp });
+      renderTeam();
+      saveState();
+      toast("FTA OPP +1");
+    });
+
+    document.getElementById("negGrid").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if(!btn) return;
+      applyAction(btn.dataset.action);
+    });
+
+    document.getElementById("posGrid").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if(!btn) return;
+      applyAction(btn.dataset.action);
+    });
+
+    // Mode toggle
+    document.getElementById("btnMode").addEventListener("click", () => {
+      mode = (mode === "stats") ? "subs" : "stats";
+      document.getElementById("btnMode").textContent = `MODE: ${mode === "stats" ? "STATS" : "SUBS"}`;
+      if (mode === "stats"){
+        // keep it clean: reduce to single selection
+        if (selectedSet.size > 1){
+          selectedSet.clear();
+          activePlayerId = null;
+        }
+      }
+      renderRosterGrid();
+      saveState();
+      toast(mode === "stats" ? "STATS mode (single-select)" : "SUBS mode (multi-select)");
+    });
+
+    // Undo
+    document.getElementById("undoBtn").addEventListener("click", () => {
+      const last = historyStack.pop();
+      if (!last){ toast("Nothing to undo."); return; }
+
+      if (last.type === "poss"){
+        for (const id of last.playerIds){
+          const p = getPlayer(id);
+          if (!p) continue;
+          p.defPoss = Math.max(0, p.defPoss - (last.delta || 1));
+        }
+        renderLiveTable();
+        saveState();
+        toast("Undid possession.");
+        return;
+      }
+
+      if (last.type === "action"){
+        const p = getPlayer(last.playerId);
+        if (!p){ toast("Undo failed (player missing)."); return; }
+
+        for (const k of last.incKeys || []){
+          p.c[k] = Math.max(0, (p.c[k] || 0) - 1);
+        }
+        if (last.actionKey === "boxout_reb_combo") p.c.boxout_reb = Math.max(0, (p.c.boxout_reb || 0) - 1);
+        if (last.actionKey === "defl_steal_combo") p.c.defl_steal = Math.max(0, (p.c.defl_steal || 0) - 1);
+
+        p.actionScore = (p.actionScore || 0) - (last.pts || 0);
+
+        renderLiveTable();
+        saveState();
+        toast(`Undid last stat for #${p.number}.`);
+        return;
+      }
+
+      if (last.type === "floor"){
+        for (const id of last.playerIds || []){
+          const p = getPlayer(id);
+          if (!p) continue;
+          p.floorImpact = (p.floorImpact || 0) - (last.delta || 0);
+        }
+        renderLiveTable();
+        saveState();
+        toast("Undid on-floor impact.");
+        return;
+      }
+
+      if (last.type === "lineup"){
+        if (last.key){
+          lineupMap[last.key] = last.before;
+          saveState();
+          toast("Undid lineup net.");
+          return;
+        }
+      }
+
+      if (last.type === "team"){
+        if (last.key in team){
+          team[last.key] = clamp0(last.before);
+          renderTeam();
+          saveState();
+          toast(`Undid ${last.key}.`);
+          return;
+        }
+      }
+
+      toast("Nothing to undo.");
+    });
+
+    // Clear all
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      const ok = confirm("Are you sure you want to clear ALL stats and autosaved data?");
+      if(!ok) return;
+
+      for (const p of roster){
+        p.inGame = false;
+        p.defPoss = 0;
+        p.actionScore = 0;
+        p.floorImpact = 0;
+        for (const k in p.c) p.c[k] = 0;
+      }
+      activePlayerId = null;
+      selectedSet.clear();
+
+      for (const k in team) team[k] = 0;
+      for (const k in lineupMap) delete lineupMap[k];
+
+      try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
+      historyStack.length = 0;
+
+      renderAll();
+      toast("Cleared.");
+    });
+
+    // Report modal
+    const reportOverlay = document.getElementById("reportOverlay");
     document.getElementById("openReport").addEventListener("click", () => {
       buildReportTable();
       document.getElementById("cardsArea").innerHTML = "";
-      overlay.classList.add("show");
-      overlay.setAttribute("aria-hidden", "false");
+      reportOverlay.classList.add("show");
+      reportOverlay.setAttribute("aria-hidden", "false");
     });
-
     document.getElementById("btnCloseReport").addEventListener("click", () => {
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden", "true");
+      reportOverlay.classList.remove("show");
+      reportOverlay.setAttribute("aria-hidden", "true");
     });
+    reportOverlay.addEventListener("click", (e) => {
+      if (e.target === reportOverlay){
+        reportOverlay.classList.remove("show");
+        reportOverlay.setAttribute("aria-hidden", "true");
+      }
+    });
+    document.getElementById("btnReportCards").addEventListener("click", buildReportCards);
+    document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
 
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay){
-        overlay.classList.remove("show");
-        overlay.setAttribute("aria-hidden", "true");
+    // Live sheet modal
+    const liveOverlay = document.getElementById("liveOverlay");
+    document.getElementById("openLive").addEventListener("click", () => {
+      renderLiveSheet();
+      setDetails(null);
+      liveOverlay.classList.add("show");
+      liveOverlay.setAttribute("aria-hidden", "false");
+    });
+    document.getElementById("btnCloseLive").addEventListener("click", () => {
+      liveOverlay.classList.remove("show");
+      liveOverlay.setAttribute("aria-hidden", "true");
+    });
+    liveOverlay.addEventListener("click", (e) => {
+      if (e.target === liveOverlay){
+        liveOverlay.classList.remove("show");
+        liveOverlay.setAttribute("aria-hidden", "true");
       }
     });
 
-    document.getElementById("btnReportCards").addEventListener("click", buildReportCards);
-    document.getElementById("btnExportPdf").addEventListener("click", exportPdf);
+    document.getElementById("liveSheetBody").addEventListener("click", (e) => {
+      const tr = e.target.closest("tr[data-pid]");
+      if (!tr) return;
+      setDetails(tr.dataset.pid);
+    });
 
     // Init
     loadState();
     renderActionGrids();
     renderAll();
-    setTab(currentTab);
+    document.getElementById("btnMode").textContent = `MODE: ${mode === "stats" ? "STATS" : "SUBS"}`;
   </script>
 </body>
 </html>
